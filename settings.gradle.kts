@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "P2P Application"
 include(":app")
- 
