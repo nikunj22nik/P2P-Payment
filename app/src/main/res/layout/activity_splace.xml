@@ -5,13 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/frameContainerMain"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"/>
-
+    tools:context=".activity.SplashActivity">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="@string/todo"
+    android:scaleType="centerCrop"
+    android:layout_centerInParent="true"
+    android:src="@drawable/splashbg"/>
 </RelativeLayout>

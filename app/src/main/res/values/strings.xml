@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">P2P Application</string>
+    <string name="todo">TODO</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="choose_account_type">Choose Account Type</string>
+    <string name="proceed">Proceed</string>
+    <string name="user">User</string>
+    <string name="master_agent">Master Agent</string>
+    <string name="agent">Agent</string>
+    <string name="merchant">Merchant</string>
+    <string name="user_log_in">User Log In</string>
+    <string name="log_in">Log in</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="do_you_already_have_an_account">Do you already have an account?</string>
 </resources>
