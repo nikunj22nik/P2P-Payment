@@ -60,4 +60,6 @@
     <string name="no">No</string>
     <string name="account_limit">Account Limit</string>
     <string name="notification">Notification</string>
+    <string name="sd">SD</string>
+    <string name="lorem_ipsum_is_simply_dummy_text"><![CDATA[Lorem Ipsum is simply dummy text.]]></string>
 </resources>
