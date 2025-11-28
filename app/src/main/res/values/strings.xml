@@ -59,4 +59,5 @@
     <string name="_7_14_days">7-14 days.</string>
     <string name="no">No</string>
     <string name="account_limit">Account Limit</string>
+    <string name="notification">Notification</string>
 </resources>
