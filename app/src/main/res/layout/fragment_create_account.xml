@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.CreateAccountFragment">
 
@@ -19,15 +20,64 @@
             android:contentDescription="@string/todo"
             android:layout_marginBottom="@dimen/_10sdp"
             android:src="@drawable/bbs_logo"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#EEEEEE"
             android:textSize="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_15sdp"
-            android:fontFamily="@font/satoshi_medium"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
             android:text="@string/create_an_account"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:weightSum="2">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/edit_custom">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/_13sdp"
+                    android:hint="@string/first_name"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:textColor="#696969"
+                    android:textColorHint="#696969"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@drawable/edit_custom">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/_13sdp"
+                    android:hint="@string/last_name"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:textColor="#696969"
+                    android:textColorHint="#696969"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
@@ -35,12 +85,39 @@
             android:layout_marginVertical="@dimen/_20sdp"
             android:layout_marginHorizontal="@dimen/_20sdp"
             android:background="@drawable/edit_custom">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@drawable/countryicon"
+                    android:layout_height="@dimen/_15sdp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:text="@string/_221"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textColor="#696969"
+                    app:drawableEndCompat="@drawable/icondown" />
+            </LinearLayout>
+            <View
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#CBD5E1"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:textSize="@dimen/_13sdp"
-                android:text="@string/log_in"
-                android:textColor="#FFFFFF"
+                android:hint="@string/_8115993209"
+                android:background="@null"
+                android:inputType="number"
+                android:textColor="#696969"
+                android:textColorHint="#696969"
+                android:paddingHorizontal="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -56,7 +133,7 @@
                 android:textSize="@dimen/_13sdp"
                 android:text="@string/log_in"
                 android:textColor="#FFFFFF"
-                android:fontFamily="@font/satoshi_medium"
+                android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"/>
         </LinearLayout>
         <LinearLayout
@@ -71,16 +148,17 @@
                 android:layout_height="wrap_content"
                 android:textColor="#EEEEEE"
                 android:textSize="@dimen/_13sdp"
-                android:fontFamily="@font/satoshi_medium"
+                android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/do_you_already_have_an_account"/>
             <TextView
+                android:id="@+id/btnLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#E2692B"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:textSize="@dimen/_13sdp"
-                android:fontFamily="@font/satoshi_medium"
+                android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/log_in"/>
         </LinearLayout>

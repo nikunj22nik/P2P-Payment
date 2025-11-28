@@ -23,8 +23,9 @@
         android:layout_height="wrap_content"
         android:textColor="#EEEEEE"
         android:textSize="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_15sdp"
-        android:fontFamily="@font/satoshi_medium"
+        android:fontFamily="@font/satoshi_bold"
         android:layout_gravity="center"
         android:text="@string/choose_account_type"/>
     <LinearLayout
@@ -56,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_medium"
+                    android:fontFamily="@font/satoshi_bold"
                     android:textColor="#B13A7E"
                     android:text="@string/user"/>
             </LinearLayout>
@@ -79,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_medium"
+                    android:fontFamily="@font/satoshi_bold"
                     android:text="@string/merchant"/>
             </LinearLayout>
         </LinearLayout>
@@ -88,7 +89,7 @@
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:weightSum="2"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:orientation="horizontal">
             <LinearLayout
                 android:layout_width="0dp"
@@ -109,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_medium"
+                    android:fontFamily="@font/satoshi_bold"
                     android:text="@string/agent"/>
             </LinearLayout>
             <LinearLayout
@@ -131,12 +132,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_medium"
+                    android:fontFamily="@font/satoshi_bold"
                     android:text="@string/master_agent"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/btnProceed"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"
@@ -148,7 +150,7 @@
             android:textSize="@dimen/_13sdp"
             android:text="@string/proceed"
             android:textColor="#FFFFFF"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"/>
     </LinearLayout>
 </LinearLayout>

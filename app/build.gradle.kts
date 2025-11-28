@@ -5,18 +5,14 @@ plugins {
 
 android {
     namespace = "com.p2p.application"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 34   // ya 35/36 agar machine support karti hai
 
     defaultConfig {
         applicationId = "com.p2p.application"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -50,11 +46,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.fragment)
+
+    // Navigation dependencies only from TOML
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
+    // Size based DP/SP
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.intuit.sdp:sdp-android:1.1.1")
-    implementation("com.intuit.ssp:ssp-android:1.1.1")
-
 }
