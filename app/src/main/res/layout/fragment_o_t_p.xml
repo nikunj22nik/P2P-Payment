@@ -29,16 +29,44 @@ tools:context=".fragment.OTPFragment">
         android:fontFamily="@font/satoshi_bold"
         android:layout_gravity="center"
         android:text="@string/validation_otp"/>
+
     <LinearLayout
+        android:id="@+id/otp_enter"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:gravity="center"
+        android:layout_height="@dimen/_45sdp"
         android:layout_marginVertical="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_20sdp"
-        android:background="@drawable/edit_custom">
-
+        android:background="@drawable/edit_custom"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+        <EditText
+            android:id="@+id/etOtp1"
+            style="@style/OtpDigitStyle"
+            android:hint="*"
+            android:textColorHint="#333333"/>
+        <View style="@style/OtpDividerStyle" />
+        <EditText
+            android:id="@+id/etOtp2"
+            style="@style/OtpDigitStyle"
+            android:hint="*"
+            android:textColorHint="#333333"/>
+        <View style="@style/OtpDividerStyle" />
+        <EditText
+            android:id="@+id/etOtp3"
+            style="@style/OtpDigitStyle"
+            android:hint="*"
+            android:textColorHint="#333333" />
+        <View style="@style/OtpDividerStyle" />
+        <EditText
+            android:id="@+id/etOtp4"
+            style="@style/OtpDigitStyle"
+            android:hint="*"
+            android:textColorHint="#333333"/>
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/btnVerify"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"

@@ -9,5 +9,8 @@ class MessageError {
         const val AGENT:String="Agent"
         const val MASTER_AGENT:String="Master_Agent"
 
+
+        // Show Error sms
+        const val SELECT_TYPE:String="Please select the type"
     }
 }

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bgimg"
+    tools:context=".fragment.NewNumberFragment">
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_height="@dimen/_40sdp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/backicon"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:text="Send Money"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/bottom_layout"
+        android:layout_below="@id/title"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageProfile"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:src="@drawable/usernoimg"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/imageProfile"
+                android:layout_toLeftOf="@id/rightArrow"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#0F0D1C"
+                    android:textSize="@dimen/_13sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:layout_gravity="center"
+                    android:text="@string/beryl_orou" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#949494"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_10sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:layout_gravity="center"
+                    android:text="@string/_01_33_23_43_44" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_13sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_gravity="center"
+            android:text="Amount sent" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textSize="@dimen/_13sdp"
+            android:hint="0"
+            android:background="@null"
+            android:inputType="number"
+            android:textColor="#696969"
+            android:textColorHint="#696969"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_gravity="center"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#696969"
+            android:layout_marginHorizontal="@dimen/_15sdp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_13sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_gravity="center"
+            android:text="Confirm Amount" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textSize="@dimen/_13sdp"
+            android:hint="0"
+            android:background="@null"
+            android:inputType="number"
+            android:textColor="#696969"
+            android:textColorHint="#696969"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_gravity="center"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#696969"
+            android:layout_marginHorizontal="@dimen/_15sdp"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:background="@drawable/button_custom">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_13sdp"
+            android:text="Send"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+</RelativeLayout>

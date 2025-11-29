@@ -91,6 +91,7 @@
                     android:layout_marginBottom="@dimen/_20sdp"
                     android:orientation="horizontal">
                     <LinearLayout
+                        android:id="@+id/btnOk"
                         android:layout_width="@dimen/_100sdp"
                         android:layout_height="@dimen/_40sdp"
                         android:gravity="center"
@@ -106,6 +107,7 @@
                             android:layout_gravity="center"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btnNo"
                         android:layout_width="@dimen/_100sdp"
                         android:layout_height="@dimen/_40sdp"
                     android:gravity="center"

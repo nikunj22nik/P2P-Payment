@@ -22,6 +22,7 @@
             android:src="@drawable/bbs_logo"/>
 
         <TextView
+            android:id="@+id/tvText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#EEEEEE"
@@ -30,7 +31,7 @@
             android:layout_marginBottom="@dimen/_20sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="@string/create_an_account"/>
+            android:text="User Registration"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,6 +123,7 @@
                 android:layout_gravity="center"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/btncreate"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:gravity="center"
@@ -131,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_13sdp"
-                android:text="@string/log_in"
+                android:text="Create an account"
                 android:textColor="#FFFFFF"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"/>
@@ -147,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#EEEEEE"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/do_you_already_have_an_account"/>
@@ -157,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#E2692B"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/log_in"/>

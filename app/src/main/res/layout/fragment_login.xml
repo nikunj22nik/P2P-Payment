@@ -21,6 +21,7 @@
             android:layout_marginBottom="@dimen/_10sdp"
             android:src="@drawable/bbs_logo"/>
         <TextView
+            android:id="@+id/tvText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#EEEEEE"
@@ -34,7 +35,7 @@
             android:layout_height="@dimen/_40sdp"
             android:gravity="center"
             android:layout_marginVertical="@dimen/_20sdp"
-            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
             android:background="@drawable/edit_custom">
             <LinearLayout
                 android:layout_width="@dimen/_90sdp"
@@ -73,10 +74,11 @@
                 android:layout_gravity="center"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:gravity="center"
-            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
             android:background="@drawable/button_custom">
             <TextView
                 android:layout_width="wrap_content"
@@ -92,14 +94,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#EEEEEE"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/don_t_have_an_account"/>
@@ -109,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#E2692B"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
                 android:text="@string/create_an_account"/>

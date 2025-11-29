@@ -40,28 +40,7 @@
             android:weightSum="2"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:padding="@dimen/_10sdp"
-                android:orientation="vertical"
-                android:background="@drawable/user_select_active">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/usericon"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:textColor="#B13A7E"
-                    android:text="@string/user"/>
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/user"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -71,11 +50,39 @@
                 android:orientation="vertical"
                 android:background="@drawable/user_select_inactive">
                 <ImageView
+                    android:id="@+id/imgUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/todo"
+                    android:tint="#FFFFFF"
+                    android:src="@drawable/usericon"/>
+                <TextView
+                    android:id="@+id/tvUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textColor="#FFFFFF"
+                    android:text="@string/user"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/merchant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:padding="@dimen/_10sdp"
+                android:orientation="vertical"
+                android:background="@drawable/user_select_inactive">
+                <ImageView
+                    android:id="@+id/imgMerchant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/merchanticon"/>
                 <TextView
+                    android:id="@+id/tvmerchant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
@@ -92,6 +99,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:orientation="horizontal">
             <LinearLayout
+                android:id="@+id/agent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -101,11 +109,13 @@
                 android:orientation="vertical"
                 android:background="@drawable/user_select_inactive">
                 <ImageView
+                    android:id="@+id/imgAgent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/agenticon"/>
                 <TextView
+                    android:id="@+id/tvAgent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
@@ -114,6 +124,7 @@
                     android:text="@string/agent"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/masterAgent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -123,11 +134,13 @@
                 android:orientation="vertical"
                 android:background="@drawable/user_select_inactive">
                 <ImageView
+                    android:id="@+id/imgMasterAgent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/agenticon"/>
                 <TextView
+                    android:id="@+id/tvMasterAgent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"

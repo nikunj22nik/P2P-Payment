@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgimg"
+    tools:context=".fragment.WelcomeFragment">
+
+    <RelativeLayout
+        android:id="@+id/layTittle"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/bbs_logo" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/bellicon" />
+
+            <ImageView
+                android:id="@+id/btnSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/threelineicon" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layView"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_below="@id/layTittle"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/layTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#EEEEEE"
+                android:textSize="@dimen/_18sdp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/welcome_to_nmany_mobile_money" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_13sdp"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:layout_gravity="center"
+                android:text="@string/send_and_receive_money_instantly_with_just_a_few_ntaps" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#EEEEEE"
+                android:textSize="@dimen/_15sdp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/your_balance" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/_18sdp"
+                    android:gravity="center"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:layout_gravity="center"
+                    android:text="@string/_24_900_fcfa" />
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/eye_off"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_gravity="center"
+                    android:layout_height="@dimen/_20sdp"
+                    app:tint="#FFFFFF" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layView"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:background="@drawable/circletopcurve"/>
+
+    <RelativeLayout
+        android:id="@+id/layButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="visible"
+        android:layout_below="@id/layView"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/home_curve"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_height="@dimen/_120sdp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/sendicon"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/_40sdp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/payicon"
+                android:layout_marginStart="@dimen/_40sdp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <ImageView
+            android:id="@+id/imgscan"
+            android:layout_width="@dimen/_100sdp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/homescan"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="-5dp"
+            android:layout_height="@dimen/_100sdp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@id/layButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/_50sdp"
+            android:visibility="gone"
+            android:background="@drawable/userhomeicon"
+            android:contentDescription="@string/todo" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#0F0D1C"
+                    android:textSize="@dimen/_13sdp"
+                    android:gravity="center"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:layout_gravity="center"
+                    android:text="@string/recent_transactions" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#B13A7E"
+                    android:textSize="@dimen/_13sdp"
+                    android:gravity="center"
+                    android:layout_alignParentEnd="true"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:layout_gravity="center"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:text="@string/see_all"
+                    app:drawableEndCompat="@drawable/arrow_right_alt" />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_home_transaction"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

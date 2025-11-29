@@ -25,4 +25,114 @@
         android:name="com.p2p.application.fragment.OTPFragment"
         android:label="fragment_o_t_p"
         tools:layout="@layout/fragment_o_t_p" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.p2p.application.fragment.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/accountLimitFragment"
+        android:name="com.p2p.application.fragment.AccountLimitFragment"
+        android:label="fragment_account_limit"
+        tools:layout="@layout/fragment_account_limit" />
+    <fragment
+        android:id="@+id/enterSecretCodeFragment"
+        android:name="com.p2p.application.fragment.EnterSecretCodeFragment"
+        android:label="fragment_enter_secret_code"
+        tools:layout="@layout/fragment_enter_secret_code" />
+    <fragment
+        android:id="@+id/forgotCodeFragment"
+        android:name="com.p2p.application.fragment.ForgotCodeFragment"
+        android:label="fragment_forgot_code"
+        tools:layout="@layout/fragment_forgot_code" />
+    <fragment
+        android:id="@+id/inviteFriendFragment"
+        android:name="com.p2p.application.fragment.InviteFriendFragment"
+        android:label="fragment_invite_friend"
+        tools:layout="@layout/fragment_invite_friend" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.p2p.application.fragment.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/notificationListFragment"
+        android:name="com.p2p.application.fragment.NotificationListFragment"
+        android:label="fragment_notification_list"
+        tools:layout="@layout/fragment_notification_list" />
+    <fragment
+        android:id="@+id/secretCodeFragment"
+        android:name="com.p2p.application.fragment.SecretCodeFragment"
+        android:label="fragment_secret_code"
+        tools:layout="@layout/fragment_secret_code" />
+    <fragment
+        android:id="@+id/sendMoneyFragment"
+        android:name="com.p2p.application.fragment.SendMoneyFragment"
+        android:label="fragment_send_money"
+        tools:layout="@layout/fragment_send_money" />
+    <fragment
+        android:id="@+id/toContactFragment"
+        android:name="com.p2p.application.fragment.ToContactFragment"
+        android:label="fragment_to_contact"
+        tools:layout="@layout/fragment_to_contact" />
+    <fragment
+        android:id="@+id/newNumberFragment"
+        android:name="com.p2p.application.fragment.NewNumberFragment"
+        android:label="fragment_new_number"
+        tools:layout="@layout/fragment_new_number" />
+    <fragment
+        android:id="@+id/userWelcomeFragment"
+        android:name="com.p2p.application.fragment.WelcomeFragment"
+        android:label="fragment_user_welcome"
+        tools:layout="@layout/fragment_user_welcome" />
+    <fragment
+        android:id="@+id/agentWelcomeFragment"
+        android:name="com.p2p.application.fragment.AgentWelcomeFragment"
+        android:label="fragment_agent_welcome"
+        tools:layout="@layout/fragment_agent_welcome" />
+    <fragment
+        android:id="@+id/receiptFragment"
+        android:name="com.p2p.application.fragment.ReceiptFragment"
+        android:label="fragment_receipt"
+        tools:layout="@layout/fragment_receipt" />
+    <fragment
+        android:id="@+id/masterAgentFragment"
+        android:name="com.p2p.application.fragment.MasterAgentFragment"
+        android:label="fragment_master_agent"
+        tools:layout="@layout/fragment_master_agent" />
+    <fragment
+        android:id="@+id/merchantFragment"
+        android:name="com.p2p.application.fragment.MerchantFragment"
+        android:label="fragment_merchant"
+        tools:layout="@layout/fragment_merchant" />
+    <fragment
+        android:id="@+id/forgotCodeOtpVerifyFragment"
+        android:name="com.p2p.application.fragment.ForgotCodeOtpVerifyFragment"
+        android:label="fragment_forgot_code_otp_verify"
+        tools:layout="@layout/fragment_forgot_code_otp_verify" />
+    <fragment
+        android:id="@+id/editSecretCodeFragment"
+        android:name="com.p2p.application.fragment.EditSecretCodeFragment"
+        android:label="fragment_edit_secret_code"
+        tools:layout="@layout/fragment_edit_secret_code" />
+    <fragment
+        android:id="@+id/QRFragment"
+        android:name="com.p2p.application.fragment.QRFragment"
+        android:label="fragment_q_r"
+        tools:layout="@layout/fragment_q_r" />
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.p2p.application.fragment.TransactionFragment"
+        android:label="fragment_transaction"
+        tools:layout="@layout/fragment_transaction" />
+    <fragment
+        android:id="@+id/rebalancingFragment"
+        android:name="com.p2p.application.fragment.RebalancingFragment"
+        android:label="fragment_rebalancing"
+        tools:layout="@layout/fragment_rebalancing" />
+    <fragment
+        android:id="@+id/transferStatusFragment"
+        android:name="com.p2p.application.fragment.TransferStatusFragment"
+        android:label="fragment_transfer_status"
+        tools:layout="@layout/fragment_transfer_status" />
 </navigation>

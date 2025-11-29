@@ -5,7 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_account_type">Choose Account Type</string>
     <string name="proceed">Proceed</string>
-
     <string name="user">User</string>
     <string name="master_agent">Master Agent</string>
     <string name="agent">Agent</string>
@@ -24,6 +23,8 @@
     <string name="didn_t_receive_a_code">Didn\'t receive a code?</string>
     <string name="resend">Resend</string>
     <string name="continue_type">Continue</string>
+    <string name="invitefriend">Invite a Friend</string>
+    <string name="invitefriends">Invites Friends</string>
     <string name="account_created">Account Created !</string>
     <string name="your_user_account_has_been_created_nsuccessfully">Your user account has been created \nsuccessfully.</string>
     <string name="created_successfully">Created Successfully</string>
@@ -63,4 +64,24 @@
     <string name="notification">Notification</string>
     <string name="sd">SD</string>
     <string name="lorem_ipsum_is_simply_dummy_text"><![CDATA[Lorem Ipsum is simply dummy text.]]></string>
+    <string name="beryl_orou">Beryl Orou</string>
+    <string name="_01_33_23_43_44">01 33 23 43 44</string>
+    <string name="account_switch">Account Switch</string>
+    <string name="accountswitch">account?</string>
+    <string name="ready_to_grow_your_business_reach_with_a">Ready to grow your business reach with a</string>
+    <string name="want_to_boost_your_earning_potential_with_an">Want to boost your earning potential with an</string>
+    <string name="want_to_lead_and_manage_at_scale_with_a">Want to lead and manage at scale with a</string>
+    <string name="payments">Payments</string>
+    <string name="new_transfers">New Transfers</string>
+    <string name="benin_electric_power_company">Benin Electric Power Company</string>
+    <string name="reference_de_accountur">Reference de Accountur</string>
+    <string name="welcome_to_nmany_mobile_money">Welcome to \nMany Mobile Money</string>
+    <string name="send_and_receive_money_instantly_with_just_a_few_ntaps">Send and receive money instantly with just a few \ntaps.</string>
+    <string name="your_balance">Your Balance</string>
+    <string name="_24_900_fcfa">24 900 fcfa</string>
+    <string name="recent_transactions">Recent transactions</string>
+    <string name="see_all">See all</string>
+    <string name="transfer_successful">Transfer successful!</string>
+    <string name="share">Share</string>
+    <string name="back_to_home_page">Back to home page</string>
 </resources>

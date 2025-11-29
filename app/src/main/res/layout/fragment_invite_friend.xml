@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF"
+    tools:context=".fragment.InviteFriendFragment">
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        tools:ignore="UselessParent">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/backicon"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            app:tint="#0F0D1C" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_20sdp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="@string/invitefriend"
+            tools:ignore="RelativeOverlap" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lay"
+        android:layout_below="@id/toolbar"
+        android:layout_width="wrap_content"
+        android:background="@drawable/cardbg"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:orientation="vertical"
+        android:layout_height="@dimen/_250sdp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_20sdp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="@string/invitefriends"
+            tools:ignore="RelativeOverlap" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:background="@drawable/button_custom">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_10sdp"
+                android:gravity="center"
+
+                android:text="Invite friends to Many Mobile Money and"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/lay"
+        android:id="@+id/btninvite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:background="@drawable/button_custom">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_13sdp"
+            android:gravity="center"
+
+            android:text="Invite to Many Mobile Money"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_below="@id/btninvite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_300sdp"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/inviteuserbottom"/>
+
+</RelativeLayout>

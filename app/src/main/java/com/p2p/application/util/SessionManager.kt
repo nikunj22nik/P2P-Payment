@@ -20,9 +20,18 @@ class SessionManager(var context: Context) {
         editor?.commit()
     }
 
+    fun setScreenType(data: String){
+        editor?.putString(AppConstant.FORGOT_TYPE, data)
+        editor?.commit()
+    }
+
 
     fun getLoginType(): String? {
         return pref?.getString(AppConstant.LOGIN_TYPE, "")
+    }
+
+    fun getScreenType(): String? {
+        return pref?.getString(AppConstant.FORGOT_TYPE, "")
     }
 
 

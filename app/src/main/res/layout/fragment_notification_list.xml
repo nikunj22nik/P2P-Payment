@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         tools:ignore="UselessParent">
         <ImageView
+            android:id="@+id/imgBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
@@ -42,10 +43,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
         android:layout_below="@+id/toolbar">
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/itemRcy"
             android:layout_width="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
             tools:listitem="@layout/item_notification"
             android:layout_height="match_parent"/>
     </LinearLayout>

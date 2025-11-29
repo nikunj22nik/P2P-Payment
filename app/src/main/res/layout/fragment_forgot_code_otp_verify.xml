@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgimg"
+    tools:context=".fragment.ForgotCodeOtpVerifyFragment">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_height="@dimen/_40sdp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/backicon"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:text="@string/forgot_your_code"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        tools:ignore="UseCompoundDrawables,UselessParent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="Verify Your Number"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="We’ve sent a 4-digit code to"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#949494"
+            android:textSize="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="+1 (221) 78 123 45 67."/>
+
+
+        <LinearLayout
+            android:id="@+id/otp_enter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginVertical="@dimen/_10sdp"
+            android:background="@drawable/edit_custom"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+            <EditText
+                android:id="@+id/etOtp1"
+                style="@style/OtpDigitStyle"
+                android:hint="*"
+                android:textColorHint="#333333"/>
+            <View style="@style/OtpDividerStyle" />
+            <EditText
+                android:id="@+id/etOtp2"
+                style="@style/OtpDigitStyle"
+                android:hint="*"
+                android:textColorHint="#333333"/>
+            <View style="@style/OtpDividerStyle" />
+            <EditText
+                android:id="@+id/etOtp3"
+                style="@style/OtpDigitStyle"
+                android:hint="*"
+                android:textColorHint="#333333" />
+            <View style="@style/OtpDividerStyle" />
+            <EditText
+                android:id="@+id/etOtp4"
+                style="@style/OtpDigitStyle"
+                android:hint="*"
+                android:textColorHint="#333333"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/button_custom">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_13sdp"
+                android:text="@string/verify_your_account"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#EEEEEE"
+                android:textSize="@dimen/_13sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/didn_t_receive_a_code"/>
+            <TextView
+                android:id="@+id/btnRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E2692B"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:textSize="@dimen/_13sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/resend"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
