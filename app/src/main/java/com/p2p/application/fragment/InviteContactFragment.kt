@@ -7,29 +7,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.p2p.application.R
+import com.p2p.application.adapter.AdapterToContact
 import com.p2p.application.databinding.FragmentInviteContactBinding
-import com.p2p.application.databinding.FragmentInviteFriendBinding
+import com.p2p.application.databinding.FragmentToContactBinding
 
 
-class InviteFriendFragment : Fragment() {
+class InviteContactFragment : Fragment() {
 
 
-    private lateinit var binding: FragmentInviteFriendBinding
+
+    private lateinit var binding: FragmentInviteContactBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentInviteFriendBinding.inflate(layoutInflater, container, false)
+        binding = FragmentInviteContactBinding.inflate(layoutInflater, container, false)
+
+
 
 
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btninvite.setOnClickListener {
+        
+        binding.btnInvite.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, "Hey! Check out this cool app!")
@@ -37,6 +43,5 @@ class InviteFriendFragment : Fragment() {
         }
 
     }
-
 
 }

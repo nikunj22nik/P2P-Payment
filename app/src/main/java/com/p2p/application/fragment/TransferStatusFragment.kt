@@ -11,6 +11,9 @@ import com.p2p.application.R
 import com.p2p.application.databinding.FragmentAccountTypeBinding
 import com.p2p.application.databinding.FragmentTransferStatusBinding
 import com.p2p.application.util.SessionManager
+import com.p2p.application.view.applyExactGradient
+
+
 
 
 class TransferStatusFragment : Fragment() {
@@ -31,6 +34,10 @@ class TransferStatusFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        binding.layPrice.applyExactGradient()
+
 
         binding.btnHome.setOnClickListener {
             findNavController().navigate(R.id.userWelcomeFragment)

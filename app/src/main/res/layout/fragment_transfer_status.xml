@@ -23,6 +23,7 @@ tools:context=".fragment.TransferStatusFragment">
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_25sdp"
             android:orientation="vertical"
+            android:gravity="center|top"
             android:background="@drawable/status">
             <View
                 android:layout_width="match_parent"
@@ -46,14 +47,13 @@ tools:context=".fragment.TransferStatusFragment">
                 android:gravity="center"
                 android:text="Your transaction has been completed successfully."/>
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/layPrice"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#444444"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:textSize="@dimen/_15sdp"
+                android:text="5 500 FCFA"
+                android:textSize="38sp"
                 android:fontFamily="@font/satoshi_bold"
-                android:gravity="center"
-                android:text="5 500 FCFA"/>
+                android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

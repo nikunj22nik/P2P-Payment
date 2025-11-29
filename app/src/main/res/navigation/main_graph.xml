@@ -135,4 +135,14 @@
         android:name="com.p2p.application.fragment.TransferStatusFragment"
         android:label="fragment_transfer_status"
         tools:layout="@layout/fragment_transfer_status" />
+    <fragment
+        android:id="@+id/inviteContactFragment"
+        android:name="com.p2p.application.fragment.InviteContactFragment"
+        android:label="fragment_invite_contact"
+        tools:layout="@layout/fragment_invite_contact" />
+    <fragment
+        android:id="@+id/identityVerificationFragment"
+        android:name="com.p2p.application.fragment.IdentityVerificationFragment"
+        android:label="fragment_identity_verification"
+        tools:layout="@layout/fragment_identity_verification" />
 </navigation>

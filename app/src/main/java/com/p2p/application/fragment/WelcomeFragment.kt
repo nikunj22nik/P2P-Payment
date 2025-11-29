@@ -27,8 +27,9 @@ import com.p2p.application.util.SessionManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.core.graphics.toColorInt
+import com.p2p.application.listener.ItemClickListener
 
-class WelcomeFragment : Fragment() {
+class WelcomeFragment : Fragment(), ItemClickListener {
 
     private lateinit var binding: FragmentUserWelcomeBinding
     private lateinit var adapter: AdapterHomeTransaction
@@ -45,7 +46,7 @@ class WelcomeFragment : Fragment() {
         binding = FragmentUserWelcomeBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
         selectedType=sessionManager.getLoginType()?:""
-        adapter=AdapterHomeTransaction(requireContext())
+        adapter=AdapterHomeTransaction(requireContext(),this)
         adapterMerchant=AdapterMerchant(requireContext())
         binding.itemRcy.adapter=adapter
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
@@ -246,6 +247,10 @@ class WelcomeFragment : Fragment() {
             dialogWeight.dismiss()
         }
         dialogWeight.show()
+    }
+
+    override fun onItemClick(data: String) {
+        findNavController().navigate(R.id.receiptFragment)
     }
 
 

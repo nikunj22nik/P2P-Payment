@@ -3,25 +3,22 @@ package com.p2p.application.fragment
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.p2p.application.R
-import com.p2p.application.databinding.FragmentCreateAccountBinding
-import com.p2p.application.databinding.FragmentSettingBinding
-import androidx.core.graphics.drawable.toDrawable
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.p2p.application.activity.MainActivity
+import com.p2p.application.databinding.FragmentSettingBinding
 import com.p2p.application.util.SessionManager
 
 
@@ -53,6 +50,15 @@ class SettingFragment : Fragment() {
         binding.btnDelete.setOnClickListener {
             alertSessionClear("delete")
         }
+
+        binding.btnInvitation.setOnClickListener {
+            findNavController().navigate(R.id.inviteFriendFragment)
+        }
+
+        binding.btnAccountLimit.setOnClickListener {
+            findNavController().navigate(R.id.accountLimitFragment)
+        }
+
 
         binding.btnEditCode.setOnClickListener {
             val bundle = Bundle()

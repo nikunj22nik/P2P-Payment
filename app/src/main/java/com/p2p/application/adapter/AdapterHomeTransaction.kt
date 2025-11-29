@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.p2p.application.databinding.ItemHomeTransactionBinding
+import com.p2p.application.listener.ItemClickListener
 
-class AdapterHomeTransaction(private var requireActivity: Context) :
+class AdapterHomeTransaction(private var requireActivity: Context,var itemClickListener: ItemClickListener) :
     RecyclerView.Adapter<AdapterHomeTransaction.ViewHolder>() {
 
         var color: String="#0F0D1C"
@@ -25,6 +26,9 @@ class AdapterHomeTransaction(private var requireActivity: Context) :
 
         holder.binding.tvName.setTextColor(Color.parseColor(color))
 
+        holder.itemView.setOnClickListener {
+            itemClickListener.onItemClick("")
+        }
     }
 
 

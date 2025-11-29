@@ -63,6 +63,9 @@ class ToContactFragment : Fragment(), ItemClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
 
+        binding.imgInvite.setOnClickListener {
+            findNavController().navigate(R.id.inviteContactFragment)
+        }
 
     }
 

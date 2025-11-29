@@ -67,11 +67,19 @@ class EditSecretCodeFragment : Fragment() {
         dialog.window!!.attributes = layoutParams
 
         val tvTitle: TextView =dialog.findViewById(R.id.tvTitle)
+        val tvText: TextView =dialog.findViewById(R.id.tvText)
         val tvbBn: TextView =dialog.findViewById(R.id.tvbBn)
         val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
 
         tvTitle.text="Updated Successfully"
         tvbBn.text="Back to Settings"
+
+        if (screenType.equals("settingCode",true)) {
+            btnOk.visibility = View.VISIBLE
+        }else{
+            tvText.text="Your secret code has been changed. Keep it safe and don’t share it \nwith anyone."
+            btnOk.visibility = View.GONE
+        }
 
         btnOk.setOnClickListener {
             dialog.dismiss()

@@ -40,6 +40,9 @@ class ForgotCodeFragment : Fragment() {
             binding.header.text="Forgot Your Code"
         }
 
+        binding.imgBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         binding.btnSend.setOnClickListener {
             val bundle = Bundle();

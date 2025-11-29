@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF"
+    tools:context=".fragment.InviteContactFragment">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_height="@dimen/_40sdp"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/backicon"
+                android:layout_height="wrap_content"
+                app:tint="#0F0D1C" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_15sdp"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:text="@string/transaction_history"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layCard"
+        android:layout_width="match_parent"
+        android:layout_below="@id/title"
+        android:orientation="vertical"
+        android:gravity="center|top"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@drawable/invitecontacticon"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_height="@dimen/_230sdp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_70sdp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amadou Bio"
+            android:textSize="@dimen/_16sdp"
+            android:textColor="#0F0D1C"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="92 33 45 67 89"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="#444444"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_bold"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/_20sdp"
+            android:background="@drawable/contactview"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/btnInvite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:gravity="center"
+        android:layout_below="@id/layCard"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:background="@drawable/button_custom">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_13sdp"
+            android:text="Invite to Many Mobile Money"
+            android:textColor="#FFFFFF"
+            android:drawableStart="@drawable/navigation"
+            android:drawablePadding="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_180sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/contactbottomicon"/>
+
+</RelativeLayout>
