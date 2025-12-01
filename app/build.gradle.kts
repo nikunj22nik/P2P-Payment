@@ -57,7 +57,9 @@ dependencies {
     // Size based DP/SP
     implementation(libs.sdp.android)
     implementation(libs.ssp.android)
-
+    implementation(libs.google.scanner)
+    implementation(libs.play.services)
+    implementation(libs.gsonWork)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

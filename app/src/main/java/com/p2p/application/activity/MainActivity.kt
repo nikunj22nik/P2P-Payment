@@ -9,12 +9,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.p2p.application.R
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         startDestination()
-
     }
 
 
@@ -23,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 //        navGraph.setStartDestination(R.id.loginFragment)
-        navGraph.setStartDestination(R.id.accountTypeFragment)
+//        navGraph.setStartDestination(R.id.accountTypeFragment)
+        navGraph.setStartDestination(R.id.QRFragment)
         navController.graph = navGraph
     }
 }

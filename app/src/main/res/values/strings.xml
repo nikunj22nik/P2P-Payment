@@ -94,4 +94,7 @@
     <string name="upload_your_tax_identification_document">Upload your tax identification document</string>
     <string name="upload_your_business_registration_certificate">Upload your business registration certificate</string>
     <string name="business_registration_number">Business Registration Number</string>
+    <string name="my_qr_code">My QR Code Card</string>
+    <string name="my_card">My Card</string>
+    <string name="scanner">Scanner</string>
 </resources>
