@@ -69,7 +69,8 @@ class  SecretCodeFragment : Fragment() {
 
         btnOk.setOnClickListener {
             dialog.dismiss()
-            findNavController().navigate(R.id.enterSecretCodeFragment)
+//            findNavController().navigate(R.id.enterSecretCodeFragment)
+            findNavController().navigate(R.id.notificationFragment)
         }
 
         dialog.show()

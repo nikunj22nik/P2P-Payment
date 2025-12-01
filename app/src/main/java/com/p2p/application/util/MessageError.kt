@@ -7,7 +7,7 @@ class MessageError {
         const val USER:String="User"
         const val MERCHANT:String="Merchant"
         const val AGENT:String="Agent"
-        const val MASTER_AGENT:String="Master_Agent"
+        const val MASTER_AGENT:String="Master Agent"
 
 
         // Show Error sms

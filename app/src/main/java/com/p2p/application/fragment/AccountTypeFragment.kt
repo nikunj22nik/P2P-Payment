@@ -31,9 +31,7 @@ class AccountTypeFragment : Fragment() {
         binding = FragmentAccountTypeBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
-
         handleBackPress()
-
         return binding.root
     }
 

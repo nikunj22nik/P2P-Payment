@@ -1,8 +1,11 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -22,6 +25,8 @@ import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import kotlin.toString
+import androidx.core.graphics.toColorInt
+import java.util.Locale
 
 
 class OTPFragment : Fragment() {
@@ -30,6 +35,9 @@ class OTPFragment : Fragment() {
     private var screenType: String = ""
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
+    private val startTimeInMillis: Long = 60000
+    private var mTimeLeftInMillis = startTimeInMillis
+    private var countDownTimer: CountDownTimer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,28 +59,15 @@ class OTPFragment : Fragment() {
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
 
 
+        startTime()
 
         binding.btnVerify.setOnClickListener {
             if (screenType.equals("Registration",true)){
-
-                    showAlertDialog()
-
+                showAlertDialog()
             }
             if (screenType.equals("Login",true)){
+                sessionManager.setIsLogin(true)
                 findNavController().navigate(R.id.userWelcomeFragment)
-                /*if (selectedType.equals(MessageError.USER,true)){
-                    findNavController().navigate(R.id.userWelcomeFragment)
-                }
-                if (selectedType.equals(MessageError.MERCHANT,true)){
-                    findNavController().navigate(R.id.merchantFragment)
-                }
-                if (selectedType.equals(MessageError.AGENT,true)){
-                    findNavController().navigate(R.id.agentWelcomeFragment)
-                }
-                if (selectedType.equals(MessageError.MASTER_AGENT,true)){
-                    findNavController().navigate(R.id.masterAgentFragment)
-                }*/
-
             }
         }
     }
@@ -87,12 +82,16 @@ class OTPFragment : Fragment() {
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.window!!.attributes = layoutParams
         val btnContinue: LinearLayout =dialog.findViewById(R.id.btnContinue)
+        val tvSubHeader: TextView =dialog.findViewById(R.id.tvSubHeader)
+
+        tvSubHeader.text="Your ${selectedType.lowercase()} account has been created \nsuccessfully."
 
         btnContinue.setOnClickListener {
             dialog.dismiss()
             if (selectedType.equals(MessageError.MERCHANT,true)){
-                findNavController().navigate(R.id.merchantVerificationFragment)
+                findNavController().navigate(R.id.notificationFragment)
             }else{
+                sessionManager.setIsLogin(true)
                 findNavController().navigate(R.id.secretCodeFragment)
             }
         }
@@ -124,6 +123,30 @@ class OTPFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
         }
+    }
+
+
+    private fun startTime() {
+        countDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                mTimeLeftInMillis = millisUntilFinished
+                binding.showView.visibility = View.GONE
+                binding.tvResend.visibility = View.VISIBLE
+                updateCountDownText()
+            }
+            override fun onFinish() {
+                mTimeLeftInMillis = 120000
+                binding.showView.visibility = View.VISIBLE
+                binding.tvResend.visibility = View.GONE
+            }
+        }.start()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateCountDownText() {
+        val seconds = mTimeLeftInMillis.toInt() / 1000 % 60
+        val timeLeftFormatted = String.format(Locale.getDefault(), "%02d", seconds)
+        binding.tvResend.text = "Resend in $timeLeftFormatted sec"
     }
 
 }

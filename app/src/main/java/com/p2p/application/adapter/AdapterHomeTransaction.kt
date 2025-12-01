@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.p2p.application.R
 import com.p2p.application.databinding.ItemHomeTransactionBinding
 import com.p2p.application.listener.ItemClickListener
 
@@ -25,6 +26,12 @@ class AdapterHomeTransaction(private var requireActivity: Context,var itemClickL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.tvName.setTextColor(Color.parseColor(color))
+
+        if (position==0){
+            holder.binding.imageProfile.setBackgroundResource(R.drawable.transfericon)
+        }else{
+            holder.binding.imageProfile.setBackgroundResource(R.drawable.rebalancingicon)
+        }
 
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick("")

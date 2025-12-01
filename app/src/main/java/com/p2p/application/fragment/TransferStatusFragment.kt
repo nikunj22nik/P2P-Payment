@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentAccountTypeBinding
@@ -29,6 +30,9 @@ class TransferStatusFragment : Fragment() {
         binding = FragmentTransferStatusBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
+
+        handleBackPress()
+
         return binding.root
     }
 
@@ -50,6 +54,17 @@ class TransferStatusFragment : Fragment() {
             startActivity(Intent.createChooser(shareIntent, "Share via"))
         }
 
+    }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.userWelcomeFragment)
+                }
+            }
+        )
     }
 
 }

@@ -34,7 +34,7 @@ class SendMoneyFragment : Fragment() {
 
 
         binding.btnSend.setOnClickListener {
-            findNavController().navigate(R.id.transferStatusFragment)
+            findNavController().navigate(R.id.enterSecretCodeFragment)
         }
 
     }
