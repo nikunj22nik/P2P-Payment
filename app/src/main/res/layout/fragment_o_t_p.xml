@@ -89,24 +89,42 @@ tools:context=".fragment.OTPFragment">
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/showView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#EEEEEE"
+                android:textSize="@dimen/_13sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/didn_t_receive_a_code"/>
+            <TextView
+                android:id="@+id/btnRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E2692B"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:textSize="@dimen/_13sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:text="@string/resend"/>
+        </LinearLayout>
         <TextView
+            android:id="@+id/tvResend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#EEEEEE"
-            android:textSize="@dimen/_13sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_gravity="center"
-            android:text="@string/didn_t_receive_a_code"/>
-        <TextView
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#E2692B"
+            android:textColor="#B13A7E"
             android:layout_marginStart="@dimen/_5sdp"
             android:textSize="@dimen/_13sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="@string/resend"/>
+            android:text="Resend in "/>
     </LinearLayout>
 </LinearLayout>
 

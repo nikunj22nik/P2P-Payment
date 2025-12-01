@@ -79,6 +79,13 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             binding.main.setBackgroundResource(R.drawable.bgimg)
             binding.view.setBackgroundResource(R.drawable.circletopcurve)
 
+            binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize, 0, 0, 0)
+            binding.tvRebalancing.setTextColor("#444444".toColorInt())
+            binding.btnRebalancing.setBackgroundResource(R.drawable.button_custom_border)
+            binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
+
+
+
             lifecycleScope.launch {
                 delay(SPLASH_DELAY)
                 binding.layTitle.visibility = View.GONE
@@ -95,7 +102,11 @@ class WelcomeFragment : Fragment(), ItemClickListener {
                 binding.tvBalance.setTextColor("#000000".toColorInt())
                 binding.tvBalanceTitle.setTextColor("#000000".toColorInt())
                 binding.recentTitle.setTextColor("#FFFFFF".toColorInt())
+                binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize_white, 0, 0, 0)
+                binding.tvRebalancing.setTextColor("#FFFFFF".toColorInt())
                 adapter.updateColor("#FFFFFF")
+                binding.btnRebalancing.setBackgroundResource(R.drawable.user_select_inactive)
+                binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
             }
         }else{
             lifecycleScope.launch {
@@ -110,9 +121,8 @@ class WelcomeFragment : Fragment(), ItemClickListener {
                     binding.imgPay.visibility = View.VISIBLE
                     binding.imgSend.visibility = View.VISIBLE
                     binding.imgText.visibility = View.INVISIBLE
-                    binding.tvHeader.text = "Welcome to \\nMany Mobile Money"
+                    binding.tvHeader.text = "Welcome to \nMany Mobile Money"
                     binding.tvHSubHeader.text = "Send and receive money instantly with just a few \ntaps."
-
                 }
                 if (selectedType.equals(MessageError.MERCHANT,true)){
                     binding.layTitle.visibility = View.GONE
@@ -168,12 +178,9 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
 
-
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
-
-
 
     }
 

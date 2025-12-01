@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.p2p.application.R
 import com.p2p.application.databinding.ActivitySplaceBinding
 import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
+import com.p2p.application.util.SessionManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplaceBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

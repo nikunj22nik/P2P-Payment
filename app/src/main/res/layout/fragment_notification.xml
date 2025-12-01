@@ -41,6 +41,7 @@ tools:context=".fragment.NotificationFragment">
         android:text="@string/enable_notifications_so_you_don_t_miss_a_new_nconnection"/>
 
     <LinearLayout
+        android:id="@+id/btnOn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"
@@ -57,6 +58,7 @@ tools:context=".fragment.NotificationFragment">
     </LinearLayout>
 
     <TextView
+        android:id="@+id/btnOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#EEEEEE"

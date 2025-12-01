@@ -33,10 +33,11 @@
             android:text="@string/notification"
             tools:ignore="RelativeOverlap" />
         <ImageView
+            android:id="@+id/imgToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
-            android:src="@drawable/toggle_inactive"
+            android:src="@drawable/toggle_on"
             android:layout_centerInParent="true"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>

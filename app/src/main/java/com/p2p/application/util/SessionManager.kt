@@ -20,6 +20,17 @@ class SessionManager(var context: Context) {
         editor?.commit()
     }
 
+    fun setIsLogin(data: Boolean){
+        editor?.putBoolean(AppConstant.IS_LOGIN, data)
+        editor?.commit()
+    }
+
+    fun sessionClear() {
+        editor?.apply()
+        editor?.clear()
+        editor?.commit()
+    }
+
     fun setScreenType(data: String){
         editor?.putString(AppConstant.FORGOT_TYPE, data)
         editor?.commit()
@@ -32,6 +43,10 @@ class SessionManager(var context: Context) {
 
     fun getScreenType(): String? {
         return pref?.getString(AppConstant.FORGOT_TYPE, "")
+    }
+
+    fun getIsLogin(): Boolean?{
+        return pref?.getBoolean(AppConstant.IS_LOGIN, false)
     }
 
 

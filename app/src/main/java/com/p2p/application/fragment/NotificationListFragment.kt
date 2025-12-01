@@ -19,6 +19,7 @@ class NotificationListFragment : Fragment() {
     private lateinit var adapter: AdapterNotification
     private lateinit var sessionManager: SessionManager
 
+    private var statusClick = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +39,16 @@ class NotificationListFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.imgToggle.setOnClickListener {
+            statusClick = !statusClick
+            if (statusClick) {
+                binding.imgToggle.setImageResource(R.drawable.toggle_on)
+            } else {
+                binding.imgToggle.setImageResource(R.drawable.toggle_off)
+            }
+        }
+
 
     }
 

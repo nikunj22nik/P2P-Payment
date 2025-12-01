@@ -27,6 +27,7 @@ class SettingFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingBinding
     private lateinit var sessionManager: SessionManager
+    private var selectedType: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +35,7 @@ class SettingFragment : Fragment() {
     ): View {
         binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
-
+        selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
 
         return binding.root
@@ -43,37 +44,31 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.tvUserType.text = selectedType
+
         binding.layswitch.setOnClickListener {
           showAlertSwitch()
         }
-
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
         binding.btnDelete.setOnClickListener {
             alertSessionClear("delete")
         }
-
         binding.btnInvitation.setOnClickListener {
             findNavController().navigate(R.id.inviteFriendFragment)
         }
-
         binding.btnAccountLimit.setOnClickListener {
             findNavController().navigate(R.id.accountLimitFragment)
         }
-
-
         binding.btnEditCode.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("screenType", "settingCode")
             findNavController().navigate(R.id.forgotCodeFragment,bundle)
         }
-
         binding.btnLogout.setOnClickListener {
             alertSessionClear("logout")
         }
-
         binding.btnTransaction.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
@@ -131,6 +126,7 @@ class SettingFragment : Fragment() {
         }
         btnOk.setOnClickListener {
             dialog.dismiss()
+            sessionManager.sessionClear()
             val intent = Intent(requireActivity(), MainActivity::class.java)
             startActivity(intent)
             requireActivity().finish()

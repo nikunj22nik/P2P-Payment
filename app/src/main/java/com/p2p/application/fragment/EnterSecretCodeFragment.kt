@@ -55,7 +55,7 @@ class EnterSecretCodeFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    requireActivity().finish()
+                    findNavController().navigate(R.id.userWelcomeFragment)
                 }
             }
         )
@@ -68,26 +68,6 @@ class EnterSecretCodeFragment : Fragment() {
                 binding.etOtp3.text.toString() +
                 binding.etOtp4.text.toString()
     }
-
-//    private fun setupOtpFields(vararg fields: EditText) {
-//        fields.forEachIndexed { index, editText ->
-//
-//            val next = fields.getOrNull(index + 1)
-//            val prev = fields.getOrNull(index - 1)
-//
-//            editText.addTextChangedListener(object : TextWatcher {
-//                override fun afterTextChanged(s: Editable?) {
-//                    when {
-//                        s?.length == 1 -> next?.requestFocus()             // move next
-//                        s?.isEmpty() == true -> prev?.requestFocus()        // move back
-//                    }
-//                }
-//
-//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//            })
-//        }
-//    }
 
     private fun setupOtpFields(vararg fields: EditText) {
         fields.forEachIndexed { index, editText ->
@@ -109,7 +89,7 @@ class EnterSecretCodeFragment : Fragment() {
                                 if (otp.length == fields.size) {
                                     // Delay 2 seconds then navigate
                                     Handler(Looper.getMainLooper()).postDelayed({
-                                        findNavController().navigate(R.id.userWelcomeFragment)
+                                        findNavController().navigate(R.id.transferStatusFragment)
                                     }, 2000)
                                 }
                             }
