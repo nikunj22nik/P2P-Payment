@@ -1,21 +1,159 @@
 package com.p2p.application.fragment
 
+import android.graphics.Color
+import android.os.Binder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import com.google.android.gms.common.moduleinstall.ModuleInstall
+import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
+import com.google.gson.Gson
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
+import com.p2p.application.databinding.FragmentQRBinding
+import com.p2p.application.model.Receiver
 
 
 class QRFragment : Fragment() {
+
+
+    private lateinit var scanQrBtn: TextView
+    private lateinit var scannedValueTv: TextView
+    private var isScannerInstalled = false
+    private lateinit var scanner: GmsBarcodeScanner
+    private lateinit var binding : FragmentQRBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_q_r, container, false)
+        binding = FragmentQRBinding.inflate(layoutInflater, container, false)
+        installGoogleScanner()
+        initVars()
+        registerUiListener()
+        return binding.root
+    }
+
+
+
+    private fun installGoogleScanner() {
+        val moduleInstall = ModuleInstall.getClient(requireContext())
+        val moduleInstallRequest = ModuleInstallRequest.newBuilder()
+            .addApi(GmsBarcodeScanning.getClient(requireContext()))
+            .build()
+
+        moduleInstall.installModules(moduleInstallRequest).addOnSuccessListener {
+            isScannerInstalled = true
+        }.addOnFailureListener {
+            isScannerInstalled = false
+            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun initVars() {
+        scanQrBtn = binding.tvScanner
+        scannedValueTv = binding.tvScanVal
+        val options = initializeGoogleScanner()
+        scanner = GmsBarcodeScanning.getClient(requireContext(), options)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        scanQrBtn.background=null
+        scanQrBtn.setTextColor(Color.parseColor("#ffffff"))
+        binding.myCard.setTextColor(Color.parseColor("#1B1B1B"))
+        binding.myCard.setBackgroundResource(R.drawable.active)
+    }
+
+    private fun initializeGoogleScanner(): GmsBarcodeScannerOptions {
+        return GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .enableAutoZoom().build()
+    }
+
+    private fun registerUiListener() {
+        scanQrBtn.setOnClickListener {
+            scanQrBtn.setBackgroundResource(R.drawable.active)
+            binding.myCard.background=null
+            scanQrBtn.setTextColor(Color.parseColor("#1B1B1B"))
+            binding.myCard.setTextColor(Color.parseColor("#ffffff"))
+            if (isScannerInstalled) {
+                startScanning()
+            } else {
+                Toast.makeText(requireContext(), "Please try again...", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.myCard.setOnClickListener {
+            scanQrBtn.background=null
+            scanQrBtn.setTextColor(Color.parseColor("#ffffff"))
+            binding.myCard.setTextColor(Color.parseColor("#1B1B1B"))
+            binding.myCard.setBackgroundResource(R.drawable.active)
+        }
+
+    }
+
+    private fun startScanning() {
+
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                val result = barcode.rawValue
+
+                try {
+                    val receiver = Gson().fromJson(result, Receiver::class.java)
+                    if (receiver.user_id == null) {
+                        throw Exception("Invalid receiver data")
+                    }
+
+                    // Use receiver safely
+                    scannedValueTv.text = receiver.name
+
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Oops! We couldn’t locate a merchant account with that ID.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+            .addOnCanceledListener {
+                // Optional
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Oops! We couldn’t locate a merchant account with that ID.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+
+
+//        scanner.startScan().addOnSuccessListener {
+//            val result = it.rawValue
+//
+//            val receiver = Gson().fromJson(result, Receiver::class.java)
+//            result?.let {
+//                val receiver = Gson().fromJson(result, Receiver::class.java)
+////                scannedValueTv.text = buildString {
+////
+////                    append(it)
+////                }
+//            }
+//        }.addOnCanceledListener {
+//          //  Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
+//
+//        }
+//            .addOnFailureListener {
+//                Toast.makeText(requireContext(), "Oops! We couldn’t locate a merchant account with that ID.", Toast.LENGTH_SHORT).show()
+//
+//            }
     }
 
 

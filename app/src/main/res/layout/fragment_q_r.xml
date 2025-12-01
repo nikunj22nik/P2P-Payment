@@ -1,68 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgimg"
-    tools:context=".fragment.QRFragment">
+    android:background="@color/white">
 
-
+    <!-- Top Title -->
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginHorizontal="@dimen/_15sdp"
-        android:layout_height="@dimen/_40sdp">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentStart="true"
-            android:padding="@dimen/_5sdp"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:src="@drawable/backicon"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#EEEEEE"
-            android:textSize="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_gravity="center"
+            android:src="@drawable/backicon"
+            android:tint="@color/black"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tv_scan_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_qr_code"
+            android:textColor="#000000"
+            android:textSize="16sp"
             android:layout_centerInParent="true"
-            android:text="Scan a QR Code"/>
+            android:fontFamily="@font/satoshi_bold"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:background="@drawable/tabqr"
-        android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_50sdp"
-        android:weightSum="2"
-        android:layout_height="wrap_content">
-        <TextView
+    <!-- Middle QR Card Section -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mainCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/bottom_tabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="2:3"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        android:clipToOutline="true"
+        android:layout_margin="20dp">
+
+        <FrameLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="true"
+            android:clipToPadding="true">
+
+            <!-- Gradient background -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/scanner_card_bg"/>
+
+            <!-- QR Image -->
+            <ImageView
+                android:id="@+id/qrCodeImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_280sdp"
+                android:layout_gravity="top|center"
+                android:layout_margin="28dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_new_scanner"/>
+
+            <!-- Logo at bottom -->
+            <ImageView
+                android:id="@+id/logoContainer"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="30dp"
+                android:src="@drawable/ic_qr_logo"/>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Bottom Tabs -->
+    <LinearLayout
+        android:id="@+id/bottom_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal"
+        android:background="@drawable/tabqr"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/my_card"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Scanner"
+            android:layout_margin="10dp"
             android:background="@drawable/active"
             android:gravity="center"
+            android:text="@string/my_card"
             android:textColor="#1B1B1B"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_margin="@dimen/_10sdp"
-            android:layout_height="match_parent"/>
+            android:fontFamily="@font/satoshi_bold"/>
+
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tv_scanner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="My Card"
+            android:layout_margin="10dp"
             android:gravity="center"
-            android:fontFamily="@font/satoshi_bold"
-            android:textColor="#FFFFFF"
-            android:layout_margin="@dimen/_10sdp"
-            android:layout_height="match_parent"/>
+            android:text="@string/scanner"
+            android:textColor="#ffffff"
+            android:fontFamily="@font/satoshi_bold"/>
     </LinearLayout>
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

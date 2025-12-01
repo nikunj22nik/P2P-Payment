@@ -7,5 +7,9 @@ class AppConstant {
         const val LOGIN_TYPE:String="login_type"
         const val FORGOT_TYPE:String="forgotCode"
         const val IS_LOGIN:String="isLogin"
+        const val BUSINESS_ID :String ="businessId"
+        const val BUSINESS_REGISTER :String ="business_register"
+        const val TAX_ID :String ="tax_id"
+        const val PROFILE :String ="profile"
     }
 }
