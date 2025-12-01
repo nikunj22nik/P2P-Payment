@@ -11,6 +11,7 @@
         android:layout_marginVertical="@dimen/_5sdp"
         android:layout_height="@dimen/_90sdp"/>
     <ImageView
+        android:id="@+id/cut_img"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,9 +19,11 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/todo" />
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@+id/main_image"
+        android:layout_width="@dimen/_64sdp"
         android:src="@drawable/material_symbols_imagesmode"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content"/>
+        android:layout_height="@dimen/_64sdp"
+        android:scaleType="fitXY"/>
 
 </RelativeLayout>

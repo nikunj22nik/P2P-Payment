@@ -97,4 +97,6 @@
     <string name="my_qr_code">My QR Code Card</string>
     <string name="my_card">My Card</string>
     <string name="scanner">Scanner</string>
+    <string name="business_logo">Business Logo</string>
+    <string name="upload_business_logo">Upload your business logo</string>
 </resources>

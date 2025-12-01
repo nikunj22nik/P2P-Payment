@@ -54,6 +54,8 @@ dependencies {
     //circularImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")  // only stable
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     // Size based DP/SP
     implementation(libs.sdp.android)
     implementation(libs.ssp.android)

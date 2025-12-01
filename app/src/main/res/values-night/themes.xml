@@ -21,4 +21,9 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="RoundedCorners90dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Change to your desired corner radius -->
+    </style>
+
 </resources>
