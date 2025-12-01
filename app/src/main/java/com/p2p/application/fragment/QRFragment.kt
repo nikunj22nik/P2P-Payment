@@ -3,12 +3,15 @@ package com.p2p.application.fragment
 import android.graphics.Color
 import android.os.Binder
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
 import com.google.gson.Gson
@@ -19,6 +22,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
+import kotlinx.coroutines.launch
 
 
 class QRFragment : Fragment() {
@@ -33,7 +37,7 @@ class QRFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentQRBinding.inflate(layoutInflater, container, false)
         installGoogleScanner()
         initVars()
@@ -96,6 +100,10 @@ class QRFragment : Fragment() {
             binding.myCard.setBackgroundResource(R.drawable.active)
         }
 
+        binding.imgBack.setOnClickListener {
+            findNavController().navigate(R.id.userWelcomeFragment)
+        }
+
     }
 
     private fun startScanning() {
@@ -109,10 +117,12 @@ class QRFragment : Fragment() {
                     if (receiver.user_id == null) {
                         throw Exception("Invalid receiver data")
                     }
-
                     // Use receiver safely
+                    Log.d("naksdjgd","deepak")
                     scannedValueTv.text = receiver.name
-
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        findNavController().navigate(R.id.sendMoneyFragment)
+                    }
                 } catch (e: Exception) {
                     Toast.makeText(
                         requireContext(),
@@ -132,28 +142,6 @@ class QRFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
-
-
-//        scanner.startScan().addOnSuccessListener {
-//            val result = it.rawValue
-//
-//            val receiver = Gson().fromJson(result, Receiver::class.java)
-//            result?.let {
-//                val receiver = Gson().fromJson(result, Receiver::class.java)
-////                scannedValueTv.text = buildString {
-////
-////                    append(it)
-////                }
-//            }
-//        }.addOnCanceledListener {
-//          //  Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
-//
-//        }
-//            .addOnFailureListener {
-//                Toast.makeText(requireContext(), "Oops! We couldn’t locate a merchant account with that ID.", Toast.LENGTH_SHORT).show()
-//
-//            }
     }
 
 
