@@ -106,12 +106,12 @@ class QRFragment : Fragment() {
 
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
-                    if (receiver.receiver_id == null) {
+                    if (receiver.user_id == null) {
                         throw Exception("Invalid receiver data")
                     }
 
                     // Use receiver safely
-                    scannedValueTv.text = receiver.receiver_name
+                    scannedValueTv.text = receiver.name
 
                 } catch (e: Exception) {
                     Toast.makeText(

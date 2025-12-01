@@ -112,11 +112,7 @@ class MerchantVerificationFragment : Fragment() {
                         checkAndShowErrorForImageSize(taxIdUri)
                         adapterBusinessTax.updateAdapter(taxIdUri)
                     }
-
-
                 }
-
-
             }
         }
 

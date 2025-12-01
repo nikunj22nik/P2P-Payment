@@ -1,8 +1,8 @@
 package com.p2p.application.model
 
 data class Receiver(
-    val receiver_name: String,
-    val receiver_id: Int,
-    val receiver_type: String
-
+    val name: String?,
+    val user_id: Int,
+    val phone: String?,
+    val user_type:String?
 )
