@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">P2P Payment</string>
+    <string name="app_name">ID Money</string>
     <string name="todo">TODO</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_account_type">Choose Account Type</string>
     <string name="proceed">Proceed</string>
@@ -20,8 +19,14 @@
     <string name="_221">(+221)</string>
     <string name="validation_otp">Validation OTP</string>
     <string name="verify_your_account">Verify your account</string>
+    <string name="Increase_my_limit">Increase my limit</string>
+    <string name="limit_text">Want to increase your account limit?\nComplete a quick verification by submitting \nyour valid ID document.</string>
     <string name="didn_t_receive_a_code">Didn\'t receive a code?</string>
     <string name="resend">Resend</string>
+    <string name="acceptedLimit">Accepted Documents:</string>
+    <string name="Passport">Passport</string>
+    <string name="or">or</string>
+    <string name="National_id">National ID.</string>
     <string name="continue_type">Continue</string>
     <string name="invitefriend">Invite a Friend</string>
     <string name="invitefriends">Invites Friends</string>

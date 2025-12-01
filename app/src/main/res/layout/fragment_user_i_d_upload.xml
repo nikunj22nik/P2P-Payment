@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.UserIDUploadFragment">
-
-
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -14,6 +12,7 @@
         android:layout_marginHorizontal="@dimen/_15sdp"
         android:layout_height="@dimen/_40sdp">
         <LinearLayout
+            android:id="@+id/imgBack"
             android:layout_width="wrap_content"
             android:layout_centerInParent="true"
             android:layout_alignParentStart="true"
@@ -25,7 +24,6 @@
                 android:tint="#0F0D1C"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,14 +64,12 @@
               android:fontFamily="@font/satoshi_bold"
               android:layout_gravity="center"
               android:text="Ensure your valid ID photos are clear, well-lit, and show all four corners. Avoid glare, blur, and shadows."/>
-
           <LinearLayout
-              android:id="@+id/btnTransaction"
+              android:id="@+id/btnFront"
               android:layout_width="match_parent"
               android:layout_height="@dimen/_50sdp"
               android:background="@drawable/bg_setting"
               android:layout_marginTop="@dimen/_20sdp">
-
               <TextView
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
@@ -86,17 +82,37 @@
                   android:text="Upload Front Side"
                   app:drawableEndCompat="@drawable/ep_upload_filled"/>
           </LinearLayout>
-
-          <androidx.recyclerview.widget.RecyclerView
-              android:layout_marginTop="@dimen/_10sdp"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              tools:itemCount="2"
-              tools:listitem="@layout/item_image_upload"
-              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-              android:orientation="horizontal"/>
-
+          <RelativeLayout
+              android:id="@+id/viewFront"
+              android:layout_width="@dimen/_90sdp"
+              android:padding="@dimen/_5sdp"
+              android:visibility="gone"
+              android:layout_height="@dimen/_90sdp">
+              <com.google.android.material.imageview.ShapeableImageView
+                  android:id="@+id/imgFront"
+                  android:layout_width="@dimen/_90sdp"
+                  android:src="@drawable/imagecorner"
+                  app:shapeAppearanceOverlay="@style/RoundedCornerImage"
+                  android:scaleType="centerCrop"
+                  android:layout_marginVertical="@dimen/_5sdp"
+                  android:layout_height="@dimen/_90sdp"/>
+              <ImageView
+                  android:id="@+id/cross1"
+                  android:layout_alignParentEnd="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/cross"
+                  android:layout_alignParentTop="true"
+                  android:contentDescription="@string/todo" />
+              <ImageView
+                  android:visibility="gone"
+                  android:layout_width="wrap_content"
+                  android:src="@drawable/material_symbols_imagesmode"
+                  android:layout_centerInParent="true"
+                  android:layout_height="wrap_content"/>
+          </RelativeLayout>
           <LinearLayout
+              android:id="@+id/btnBack"
               android:layout_width="match_parent"
               android:layout_height="@dimen/_50sdp"
               android:background="@drawable/bg_setting"
@@ -114,19 +130,37 @@
                   android:text="Upload Back Side"
                   app:drawableEndCompat="@drawable/ep_upload_filled"/>
           </LinearLayout>
-
-          <androidx.recyclerview.widget.RecyclerView
-              android:layout_marginTop="@dimen/_10sdp"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              tools:itemCount="2"
-              tools:listitem="@layout/item_image_upload"
-              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-              android:orientation="horizontal"/>
-
-
+          <RelativeLayout
+              android:id="@+id/viewBack"
+              android:visibility="gone"
+              android:layout_width="@dimen/_90sdp"
+              android:padding="@dimen/_5sdp"
+              android:layout_height="@dimen/_90sdp">
+              <com.google.android.material.imageview.ShapeableImageView
+                  android:id="@+id/imgBackUpload"
+                  android:layout_width="@dimen/_90sdp"
+                  android:scaleType="centerCrop"
+                  app:shapeAppearanceOverlay="@style/RoundedCornerImage"
+                  android:src="@drawable/imagecorner"
+                  android:layout_marginVertical="@dimen/_5sdp"
+                  android:layout_height="@dimen/_90sdp"/>
+              <ImageView
+                  android:id="@+id/cross2"
+                  android:layout_alignParentEnd="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/cross"
+                  android:layout_alignParentTop="true"
+                  android:contentDescription="@string/todo" />
+              <ImageView
+                  android:visibility="gone"
+                  android:layout_width="wrap_content"
+                  android:src="@drawable/material_symbols_imagesmode"
+                  android:layout_centerInParent="true"
+                  android:layout_height="wrap_content"/>
+          </RelativeLayout>
           <LinearLayout
-              android:id="@+id/btnLogin"
+              android:id="@+id/btnSubmit"
               android:layout_width="match_parent"
               android:layout_height="@dimen/_40sdp"
               android:gravity="center"
@@ -145,5 +179,4 @@
           </LinearLayout>
       </LinearLayout>
   </ScrollView>
-
 </RelativeLayout>

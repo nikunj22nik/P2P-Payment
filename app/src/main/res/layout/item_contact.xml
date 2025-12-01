@@ -21,6 +21,7 @@
         android:layout_marginHorizontal="@dimen/_5sdp"
         android:layout_height="wrap_content">
         <TextView
+            android:id="@+id/tvName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#0F0D1C"
@@ -29,6 +30,7 @@
             android:layout_gravity="center"
             android:text="@string/beryl_orou" />
         <TextView
+            android:id="@+id/tvNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#949494"
@@ -36,7 +38,7 @@
             android:textSize="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="@string/_01_33_23_43_44" />
+            android:text="" />
     </LinearLayout>
     <ImageView
         android:id="@+id/rightArrow"

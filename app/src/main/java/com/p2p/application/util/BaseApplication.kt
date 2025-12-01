@@ -1,4 +1,11 @@
 package com.p2p.application.util
 
-class BaseApplication {
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class BaseApplication : Application() {
+
+
+
 }

@@ -125,7 +125,6 @@ class OTPFragment : Fragment() {
         }
     }
 
-
     private fun startTime() {
         countDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -135,7 +134,7 @@ class OTPFragment : Fragment() {
                 updateCountDownText()
             }
             override fun onFinish() {
-                mTimeLeftInMillis = 120000
+                mTimeLeftInMillis = 60000
                 binding.showView.visibility = View.VISIBLE
                 binding.tvResend.visibility = View.GONE
             }

@@ -50,7 +50,7 @@ class SettingFragment : Fragment() {
           showAlertSwitch()
         }
         binding.imgBack.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.userWelcomeFragment)
         }
         binding.btnDelete.setOnClickListener {
             alertSessionClear("delete")

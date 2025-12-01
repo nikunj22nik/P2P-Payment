@@ -1,16 +1,25 @@
 package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
+import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -36,8 +45,10 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private lateinit var adapter: AdapterHomeTransaction
     private lateinit var adapterMerchant: AdapterMerchant
     private lateinit var sessionManager: SessionManager
+    private lateinit var dialogSend : BottomSheetDialog
     private var selectedType: String=""
-
+    private val readContactsPermission = 100
+    private var openedSettings = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -145,43 +156,30 @@ class WelcomeFragment : Fragment(), ItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
-
         binding.btnSetting.setOnClickListener {
             findNavController().navigate(R.id.settingFragment)
         }
         binding.btnNotification.setOnClickListener {
             findNavController().navigate(R.id.notificationListFragment)
         }
-
-
-
         binding.imgPay.setOnClickListener {
             showAlertPay()
         }
-
         binding.imgscan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
-
         binding.imgSend.setOnClickListener {
             showAlertSend()
         }
-
         binding.btnRebalancing.setOnClickListener {
             findNavController().navigate(R.id.rebalancingFragment)
         }
-
         binding.btnScanCode.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
-
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
-
     }
 
 
@@ -227,15 +225,17 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     }
 
     fun showAlertSend(){
-        val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-        dialogWeight.setContentView(R.layout.send_alert)
-        dialogWeight.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialogWeight.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        dialogWeight.window?.setGravity(Gravity.BOTTOM)
+        dialogSend = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
+        dialogSend.setContentView(R.layout.send_alert)
+        dialogSend.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogSend.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogSend.window?.setGravity(Gravity.BOTTOM)
 
-        val bottomSheet = dialogWeight.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        val layNumber = dialogWeight.findViewById<LinearLayout>(R.id.layNumber)
-        val layContact = dialogWeight.findViewById<LinearLayout>(R.id.layContact)
+        val bottomSheet = dialogSend.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val layNumber = dialogSend.findViewById<LinearLayout>(R.id.layNumber)
+        val layContact = dialogSend.findViewById<LinearLayout>(R.id.layContact)
+
+
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true // Prevent swipe down to hide
@@ -244,15 +244,31 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
 
         layContact?.setOnClickListener {
-            dialogWeight.dismiss()
-            findNavController().navigate(R.id.toContactFragment)
+            askContactPermission()
         }
         layNumber?.setOnClickListener {
-            dialogWeight.dismiss()
+            dialogSend.dismiss()
             findNavController().navigate(R.id.newNumberFragment)
         }
-        dialogWeight.show()
+        dialogSend.show()
     }
+
+    private fun askContactPermission() {
+        if (checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.READ_CONTACTS),
+                readContactsPermission
+            )
+        } else {
+            dialogSend.dismiss()
+            findNavController().navigate(R.id.toContactFragment)
+        }
+    }
+
 
     fun showAlertPayMerchant(){
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
@@ -260,10 +276,8 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialogWeight.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialogWeight.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         dialogWeight.window?.setGravity(Gravity.BOTTOM)
-
         val bottomSheet = dialogWeight.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val btnContinue = dialogWeight.findViewById<LinearLayout>(R.id.btnContinue)
-
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true // Prevent swipe down to hide
@@ -278,6 +292,50 @@ class WelcomeFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(data: String) {
         findNavController().navigate(R.id.receiptFragment)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == readContactsPermission) {
+            if (grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                dialogSend.dismiss()
+                findNavController().navigate(R.id.toContactFragment)
+            } else {
+                showAlertContact()
+            }
+        }
+
+    }
+
+    private fun showAlertContact() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.contact_sms_alert)
+        dialog.setCancelable(true)
+        val btnContinue = dialog.findViewById<LinearLayout>(R.id.btnContinue)
+        btnContinue?.setOnClickListener {
+            dialog.dismiss()
+            openedSettings = true
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.data = Uri.fromParts("package", requireContext().packageName, null)
+            startActivity(intent)
+        }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setGravity(Gravity.CENTER)
+        dialog.show()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (openedSettings){
+            openedSettings = false
+            askContactPermission()
+        }
     }
 
 
