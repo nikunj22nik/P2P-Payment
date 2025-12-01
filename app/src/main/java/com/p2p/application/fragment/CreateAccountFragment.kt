@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -27,6 +28,7 @@ class CreateAccountFragment : Fragment() {
         _binding = FragmentCreateAccountBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
+        handleBackPress()
 
         return binding.root
     }
@@ -44,6 +46,17 @@ class CreateAccountFragment : Fragment() {
                 findNavController().navigate(R.id.OTPFragment, bundle)
             }
         }
+    }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        )
     }
 
     private fun setupUserRoleView() {

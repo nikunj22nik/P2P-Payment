@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.UserIDUploadFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_height="@dimen/_40sdp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/backicon"
+                android:tint="#0F0D1C"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F0D1C"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:text="Confirm Your ID Upload"/>
+    </RelativeLayout>
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/title"
+      android:fillViewport="true">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_margin="@dimen/_10sdp">
+          <TextView
+              android:id="@+id/tvText"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textColor="#0F0D1C"
+              android:textSize="@dimen/_13sdp"
+              android:layout_marginTop="@dimen/_10sdp"
+              android:fontFamily="@font/satoshi_medium"
+              android:text="Upload both sides of your valid ID documents to continue with the verification."/>
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textColor="#0F0D1C"
+              android:textSize="@dimen/_12sdp"
+              android:layout_marginTop="@dimen/_10sdp"
+              android:fontFamily="@font/satoshi_bold"
+              android:layout_gravity="center"
+              android:text="Ensure your valid ID photos are clear, well-lit, and show all four corners. Avoid glare, blur, and shadows."/>
+
+          <LinearLayout
+              android:id="@+id/btnTransaction"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/_50sdp"
+              android:background="@drawable/bg_setting"
+              android:layout_marginTop="@dimen/_20sdp">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:textColor="#0F0D1C"
+                  android:paddingHorizontal="@dimen/_10sdp"
+                  android:paddingVertical="@dimen/_8sdp"
+                  android:gravity="start|center"
+                  android:fontFamily="@font/satoshi_medium"
+                  android:drawablePadding="@dimen/_10sdp"
+                  android:text="Upload Front Side"
+                  app:drawableEndCompat="@drawable/ep_upload_filled"/>
+          </LinearLayout>
+
+          <androidx.recyclerview.widget.RecyclerView
+              android:layout_marginTop="@dimen/_10sdp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              tools:itemCount="2"
+              tools:listitem="@layout/item_image_upload"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              android:orientation="horizontal"/>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/_50sdp"
+              android:background="@drawable/bg_setting"
+              android:layout_marginTop="@dimen/_20sdp">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:textColor="#0F0D1C"
+                  android:paddingHorizontal="@dimen/_10sdp"
+                  android:paddingVertical="@dimen/_8sdp"
+                  android:gravity="start|center"
+                  android:fontFamily="@font/satoshi_medium"
+                  android:drawablePadding="@dimen/_10sdp"
+                  android:text="Upload Back Side"
+                  app:drawableEndCompat="@drawable/ep_upload_filled"/>
+          </LinearLayout>
+
+          <androidx.recyclerview.widget.RecyclerView
+              android:layout_marginTop="@dimen/_10sdp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              tools:itemCount="2"
+              tools:listitem="@layout/item_image_upload"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              android:orientation="horizontal"/>
+
+
+          <LinearLayout
+              android:id="@+id/btnLogin"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/_40sdp"
+              android:gravity="center"
+              android:layout_marginTop="@dimen/_10sdp"
+              android:layout_marginBottom="@dimen/_10sdp"
+              android:background="@drawable/button_custom"
+              tools:ignore="UselessParent">
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_13sdp"
+                  android:text="Submit for Verification"
+                  android:textColor="#FFFFFF"
+                  android:fontFamily="@font/satoshi_bold"
+                  android:layout_gravity="center"/>
+          </LinearLayout>
+      </LinearLayout>
+  </ScrollView>
+
+</RelativeLayout>

@@ -85,4 +85,13 @@
     <string name="share">Share</string>
     <string name="back_to_home_page">Back to home page</string>
     <string name="need_help">Need Help ?</string>
+    <string name="merchant_id_verification">Merchant ID Verification</string>
+    <string name="please_upload_the_following_documents_to_verify_nyour_merchant_account">Please upload the following documents to verify \nyour merchant account.</string>
+    <string name="submit_documents">Submit Documents</string>
+    <string name="business_id">Business ID</string>
+    <string name="upload_your_business_registration_document">Upload your business registration document</string>
+    <string name="tax_id">Tax ID</string>
+    <string name="upload_your_tax_identification_document">Upload your tax identification document</string>
+    <string name="upload_your_business_registration_certificate">Upload your business registration certificate</string>
+    <string name="business_registration_number">Business Registration Number</string>
 </resources>

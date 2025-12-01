@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.activity.MainActivity
@@ -29,7 +30,7 @@ class  SecretCodeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSecretCodeBinding.inflate(layoutInflater, container, false)
-
+        handleBackPress()
         return binding.root
     }
 
@@ -41,6 +42,17 @@ class  SecretCodeFragment : Fragment() {
         binding.btnOkay.setOnClickListener {
             showAlert()
         }
+    }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        )
     }
 
     fun showAlert(){

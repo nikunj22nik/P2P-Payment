@@ -54,7 +54,9 @@ class OTPFragment : Fragment() {
 
         binding.btnVerify.setOnClickListener {
             if (screenType.equals("Registration",true)){
-                showAlertDialog()
+
+                    showAlertDialog()
+
             }
             if (screenType.equals("Login",true)){
                 findNavController().navigate(R.id.userWelcomeFragment)
@@ -88,9 +90,12 @@ class OTPFragment : Fragment() {
 
         btnContinue.setOnClickListener {
             dialog.dismiss()
-            findNavController().navigate(R.id.secretCodeFragment)
+            if (selectedType.equals(MessageError.MERCHANT,true)){
+                findNavController().navigate(R.id.merchantVerificationFragment)
+            }else{
+                findNavController().navigate(R.id.secretCodeFragment)
+            }
         }
-
         dialog.show()
     }
 

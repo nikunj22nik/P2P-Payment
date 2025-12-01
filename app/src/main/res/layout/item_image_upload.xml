@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_90sdp"
+    android:padding="@dimen/_5sdp"
+    android:layout_height="@dimen/_90sdp">
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="@dimen/_90sdp"
+        android:src="@drawable/imagecorner"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_height="@dimen/_90sdp"/>
+    <ImageView
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cross"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/todo" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:src="@drawable/material_symbols_imagesmode"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

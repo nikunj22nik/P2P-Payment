@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -33,6 +34,9 @@ class SettingFragment : Fragment() {
     ): View {
         binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
+
+        handleBackPress()
+
         return binding.root
     }
 
@@ -75,6 +79,18 @@ class SettingFragment : Fragment() {
         }
 
     }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                  findNavController().navigate(R.id.userWelcomeFragment)
+                }
+            }
+        )
+    }
+
 
     fun showAlertSwitch(){
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +50,10 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         adapter=AdapterHomeTransaction(requireContext(),this)
         adapterMerchant=AdapterMerchant(requireContext())
         binding.itemRcy.adapter=adapter
+
+        handleBackPress()
+
+
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
             if (selectedType.equals(MessageError.AGENT,true)){
                 binding.tvHeader.text = "Welcome Agent"
@@ -168,7 +173,22 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
 
+
+
     }
+
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                   requireActivity().finish()
+                }
+            }
+        )
+    }
+
 
     fun showAlertPay(){
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)

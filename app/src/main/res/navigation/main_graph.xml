@@ -145,4 +145,9 @@
         android:name="com.p2p.application.fragment.IdentityVerificationFragment"
         android:label="fragment_identity_verification"
         tools:layout="@layout/fragment_identity_verification" />
+    <fragment
+        android:id="@+id/merchantVerificationFragment"
+        android:name="com.p2p.application.fragment.MerchantVerificationFragment"
+        android:label="fragment_merchant_verification"
+        tools:layout="@layout/fragment_merchant_verification" />
 </navigation>

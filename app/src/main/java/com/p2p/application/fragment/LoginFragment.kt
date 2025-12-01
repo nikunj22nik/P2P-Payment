@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentLoginBinding
@@ -24,6 +25,8 @@ class LoginFragment : Fragment() {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
+        handleBackPress()
+
         return binding.root
     }
 
@@ -42,6 +45,17 @@ class LoginFragment : Fragment() {
                 Bundle().apply { putString("screenType", "Login") }
             )
         }
+    }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.accountTypeFragment)
+                }
+            }
+        )
     }
 
     private fun setupUserRoleView() {

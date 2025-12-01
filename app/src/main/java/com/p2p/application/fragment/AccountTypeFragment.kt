@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 
@@ -30,6 +31,9 @@ class AccountTypeFragment : Fragment() {
         binding = FragmentAccountTypeBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
+
+        handleBackPress()
+
         return binding.root
     }
 
@@ -81,8 +85,20 @@ class AccountTypeFragment : Fragment() {
             MessageError.MASTER_AGENT -> updateItem(binding.masterAgent, binding.tvMasterAgent, binding.imgMasterAgent, activeColor)
         }
 
-
     }
+
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            }
+        )
+    }
+
 
     private fun updateItem(
         layout: View,

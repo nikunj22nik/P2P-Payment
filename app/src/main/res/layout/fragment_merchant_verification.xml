@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.MerchantVerificationFragment">
-
 
     <LinearLayout
         android:id="@+id/lay"
@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="Merchant ID Verification"/>
+            android:text="@string/merchant_id_verification"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="Please upload the following documents to verify \nyour merchant account."/>
+            android:text="@string/please_upload_the_following_documents_to_verify_nyour_merchant_account"/>
     </LinearLayout>
 
     <ScrollView
@@ -53,20 +53,161 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_20sdp">
+            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/_15sdp">
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#0F0D1C"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:layout_gravity="center|start"
+                        android:text="@string/business_id"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#696969"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:layout_gravity="center|start"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/upload_your_business_registration_document"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/frameupload"
+                        android:contentDescription="@string/todo" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_image_upload"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:orientation="horizontal"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/_15sdp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#0F0D1C"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:layout_gravity="center|start"
+                        android:text="@string/business_registration_number"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#696969"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:layout_gravity="center|start"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/upload_your_business_registration_certificate"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/frameupload"
+                        android:contentDescription="@string/todo" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_image_upload"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:orientation="horizontal"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/_15sdp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#0F0D1C"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:layout_gravity="center|start"
+                        android:text="@string/tax_id"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#696969"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:layout_gravity="center|start"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/upload_your_tax_identification_document"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/frameupload"
+                        android:contentDescription="@string/todo" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_image_upload"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:orientation="horizontal"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/btnLogin"
+                android:id="@+id/btnVerify"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:gravity="center"
-                android:background="@drawable/button_custom">
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/button_custom"
+                tools:ignore="UselessParent">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_13sdp"
-                    android:text="Submit Documents"
+                    android:text="@string/submit_documents"
                     android:textColor="#FFFFFF"
                     android:fontFamily="@font/satoshi_bold"
                     android:layout_gravity="center"/>
