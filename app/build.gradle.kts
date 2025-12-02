@@ -12,6 +12,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("kotlin-android")
+    id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -33,6 +34,23 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            val BASE_URL = project.property("BASE_URL")
+            buildConfigField("String", "BASE_URL", "${BASE_URL}")
+
+            val MEDIA_URL = project.property("MEDIA_URL")
+            buildConfigField("String", "MEDIA_URL", "${MEDIA_URL}")
+        }
+
+        debug {
+            val BASE_URL = project.property("BASE_URL")
+            buildConfigField("String", "BASE_URL", "${BASE_URL}")
+
+            val MEDIA_URL = project.property("MEDIA_URL")
+            buildConfigField("String", "MEDIA_URL", "${MEDIA_URL}")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

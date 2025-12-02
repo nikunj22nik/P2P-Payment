@@ -23,6 +23,7 @@ import com.p2p.application.R
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
 import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
 
 
 class QRFragment : Fragment() {
@@ -32,7 +33,7 @@ class QRFragment : Fragment() {
     private lateinit var scannedValueTv: TextView
     private var isScannerInstalled = false
     private lateinit var scanner: GmsBarcodeScanner
-    private lateinit var binding : FragmentQRBinding
+    private lateinit var binding: FragmentQRBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +45,6 @@ class QRFragment : Fragment() {
         registerUiListener()
         return binding.root
     }
-
 
 
     private fun installGoogleScanner() {
@@ -70,7 +70,7 @@ class QRFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        scanQrBtn.background=null
+        scanQrBtn.background = null
         scanQrBtn.setTextColor(Color.parseColor("#ffffff"))
         binding.myCard.setTextColor(Color.parseColor("#1B1B1B"))
         binding.myCard.setBackgroundResource(R.drawable.active)
@@ -84,7 +84,7 @@ class QRFragment : Fragment() {
     private fun registerUiListener() {
         scanQrBtn.setOnClickListener {
             scanQrBtn.setBackgroundResource(R.drawable.active)
-            binding.myCard.background=null
+            binding.myCard.background = null
             scanQrBtn.setTextColor(Color.parseColor("#1B1B1B"))
             binding.myCard.setTextColor(Color.parseColor("#ffffff"))
             if (isScannerInstalled) {
@@ -94,9 +94,9 @@ class QRFragment : Fragment() {
             }
         }
         binding.myCard.setOnClickListener {
-            scanQrBtn.background=null
-            scanQrBtn.setTextColor(Color.parseColor("#ffffff"))
-            binding.myCard.setTextColor(Color.parseColor("#1B1B1B"))
+            scanQrBtn.background = null
+            scanQrBtn.setTextColor("#ffffff".toColorInt())
+            binding.myCard.setTextColor("#1B1B1B".toColorInt())
             binding.myCard.setBackgroundResource(R.drawable.active)
         }
 
@@ -114,14 +114,16 @@ class QRFragment : Fragment() {
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
                     if (receiver.user_id == null) {
-                        throw Exception("Invalid receiver data")
+                        throw Exception("error")
                     }
-                    // Use receiver safely
-                    Log.d("naksdjgd","deepak")
-                    scannedValueTv.text = receiver.name
-                   lifecycleScope.launchWhenResumed {
-                        findNavController().navigate(R.id.sendMoneyFragment)
+
+                    lifecycleScope.launchWhenResumed {
+                        val json = Gson().toJson(receiver)
+                        val bundle = Bundle()
+                        bundle.putString("receiver_json", json)
+                        findNavController().navigate(R.id.sendMoneyFragment, bundle)
                     }
+
                 } catch (e: Exception) {
                     Toast.makeText(
                         requireContext(),
@@ -132,7 +134,7 @@ class QRFragment : Fragment() {
 
             }
             .addOnCanceledListener {
-                // Optional
+
             }
             .addOnFailureListener {
                 Toast.makeText(
@@ -142,6 +144,5 @@ class QRFragment : Fragment() {
                 ).show()
             }
     }
-
-
 }
+

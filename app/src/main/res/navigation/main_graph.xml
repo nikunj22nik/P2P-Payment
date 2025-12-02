@@ -69,7 +69,11 @@
         android:id="@+id/sendMoneyFragment"
         android:name="com.p2p.application.fragment.SendMoneyFragment"
         android:label="fragment_send_money"
-        tools:layout="@layout/fragment_send_money" />
+        tools:layout="@layout/fragment_send_money" >
+        <argument
+            android:name="receiver"
+            app:argType="com.p2p.application.model.Receiver" />
+    </fragment>
     <fragment
         android:id="@+id/toContactFragment"
         android:name="com.p2p.application.fragment.ToContactFragment"
@@ -119,7 +123,11 @@
         android:id="@+id/QRFragment"
         android:name="com.p2p.application.fragment.QRFragment"
         android:label="fragment_q_r"
-        tools:layout="@layout/fragment_q_r" />
+        tools:layout="@layout/fragment_q_r" >
+        <action
+            android:id="@+id/action_QRFragment_to_sendMoneyFragment"
+            app:destination="@id/sendMoneyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/transactionFragment"
         android:name="com.p2p.application.fragment.TransactionFragment"
