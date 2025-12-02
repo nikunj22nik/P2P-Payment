@@ -30,6 +30,10 @@ class OTPFragment : Fragment() {
     private var screenType: String = ""
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
+    private var firsName :String=""
+    private var lastName :String=""
+    private var phoneNumber :String=""
+
     private val startTimeInMillis: Long = 60000
     private var mTimeLeftInMillis = startTimeInMillis
     private var countDownTimer: CountDownTimer? = null
@@ -44,7 +48,7 @@ class OTPFragment : Fragment() {
         screenType = arguments?.getString("screenType") ?: ""
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
-
+         extractingParameter()
         return binding.root
     }
 
@@ -64,8 +68,16 @@ class OTPFragment : Fragment() {
         }
     }
 
+    private fun extractingParameter(){
+        if(screenType.equals("Registration")){
+
+        }else{
+
+        }
+    }
+
     @SuppressLint("SetTextI18n")
-    fun showAlertDialog(){
+    private fun showAlertDialog(){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
         dialog?.setContentView(R.layout.account_create_alert)
