@@ -4,7 +4,7 @@ package com.p2p.application.di
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
-import com.bussiness.awpl.remote.P2PApi
+import com.p2p.application.remote.P2PApi
 import com.p2p.application.BuildConfig
 import dagger.Module
 import dagger.Provides
@@ -16,8 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
-
 import com.p2p.application.repository.P2PRepository
 import com.p2p.application.repository.P2PRepositoryImpl
 import com.p2p.application.util.AuthInterceptor
@@ -29,32 +27,32 @@ object  NetworkModule {
 
 
     @Provides
-    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager =
+    fun p2pConnectivityManager(@ApplicationContext context: Context): ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 
     @Singleton
     @Provides
-    fun provideCircleItApi(retrofit: Retrofit.Builder, okHttpClient: OkHttpClient): P2PApi {
+    fun p2pApi(retrofit: Retrofit.Builder, okHttpClient: OkHttpClient): P2PApi {
         return  retrofit.client(okHttpClient).build().create(P2PApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideVoolayVooUserRepository(api: P2PApi): P2PRepository {
+    fun p2pRepository(api: P2PApi): P2PRepository {
         return P2PRepositoryImpl(api)
     }
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(@ApplicationContext context: Context): AuthInterceptor =
+    fun p2pAuthInterceptor(@ApplicationContext context: Context): AuthInterceptor =
         AuthInterceptor(context)
 
 
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun p2pOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor { message -> Log.d("RetrofitLog", message) }
         if (BuildConfig.DEBUG) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -72,7 +70,7 @@ object  NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofitBuilder(): Retrofit.Builder = Retrofit.Builder()
+    fun p2pRetrofitBuilder(): Retrofit.Builder = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
 
