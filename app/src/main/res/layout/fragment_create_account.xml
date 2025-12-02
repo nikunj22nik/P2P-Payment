@@ -123,6 +123,7 @@
                 android:hint="@string/_8115993209"
                 android:background="@null"
                 android:inputType="number"
+                android:maxLength="10"
                 android:textColor="#696969"
                 android:textColorHint="#696969"
                 android:paddingHorizontal="@dimen/_5sdp"
