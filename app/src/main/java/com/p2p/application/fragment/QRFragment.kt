@@ -111,7 +111,6 @@ class QRFragment : Fragment() {
         scanner.startScan()
             .addOnSuccessListener { barcode ->
                 val result = barcode.rawValue
-
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
                     if (receiver.user_id == null) {
@@ -120,7 +119,7 @@ class QRFragment : Fragment() {
                     // Use receiver safely
                     Log.d("naksdjgd","deepak")
                     scannedValueTv.text = receiver.name
-                    viewLifecycleOwner.lifecycleScope.launch {
+                   lifecycleScope.launchWhenResumed {
                         findNavController().navigate(R.id.sendMoneyFragment)
                     }
                 } catch (e: Exception) {
