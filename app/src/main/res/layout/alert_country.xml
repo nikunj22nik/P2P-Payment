@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/_5sdp"
-    android:background="@drawable/edit_custom"
+    android:background="@drawable/country_custom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyCountry"

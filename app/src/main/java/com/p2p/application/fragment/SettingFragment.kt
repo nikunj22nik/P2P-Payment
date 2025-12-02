@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.p2p.application.R
 import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentSettingBinding
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.SessionManager
 
 
@@ -71,6 +72,11 @@ class SettingFragment : Fragment() {
         }
         binding.btnTransaction.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
+        }
+
+
+        if (selectedType.equals(AppConstant.MERCHANT,true)){
+            binding.btnAccountLimit.visibility = View.GONE
         }
 
     }

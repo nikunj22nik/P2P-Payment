@@ -3,6 +3,7 @@ package com.p2p.application.util
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -12,51 +13,35 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 
 class LoadingUtils {
     companion object {
         fun showErrorDialog(context: Context?, text: String) {
-
             if (context == null) return
-
-            // Inflate the custom layout
-            val inflater = LayoutInflater.from(context)
-            val dialogView = inflater.inflate(R.layout.dialog_error, null)
-
-            // Find views
-            val errorMessage = dialogView.findViewById<TextView>(R.id.text)
-            //  val errorIcon = dialogView.findViewById<ImageView>(R.id.errorIcon)
-            val okButton = dialogView.findViewById<TextView>(R.id.textOkayButton)
-            val cancelBtn = dialogView.findViewById<ImageView>(R.id.imageCross)
-
-            // Set the error message
-            errorMessage.text = ensurePeriod(text)
-
-            // Create the dialog
-            val dialog = AlertDialog.Builder(context)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create()
-
-
-
-            cancelBtn.setOnClickListener {
-                dialog?.dismiss()
+            val dialog= Dialog(context, R.style.BottomSheetDialog)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.error_alert)
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window!!.attributes)
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+            dialog.window!!.attributes = layoutParams
+            val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
+            val tvSubHeader: TextView =dialog.findViewById(R.id.tvSms)
+            tvSubHeader.text=text
+            btnOk.setOnClickListener {
+                dialog.dismiss()
             }
-
-            // Set button click listener
-            okButton.setOnClickListener {
-                dialog?.dismiss()
-            }
-
-            // Show the dialog
-            dialog?.show()
+            dialog.show()
         }
 
         private const val LOADER_TAG = "APP_GLOBAL_LOADER"

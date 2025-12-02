@@ -24,10 +24,10 @@ class AppConstant {
 
         fun mapperType(value: String?): String {
             return when (value) {
-                AppConstant.USER -> "user"
-                AppConstant.AGENT -> "agent"
-                AppConstant.MERCHANT -> "merchant"
-                AppConstant.MASTER_AGENT -> "master_agent"
+                USER -> "user"
+                AGENT -> "agent"
+                MERCHANT -> "merchant"
+                MASTER_AGENT -> "master_agent"
                 else -> "unknown"
             }
         }

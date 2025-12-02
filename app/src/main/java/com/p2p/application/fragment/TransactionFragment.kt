@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.p2p.application.R
 import com.p2p.application.adapter.TransactionAdapter
 import com.p2p.application.databinding.FragmentTransactionBinding
 import com.p2p.application.model.HistoryItem
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
 import com.p2p.application.util.MessageError
+import com.p2p.application.util.SessionManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -20,6 +23,8 @@ class TransactionFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionBinding
     private lateinit var adapter: TransactionAdapter
+    private lateinit var sessionManager: SessionManager
+    private var selectedType: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +32,8 @@ class TransactionFragment : Fragment() {
     ): View {
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
 
+        sessionManager= SessionManager(requireContext())
+        selectedType = sessionManager.getLoginType().orEmpty()
 
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
@@ -34,6 +41,13 @@ class TransactionFragment : Fragment() {
              binding.itemRcy.visibility = View.VISIBLE
         }
 
+        if (selectedType.equals(AppConstant.MASTER_AGENT,true)){
+            binding.layShow.visibility = View.GONE
+            binding.imgQuestion.visibility = View.VISIBLE
+        }else{
+            binding.layShow.visibility = View.VISIBLE
+            binding.imgQuestion.visibility = View.VISIBLE
+        }
 
         val items = listOf(
             HistoryItem.Header("October"),
@@ -59,6 +73,14 @@ class TransactionFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+
+
+
+
+
+
+
     }
 
 }
