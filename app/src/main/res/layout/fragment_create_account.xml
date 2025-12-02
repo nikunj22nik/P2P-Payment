@@ -95,12 +95,13 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <ImageView
+                    android:id="@+id/imgIcon"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_5sdp"
-                    android:contentDescription="@string/todo"
                     android:src="@drawable/countryicon"
                     android:layout_height="@dimen/_15sdp"/>
                 <TextView
+                    android:id="@+id/tvCountryCode"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"

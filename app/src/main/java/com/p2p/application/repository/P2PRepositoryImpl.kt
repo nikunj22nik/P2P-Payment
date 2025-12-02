@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PRepository {
 
-    override suspend fun sendOtp(@Field("phone")phone :String, @Field("user_type")userType :String,
+    override suspend fun sendOtp(@Field("phone")phone :String, @Field("user_type")userType :String?,
                                  @Field("country_code")countryCode :String, @Field("apiType") apiType :String,
     ) : Flow<NetworkResult<String>> = flow {
         try {

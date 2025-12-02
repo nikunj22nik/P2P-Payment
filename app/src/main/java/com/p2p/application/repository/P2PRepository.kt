@@ -10,7 +10,7 @@ import retrofit2.Response
 import retrofit2.http.Field
 
 interface P2PRepository {
-    suspend fun sendOtp(@Field("phone")phone :String,@Field("user_type")userType :String,
+    suspend fun sendOtp(@Field("phone")phone :String,@Field("user_type")userType :String?,
                         @Field("country_code")countryCode :String ,@Field("apiType") apiType :String,
     ) :Flow<NetworkResult<String>>
 
