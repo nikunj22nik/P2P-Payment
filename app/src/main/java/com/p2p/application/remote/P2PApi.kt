@@ -13,7 +13,7 @@ interface P2PApi {
     @POST("send_otp")
     @FormUrlEncoded
     suspend fun sendOtp(@Field("phone")phone :String,
-                        @Field("user_type")userType :String,
+                        @Field("user_type")userType :String?,
                         @Field("country_code")countryCode :String ,
                         @Field("apiType") apiType :String,
                       ) :Response<JsonObject>

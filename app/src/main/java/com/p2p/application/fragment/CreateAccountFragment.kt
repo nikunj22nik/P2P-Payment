@@ -16,7 +16,6 @@ import com.p2p.application.R
 import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.databinding.FragmentCreateAccountBinding
 
-import com.p2p.application.util.AppConstant
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.SendOtpRegisterViewModel
@@ -25,17 +24,17 @@ import com.p2p.application.listener.ItemClickListener
 
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
-import com.p2p.application.activity.MainActivity
+import com.bumptech.glide.Glide
+import com.p2p.application.BuildConfig
 
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.countrymodel.Country
-import com.p2p.application.model.countrymodel.CountryModel
-import com.p2p.application.model.countrymodel.Data
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.hide
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.show
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
-
 
 
 @AndroidEntryPoint
@@ -51,7 +50,7 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
     private var popupWindow: PopupWindow?=null
     private lateinit var adapter: AdapterCountry
-    private var countryList: MutableList<Data> = mutableListOf()
+    private var countryList: MutableList<Country> = mutableListOf()
 
 
     override fun onCreateView(
@@ -80,54 +79,70 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
         }
 
         binding.layCountry.setOnClickListener {
-            val mainActivity = requireActivity() as MainActivity
-            mainActivity.countryListApi { data ->
-                countryList.clear()
-                countryList.addAll(data)
-                if (countryList.isNotEmpty()) {
+            if (isOnline(requireContext())){
+                if (countryList.isNotEmpty()){
                     showCountry()
+                }else{
+                    countryListApi()
+                }
+            }else{
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
+        }
+    }
+
+    private fun countryListApi() {
+        show(requireActivity())
+        lifecycleScope.launch {
+            viewModel.countryRequest().collect { result ->
+                hide(requireActivity())
+                when (result) {
+                    is NetworkResult.Success -> {
+                        val countries = result.data?.data?.country ?: emptyList()
+                        if (countries.isNotEmpty()){
+                            countryList.clear()
+                            countryList.addAll(countries)
+                            showCountry()
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        LoadingUtils.showErrorDialog(requireContext(), result.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
                 }
             }
-
         }
-
     }
 
     private fun createAccountApi(){
         if(validation()){
            lifecycleScope.launch {
                val type = SessionManager(requireContext()).getLoginType()
-               type?.let {
-                   LoadingUtils.show(requireActivity())
-                   viewModel.sendOtp(
-                       binding.etNumber.text.toString(), type, "+229","registration"
-                   ).collect {
-                     when(it){
-                         is NetworkResult.Success ->{
-                             LoadingUtils.hide(requireActivity())
-                             val otp = it.data
-                             val bundle = bundleOf("screenType" to "Registration",
-                                                            "firstName" to binding.etFirstName.text.toString(),
-                                                            "lastName" to binding.etLastName.text.toString(),
-                                                            "phone_number" to binding.etNumber.text.toString(),
-                                                            "otp" to otp
-                                 )
+               show(requireActivity())
+               viewModel.sendOtp(binding.etNumber.text.toString(), type, "+229","registration").collect {
+                   hide(requireActivity())
+                   when(it){
+                       is NetworkResult.Success ->{
+                           val otp = it.data
+                           val bundle = bundleOf("screenType" to "Registration",
+                               "firstName" to binding.etFirstName.text.toString(),
+                               "lastName" to binding.etLastName.text.toString(),
+                               "phone_number" to binding.etNumber.text.toString(),
+                               "otp" to otp
+                           )
 
-                             findNavController().navigate(R.id.OTPFragment, bundle)
-                         }
-                         is NetworkResult.Error ->{
-                             LoadingUtils.hide(requireActivity())
-                             LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
-                         }
-
-                         else->{
-
-                         }
-                     }
-
+                           findNavController().navigate(R.id.OTPFragment, bundle)
+                       }
+                       is NetworkResult.Error ->{
+                           LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                       }
+                       is NetworkResult.Loading -> {
+                           // optional: loading indicator dismayed
+                       }
                    }
                }
-
            }
         }
     }
@@ -147,22 +162,21 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
 
 
-    private fun showCountry() {
+    fun showCountry() {
         val anchorView = binding.layCountry
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
             val popupView = inflater.inflate(R.layout.alert_country, null)
-            popupWindow = PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+            popupWindow =
+                PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
             val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
-//            adapter = AdapterCountry(requireContext(), this, countryList)
+            adapter = AdapterCountry(requireContext(), this,countryList)
             rcyCountry.adapter = adapter
             popupWindow?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             popupWindow?.isOutsideTouchable = true
-            // 🟢 popup exactly anchor ke niche
             popupWindow?.showAsDropDown(anchorView)
         }
     }
-
 
 
 
@@ -195,5 +209,10 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()
+        val item = countryList[data.toInt()]
+        Glide.with(this)
+            .load(BuildConfig.MEDIA_URL+item.icon)
+            .into(binding.imgIcon)
+        binding.tvCountryCode.text = "("+item.country_code+")"
     }
 }
