@@ -1,8 +1,6 @@
 package com.p2p.application.fragment
 
-import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +25,10 @@ import com.p2p.application.listener.ItemClickListener
 
 import androidx.core.graphics.drawable.toDrawable
 import com.p2p.application.activity.MainActivity
-import com.p2p.application.model.countrymodel.Country
-import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.countrymodel.Data
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class CreateAccountFragment : Fragment(),ItemClickListener {
 
     private var _binding: FragmentCreateAccountBinding? = null
@@ -96,7 +93,7 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
             val popupView = inflater.inflate(R.layout.alert_country, null)
             popupWindow = PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
             val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
-            adapter = AdapterCountry(requireContext(), this)
+//            adapter = AdapterCountry(requireContext(), this, countryList)
             rcyCountry.adapter = adapter
             popupWindow?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             popupWindow?.isOutsideTouchable = true

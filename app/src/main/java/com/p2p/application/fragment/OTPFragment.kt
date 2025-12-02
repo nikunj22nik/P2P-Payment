@@ -2,32 +2,25 @@ package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.p2p.application.R
-import com.p2p.application.databinding.FragmentAccountTypeBinding
-import com.p2p.application.databinding.FragmentCreateAccountBinding
 import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
-import kotlin.toString
-import androidx.core.graphics.toColorInt
-import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Locale
 
 

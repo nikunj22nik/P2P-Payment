@@ -17,6 +17,7 @@ interface P2PApi {
                       ) :Response<JsonObject>
 
 
-
+    @GET("get_country")
+    suspend fun countryRequest() :Response<JsonObject>
 
   }

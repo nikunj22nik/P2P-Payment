@@ -1,7 +1,6 @@
 package com.p2p.application.fragment
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
@@ -19,17 +19,30 @@ import com.p2p.application.databinding.FragmentLoginBinding
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.SendOtpLoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.p2p.application.BuildConfig
+import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.countrymodel.Country
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.hide
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.show
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(),ItemClickListener {
 
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var viewModel: SendOtpLoginViewModel
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
     private var popupWindow: PopupWindow?=null
-    private var fcmToken: String = ""
-
     private lateinit var adapter: AdapterCountry
-
+    private var countryList: MutableList<Country> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +50,8 @@ class LoginFragment : Fragment(),ItemClickListener {
     ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
+        viewModel = ViewModelProvider(requireActivity())[SendOtpLoginViewModel::class.java]
+
         selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
 
@@ -53,16 +68,61 @@ class LoginFragment : Fragment(),ItemClickListener {
         }
 
         binding.btnLogin.setOnClickListener {
-            findNavController().navigate(
+            if (isOnline(requireContext())){
+                if (binding.edPhone.text.trim().isNotEmpty()){
+
+                }else{
+                    LoadingUtils.showErrorDialog(requireContext(), MessageError.PHONE_NUMBER)
+                }
+            }else{
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
+
+           /* findNavController().navigate(
                 R.id.OTPFragment,
                 Bundle().apply { putString("screenType", "Login") }
-            )
+            )*/
+
         }
 
         binding.layCountry.setOnClickListener {
-            showCountry()
+            if (isOnline(requireContext())){
+                if (countryList.isNotEmpty()){
+                    showCountry()
+                }else{
+                    countryListApi()
+                }
+            }else{
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
+
         }
 
+    }
+
+    private fun countryListApi() {
+        show(requireActivity())
+        lifecycleScope.launch {
+            viewModel.countryRequest().collect { result ->
+               hide(requireActivity())
+                when (result) {
+                    is NetworkResult.Success -> {
+                        val countries = result.data?.data?.country ?: emptyList()
+                        if (countries.isNotEmpty()){
+                            countryList.clear()
+                            countryList.addAll(countries)
+                            showCountry()
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        LoadingUtils.showErrorDialog(requireContext(), result.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
+            }
+        }
     }
 
     private fun handleBackPress() {
@@ -88,19 +148,6 @@ class LoginFragment : Fragment(),ItemClickListener {
     }
 
 
-    private fun fetchToken() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    fcmToken = task.result
-                    Log.d("FCM", "FCM Token: ${task.result}")
-                } else {
-                    fcmToken = "Fetching FCM token failed"
-                    Log.e("FCM", "Fetching FCM token failed", task.exception)
-                }
-            }
-    }
-
     fun showCountry() {
         val anchorView = binding.layCountry
         anchorView.post {
@@ -109,22 +156,24 @@ class LoginFragment : Fragment(),ItemClickListener {
             popupWindow =
                 PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
             val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
-            adapter = AdapterCountry(requireContext(), this)
+            adapter = AdapterCountry(requireContext(), this,countryList)
             rcyCountry.adapter = adapter
-            popupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            popupWindow?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             popupWindow?.isOutsideTouchable = true
-            // 🟢 popup exactly anchor ke niche
             popupWindow?.showAsDropDown(anchorView)
         }
     }
 
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()
+        val item = countryList[data.toInt()]
+        Glide.with(this)
+            .load(BuildConfig.MEDIA_URL+item.icon)
+            .into(binding.imgIcon)
+        binding.tvCountryCode.text = "("+item.country_code+")"
+
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchToken()
-    }
+
 }
 
