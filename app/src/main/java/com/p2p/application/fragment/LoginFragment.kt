@@ -1,26 +1,35 @@
 package com.p2p.application.fragment
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.p2p.application.R
+import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.databinding.FragmentLoginBinding
+import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(),ItemClickListener {
 
     private lateinit var binding: FragmentLoginBinding
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
-
+    private var popupWindow: PopupWindow?=null
     private var fcmToken: String = ""
+
+    private lateinit var adapter: AdapterCountry
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +58,11 @@ class LoginFragment : Fragment() {
                 Bundle().apply { putString("screenType", "Login") }
             )
         }
+
+        binding.layCountry.setOnClickListener {
+            showCountry()
+        }
+
     }
 
     private fun handleBackPress() {
@@ -87,8 +101,30 @@ class LoginFragment : Fragment() {
             }
     }
 
+    fun showCountry() {
+        val anchorView = binding.layCountry
+        anchorView.post {
+            val inflater = LayoutInflater.from(requireContext())
+            val popupView = inflater.inflate(R.layout.alert_country, null)
+            popupWindow =
+                PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+            val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
+            adapter = AdapterCountry(requireContext(), this)
+            rcyCountry.adapter = adapter
+            popupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            popupWindow?.isOutsideTouchable = true
+            // 🟢 popup exactly anchor ke niche
+            popupWindow?.showAsDropDown(anchorView)
+        }
+    }
+
+    override fun onItemClick(data: String) {
+        popupWindow?.dismiss()
+    }
+
     override fun onResume() {
         super.onResume()
         fetchToken()
     }
 }
+

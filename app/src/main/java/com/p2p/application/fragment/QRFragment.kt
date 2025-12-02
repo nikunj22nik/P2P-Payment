@@ -9,7 +9,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
@@ -21,6 +23,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
+import kotlinx.coroutines.launch
 
 
 class QRFragment : Fragment() {
@@ -110,17 +113,14 @@ class QRFragment : Fragment() {
                 val result = barcode.rawValue
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
-                    if (receiver.user_id == null) {
-                        throw Exception("error")
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                            val json = Gson().toJson(receiver)
+                            val bundle = Bundle()
+                            bundle.putString("receiver_json", json)
+                            findNavController().navigate(R.id.sendMoneyFragment, bundle)
+                        }
                     }
-
-                    lifecycleScope.launchWhenResumed {
-                        val json = Gson().toJson(receiver)
-                        val bundle = Bundle()
-                        bundle.putString("receiver_json", json)
-                        findNavController().navigate(R.id.sendMoneyFragment, bundle)
-                    }
-
                 } catch (e: Exception) {
                     Log.d("Error","*******"+e.message)
                     Toast.makeText(

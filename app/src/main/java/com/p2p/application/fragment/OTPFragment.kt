@@ -50,20 +50,14 @@ class OTPFragment : Fragment() {
         screenType = arguments?.getString("screenType") ?: ""
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
-
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
-
-
         startTime()
-
         binding.btnVerify.setOnClickListener {
             if (screenType.equals("Registration",true)){
                 showAlertDialog()
@@ -75,6 +69,7 @@ class OTPFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun showAlertDialog(){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)

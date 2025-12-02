@@ -38,6 +38,7 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:background="@drawable/edit_custom">
             <LinearLayout
+                android:id="@+id/layCountry"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="match_parent"
                 android:gravity="center">

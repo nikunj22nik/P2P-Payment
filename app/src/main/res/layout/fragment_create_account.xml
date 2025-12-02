@@ -80,6 +80,7 @@
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/layEdit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:gravity="center"
@@ -87,12 +88,14 @@
             android:layout_marginHorizontal="@dimen/_20sdp"
             android:background="@drawable/edit_custom">
             <LinearLayout
+                android:id="@+id/layCountry"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <ImageView
                     android:layout_width="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_5sdp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/countryicon"
                     android:layout_height="@dimen/_15sdp"/>
                 <TextView

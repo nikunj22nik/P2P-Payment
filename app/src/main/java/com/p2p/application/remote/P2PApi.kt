@@ -1,4 +1,4 @@
-package com.bussiness.awpl.remote
+package com.p2p.application.remote
 
 
 interface P2PApi {
