@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/_5sdp"
+    android:layout_height="wrap_content"
+    tools:ignore="UseCompoundDrawables">
+    <ImageView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/countryicon"
+        android:layout_height="@dimen/_15sdp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:drawablePadding="@dimen/_8sdp"
+        android:text="@string/_221"
+        android:fontFamily="@font/satoshi_bold"
+        android:textColor="#696969" />
+
+</LinearLayout>

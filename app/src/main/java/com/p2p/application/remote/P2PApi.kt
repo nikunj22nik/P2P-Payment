@@ -1,4 +1,4 @@
-package com.bussiness.awpl.remote
+package com.p2p.application.remote
 
 import com.google.gson.JsonObject
 import retrofit2.Response
