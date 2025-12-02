@@ -1,5 +1,7 @@
 package com.p2p.application.util
 
+import java.util.logging.ErrorManager
+
 class AppConstant {
 
     companion object {
@@ -18,5 +20,18 @@ class AppConstant {
         const val MASTER_AGENT:String="Master Agent"
         val unKnownError = "There was an unknown error. Check your connection, and try again."
         val serverError = "There was an unknown error. Check your connection, and try again."
+
+
+        fun mapperType(value: String): String {
+            return when (value) {
+                AppConstant.USER -> "user"
+                AppConstant.AGENT -> "agent"
+                AppConstant.MERCHANT -> "merchant"
+                AppConstant.MASTER_AGENT -> "master_agent"
+                else -> "unknown"
+            }
+        }
+
+
     }
 }
