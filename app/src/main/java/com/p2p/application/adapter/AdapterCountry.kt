@@ -2,18 +2,21 @@ package com.p2p.application.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.p2p.application.databinding.ItemContactBinding
+import com.bumptech.glide.Glide
+import com.p2p.application.BuildConfig
 import com.p2p.application.databinding.ItemCountryBinding
-import com.p2p.application.databinding.ItemHomeTransactionBinding
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.contactmodel.ContactModel
+import com.p2p.application.model.countrymodel.Country
 
-class AdapterCountry(private var requireActivity: Context, var itemClickListener: ItemClickListener ) :
+class AdapterCountry(
+    var requireActivity: Context,
+    var itemClickListener: ItemClickListener,
+    var countryList: MutableList<Country>
+) :
     RecyclerView.Adapter<AdapterCountry.ViewHolder>() {
 
 
@@ -26,19 +29,33 @@ class AdapterCountry(private var requireActivity: Context, var itemClickListener
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick("")
+
+        val data= countryList[position]
+
+        data.country_code?.let {
+            holder.binding.tvCode.text = it
         }
+
+        data.icon?.let {
+            Glide.with(requireActivity)
+                .load(BuildConfig.MEDIA_URL+it)
+                .into(holder.binding.imgIcon)
+        }
+
+        holder.itemView.setOnClickListener {
+            itemClickListener.onItemClick(position.toString())
+        }
+
     }
 
-    fun updateList(updateList: MutableList<ContactModel>){
-//        list=updateList
+    fun updateList(updateList: MutableList<Country>){
+        countryList=updateList
         notifyDataSetChanged()
     }
 
 
     override fun getItemCount(): Int {
-        return 30
+        return countryList.size
 
     }
 

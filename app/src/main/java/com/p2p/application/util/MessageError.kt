@@ -12,5 +12,8 @@ class MessageError {
 
         // Show Error sms
         const val SELECT_TYPE:String="Please select the type"
+        const val NETWORK_ERROR:String="Please check your internet connection."
+        const val PHONE_NUMBER:String="Phone Can't be empty"
+        const val OTP_NUMBER:String="OTP Can't be empty"
     }
 }

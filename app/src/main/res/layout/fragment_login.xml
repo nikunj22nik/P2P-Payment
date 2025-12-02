@@ -43,11 +43,13 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <ImageView
+                    android:id="@+id/imgIcon"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_5sdp"
                     android:src="@drawable/countryicon"
                     android:layout_height="@dimen/_15sdp"/>
                 <TextView
+                    android:id="@+id/tvCountryCode"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -62,12 +64,14 @@
                 android:layout_height="match_parent"
                 android:background="#CBD5E1"/>
             <EditText
+                android:id="@+id/edPhone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/_13sdp"
                 android:hint="@string/_8115993209"
                 android:background="@null"
                 android:inputType="number"
+                android:maxLength="10"
                 android:textColor="#696969"
                 android:textColorHint="#696969"
                 android:paddingHorizontal="@dimen/_5sdp"

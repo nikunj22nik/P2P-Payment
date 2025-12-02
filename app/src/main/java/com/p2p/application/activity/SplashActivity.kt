@@ -28,6 +28,7 @@ class SplashActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
 
+            // Check login session and navigate accordingly
             val intent = Intent(this@SplashActivity, MainActivity::class.java)
             startActivity(intent)
             finish()

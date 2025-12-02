@@ -1,20 +1,15 @@
 package com.p2p.application.repository
 
 
-import com.p2p.application.Error.ErrorHandler
+import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.json.JSONException
-import org.json.JSONObject
-import retrofit2.Response
 import retrofit2.http.Field
 import javax.inject.Inject
-import kotlin.collections.get
-import kotlin.text.get
-import kotlin.toString
 
 class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PRepository {
 
@@ -41,6 +36,31 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
+
+    override suspend fun countryRequest(): Flow<NetworkResult<CountryModel>> = flow {
+        try {
+            val response = api.countryRequest()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    val countryResponse = Gson().fromJson(respBody, CountryModel::class.java)
+                    if (countryResponse.success) {
+                        emit(NetworkResult.Success(countryResponse))
+                    } else {
+                        emit(NetworkResult.Error(countryResponse.message))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
 
 
 
