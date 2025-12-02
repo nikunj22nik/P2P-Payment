@@ -3,6 +3,7 @@ package com.p2p.application.repository
 
 import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
@@ -61,7 +62,36 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
-
+    override suspend fun register(
+        firstName: String,
+        lastName: String,
+        countryCode: String,
+        phone: String,
+        otp: String,
+        userType: String,
+        fcmToken: String
+    ): Flow<NetworkResult<RegisterResponse>> = flow {
+        try {
+            api.register(firstName, lastName, countryCode, phone,otp,userType,fcmToken).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                        resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                         val data = resp.get("data").asJsonObject
+                        val registerResponse = Gson().fromJson(data, RegisterResponse::class.java)
+                            emit(NetworkResult.Success<RegisterResponse>(registerResponse))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
 
 
 }

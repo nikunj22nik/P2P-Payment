@@ -22,4 +22,20 @@ interface P2PApi {
     @GET("get_country")
     suspend fun countryRequest() :Response<JsonObject>
 
+
+    @POST("register")
+    @FormUrlEncoded
+    suspend fun register(
+        @Field("firstName") firstName :String,
+        @Field("lastName") lastName :String,
+        @Field("CountryCode") countryCode :String,
+        @Field("phone") phone :String,
+        @Field("otp") otp :String,
+        @Field("user_type") userType :String,
+        @Field("fcm_token") fcmToken :String
+    ) : Response<JsonObject>
+
+
+
+
   }

@@ -15,5 +15,6 @@ class MessageError {
         const val NETWORK_ERROR:String="Please check your internet connection."
         const val PHONE_NUMBER:String="Phone Can't be empty"
         const val OTP_NUMBER:String="OTP Can't be empty"
+        const val OTP_NOT_MATCH:String ="Otp Not Matched"
     }
 }
