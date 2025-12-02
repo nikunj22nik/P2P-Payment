@@ -30,5 +30,5 @@ class MainActivity : AppCompatActivity() {
         }
         navController.graph = navGraph
     }
-    
+
 }

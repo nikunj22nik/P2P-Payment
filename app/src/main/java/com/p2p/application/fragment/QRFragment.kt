@@ -3,6 +3,7 @@ package com.p2p.application.fragment
 import android.graphics.Color
 import android.os.Binder
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +37,7 @@ class QRFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentQRBinding.inflate(layoutInflater, container, false)
         installGoogleScanner()
         initVars()
@@ -99,6 +100,10 @@ class QRFragment : Fragment() {
             binding.myCard.setBackgroundResource(R.drawable.active)
         }
 
+        binding.imgBack.setOnClickListener {
+            findNavController().navigate(R.id.userWelcomeFragment)
+        }
+
     }
 
     private fun startScanning() {
@@ -113,7 +118,6 @@ class QRFragment : Fragment() {
                     }
 
                     lifecycleScope.launchWhenResumed {
-
                         val json = Gson().toJson(receiver)
                         val bundle = Bundle()
                         bundle.putString("receiver_json", json)
