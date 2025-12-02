@@ -29,6 +29,7 @@ import com.p2p.application.BuildConfig
 
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.countrymodel.Country
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -119,9 +120,9 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
     private fun createAccountApi(){
         if(validation()){
            lifecycleScope.launch {
-               val type = SessionManager(requireContext()).getLoginType()
+               val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
                show(requireActivity())
-               viewModel.sendOtp(binding.etNumber.text.toString(), type, "+229","registration").collect {
+               viewModel.sendOtp(binding.etNumber.text.toString(),type , "+229","registration").collect {
                    hide(requireActivity())
                    when(it){
                        is NetworkResult.Success ->{
