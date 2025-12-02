@@ -2,6 +2,7 @@ package com.p2p.application.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 class SessionManager(var context: Context) {
 
@@ -49,5 +50,21 @@ class SessionManager(var context: Context) {
         return pref?.getBoolean(AppConstant.IS_LOGIN, false)
     }
 
+    fun getAuthToken():String?{
+        return pref?.getString(AppConstant.AuthToken,"")
+    }
+
+    fun setAuthToken(token:String){
+        pref?.edit {
+            putString(AppConstant.AuthToken, token)
+        }
+    }
+
+    fun clearSession() {
+        pref?.edit {
+            clear()
+            apply() // this is optional; the extension applies automatically
+        }
+    }
 
 }

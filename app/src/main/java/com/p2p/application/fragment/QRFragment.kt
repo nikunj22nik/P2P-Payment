@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
 import com.google.gson.Gson
@@ -19,6 +21,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
+import kotlinx.coroutines.launch
 
 
 class QRFragment : Fragment() {
@@ -103,15 +106,19 @@ class QRFragment : Fragment() {
         scanner.startScan()
             .addOnSuccessListener { barcode ->
                 val result = barcode.rawValue
-
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
-                    if (receiver.user_id == null) {
-                        throw Exception("Invalid receiver data")
+                    if(receiver.user_id == null){
+                        throw Exception("error")
                     }
 
-                    // Use receiver safely
-                    scannedValueTv.text = receiver.name
+                    lifecycleScope.launchWhenResumed {
+
+                        val json = Gson().toJson(receiver)
+                        val bundle = Bundle()
+                        bundle.putString("receiver_json", json)
+                        findNavController().navigate(R.id.sendMoneyFragment,bundle)
+                    }
 
                 } catch (e: Exception) {
                     Toast.makeText(
@@ -123,7 +130,7 @@ class QRFragment : Fragment() {
 
             }
             .addOnCanceledListener {
-                // Optional
+
             }
             .addOnFailureListener {
                 Toast.makeText(
@@ -132,28 +139,6 @@ class QRFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
-
-
-//        scanner.startScan().addOnSuccessListener {
-//            val result = it.rawValue
-//
-//            val receiver = Gson().fromJson(result, Receiver::class.java)
-//            result?.let {
-//                val receiver = Gson().fromJson(result, Receiver::class.java)
-////                scannedValueTv.text = buildString {
-////
-////                    append(it)
-////                }
-//            }
-//        }.addOnCanceledListener {
-//          //  Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
-//
-//        }
-//            .addOnFailureListener {
-//                Toast.makeText(requireContext(), "Oops! We couldn’t locate a merchant account with that ID.", Toast.LENGTH_SHORT).show()
-//
-//            }
     }
 
 

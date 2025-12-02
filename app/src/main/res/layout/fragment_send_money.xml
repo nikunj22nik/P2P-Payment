@@ -96,6 +96,7 @@
             android:text="Amount sent" />
 
         <EditText
+            android:id="@+id/amnt"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"

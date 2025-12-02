@@ -70,7 +70,7 @@
                 android:layout_margin="28dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_new_scanner"/>
+                android:src="@drawable/ic_qr_new_img"/>
 
             <!-- Logo at bottom -->
             <ImageView

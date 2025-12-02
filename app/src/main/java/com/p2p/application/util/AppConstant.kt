@@ -11,5 +11,6 @@ class AppConstant {
         const val BUSINESS_REGISTER :String ="business_register"
         const val TAX_ID :String ="tax_id"
         const val PROFILE :String ="profile"
+        const val AuthToken :String ="AuthToken"
     }
 }
