@@ -22,15 +22,20 @@ import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.SendOtpLoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.p2p.application.BuildConfig
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.countrymodel.Country
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
+import com.p2p.application.util.MessageError.Companion.NAME_ERROR
+import com.p2p.application.util.MessageError.Companion.NUMBER_VALIDATION
+import com.p2p.application.util.MessageError.Companion.PHONE_NUMBER
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -69,20 +74,12 @@ class LoginFragment : Fragment(),ItemClickListener {
 
         binding.btnLogin.setOnClickListener {
             if (isOnline(requireContext())){
-                if (binding.edPhone.text.trim().isNotEmpty()){
-
-                }else{
-                    LoadingUtils.showErrorDialog(requireContext(), MessageError.PHONE_NUMBER)
+                if (validation()){
+                    loginApi()
                 }
             }else{
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             }
-
-           /* findNavController().navigate(
-                R.id.OTPFragment,
-                Bundle().apply { putString("screenType", "Login") }
-            )*/
-
         }
 
         binding.layCountry.setOnClickListener {
@@ -100,6 +97,46 @@ class LoginFragment : Fragment(),ItemClickListener {
 
     }
 
+
+    private fun validation() : Boolean{
+        if(binding.edPhone.text.trim().isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), PHONE_NUMBER)
+            return false
+        }else if(binding.edPhone.text.toString().length <=8){
+            LoadingUtils.showErrorDialog(requireContext(),NUMBER_VALIDATION)
+            return false
+        }
+
+        return true
+    }
+
+    private fun loginApi(){
+        lifecycleScope.launch {
+            val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
+            val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
+            show(requireActivity())
+            viewModel.sendOtp(binding.edPhone.text.toString(),type , countryCode,"login").collect {
+                hide(requireActivity())
+                when(it){
+                    is NetworkResult.Success ->{
+                        val otp = it.data
+                        val bundle = bundleOf("screenType" to "Login",
+                            "phone_number" to binding.edPhone.text.toString(),
+                            "otp" to otp,
+                            "country_code" to countryCode
+                        )
+                        findNavController().navigate(R.id.OTPFragment, bundle)
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
+            }
+        }
+    }
     private fun countryListApi() {
         show(requireActivity())
         lifecycleScope.launch {

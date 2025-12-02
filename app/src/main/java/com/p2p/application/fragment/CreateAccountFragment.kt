@@ -34,6 +34,9 @@ import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
+import com.p2p.application.util.MessageError.Companion.NAME_ERROR
+import com.p2p.application.util.MessageError.Companion.NUMBER_VALIDATION
+import com.p2p.application.util.MessageError.Companion.PHONE_NUMBER
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -71,12 +74,19 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
         setupUserRoleView()
         binding.apply {
+
             btnLogin.setOnClickListener {
                 findNavController().navigate(R.id.loginFragment)
             }
+
             btncreate.setOnClickListener {
-                createAccountApi()
+                if (isOnline(requireContext())){
+                    createAccountApi()
+                }else{
+                    LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+                }
             }
+
         }
 
         binding.layCountry.setOnClickListener {
@@ -121,8 +131,9 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
         if(validation()){
            lifecycleScope.launch {
                val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
+               val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
                show(requireActivity())
-               viewModel.sendOtp(binding.etNumber.text.toString(),type , "+229","registration").collect {
+               viewModel.sendOtp(binding.etNumber.text.toString(),type , countryCode,"registration").collect {
                    hide(requireActivity())
                    when(it){
                        is NetworkResult.Success ->{
@@ -131,6 +142,7 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
                                "firstName" to binding.etFirstName.text.toString(),
                                "lastName" to binding.etLastName.text.toString(),
                                "phone_number" to binding.etNumber.text.toString(),
+                               "country_code" to countryCode,
                                "otp" to otp
                            )
 
@@ -150,18 +162,19 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
     private fun validation() : Boolean{
         if(binding.etFirstName.text.toString().length <3){
-            LoadingUtils.showErrorDialog(requireContext(),"The name must be at least 3 characters long.")
+            LoadingUtils.showErrorDialog(requireContext(),NAME_ERROR)
             return false
         }
-        else if(binding.etNumber.text.toString().length <=8){
-            LoadingUtils.showErrorDialog(requireContext(),"Please Enter a Valid Phone Number")
+        else if(binding.etNumber.text.trim().isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), PHONE_NUMBER)
+            return false
+        }else if(binding.etNumber.text.toString().length <=8){
+            LoadingUtils.showErrorDialog(requireContext(),NUMBER_VALIDATION)
             return false
         }
 
         return true
     }
-
-
 
     fun showCountry() {
         val anchorView = binding.layCountry
@@ -178,8 +191,6 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
             popupWindow?.showAsDropDown(anchorView)
         }
     }
-
-
 
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(

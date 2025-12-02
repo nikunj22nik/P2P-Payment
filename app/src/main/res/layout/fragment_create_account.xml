@@ -12,14 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
+        android:gravity="center"
         tools:ignore="UseCompoundDrawables,UselessParent">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
             android:contentDescription="@string/todo"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:src="@drawable/bbs_logo"/>
+            android:src="@drawable/agentlogo"/>
 
         <TextView
             android:id="@+id/tvText"

@@ -41,6 +41,15 @@
             android:layout_gravity="center"
             android:layout_centerInParent="true"
             android:text="@string/transaction_history"/>
+
+        <ImageView
+            android:id="@+id/imgQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:src="@drawable/question"/>
     </RelativeLayout>
     <ImageView
         android:id="@+id/imgNoData"
@@ -48,16 +57,60 @@
         android:layout_height="@dimen/_200sdp"
         android:layout_below="@id/title"
         android:layout_marginTop="@dimen/_30sdp"
+        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:background="@drawable/transactionnodataimg"
         android:contentDescription="@string/todo" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/itemRcy"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_below="@id/title"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/_20sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/layShow"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:background="@null"
+                android:hint="Search"
+                android:fontFamily="@font/satoshi_medium"
+                android:drawableStart="@drawable/searchicon"
+                android:drawablePadding="@dimen/_10sdp"
+                android:textColorHint="#696969"
+                android:singleLine="true"
+                android:textColor="#696969"
+                android:textSize="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_height="@dimen/_40sdp"/>
+            <View
+                android:layout_width="match_parent"
+                android:background="#696969"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_height="@dimen/_1sdp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center|end"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:background="@drawable/transation_custom"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/itemRcy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </LinearLayout>
+
 </RelativeLayout>

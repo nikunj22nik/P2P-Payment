@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SendOtpLoginViewModel @Inject constructor(private var repository: P2PRepository): ViewModel() {
+class SendOtpForgotSecretViewModel @Inject constructor(private var repository: P2PRepository): ViewModel() {
 
     suspend fun sendOtp(
         phone: String, userType: String?,
