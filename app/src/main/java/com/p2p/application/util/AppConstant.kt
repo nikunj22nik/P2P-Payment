@@ -12,5 +12,11 @@ class AppConstant {
         const val TAX_ID :String ="tax_id"
         const val PROFILE :String ="profile"
         const val AuthToken :String ="AuthToken"
+        const val USER:String="User"
+        const val MERCHANT:String="Merchant"
+        const val AGENT:String="Agent"
+        const val MASTER_AGENT:String="Master Agent"
+        val unKnownError = "There was an unknown error. Check your connection, and try again."
+        val serverError = "There was an unknown error. Check your connection, and try again."
     }
 }

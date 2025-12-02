@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.p2p.application.R
 import com.p2p.application.databinding.ActivitySplaceBinding
 import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
+import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.SessionManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,13 +25,14 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplaceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setContentView(R.layout.activity_splace)
-
+        LoadingUtils.show(this,true)
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
+
             // Check login session and navigate accordingly
-            val intent = Intent(this@SplashActivity, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+//            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
 
         }
 

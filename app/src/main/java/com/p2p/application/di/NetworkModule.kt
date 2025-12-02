@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.util.Log
 import com.bussiness.awpl.remote.P2PApi
 import com.p2p.application.BuildConfig
+import com.p2p.application.repository.P2PRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,10 +17,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
-
-import com.p2p.application.repository.P2PRepository
 import com.p2p.application.repository.P2PRepositoryImpl
+
+
 import com.p2p.application.util.AuthInterceptor
 
 @Module

@@ -16,6 +16,7 @@ import com.p2p.application.util.MessageError
 import com.p2p.application.util.MessageError.Companion.SELECT_TYPE
 import com.p2p.application.util.SessionManager
 import androidx.core.graphics.toColorInt
+import com.p2p.application.util.AppConstant
 
 
 class AccountTypeFragment : Fragment() {
@@ -47,10 +48,10 @@ class AccountTypeFragment : Fragment() {
             }
         }
 
-        binding.user.setOnClickListener { updateSelection(MessageError.USER) }
-        binding.merchant.setOnClickListener { updateSelection(MessageError.MERCHANT) }
-        binding.agent.setOnClickListener { updateSelection(MessageError.AGENT) }
-        binding.masterAgent.setOnClickListener { updateSelection(MessageError.MASTER_AGENT) }
+        binding.user.setOnClickListener { updateSelection(AppConstant.USER) }
+        binding.merchant.setOnClickListener { updateSelection(AppConstant.MERCHANT) }
+        binding.agent.setOnClickListener { updateSelection(AppConstant.AGENT) }
+        binding.masterAgent.setOnClickListener { updateSelection(AppConstant.MASTER_AGENT) }
 
         // Restore previous selection if exist
         if (selectType.isNotEmpty()) updateSelection(selectType)
