@@ -1,12 +1,14 @@
 package com.p2p.application.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentLoginBinding
 import com.p2p.application.util.MessageError
@@ -17,6 +19,8 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
+
+    private var fcmToken: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,5 +71,24 @@ class LoginFragment : Fragment() {
             else -> "Login"
         }
         binding.tvText.text = title
+    }
+
+
+    private fun fetchToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    fcmToken = task.result
+                    Log.d("FCM", "FCM Token: ${task.result}")
+                } else {
+                    fcmToken = "Fetching FCM token failed"
+                    Log.e("FCM", "Fetching FCM token failed", task.exception)
+                }
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchToken()
     }
 }

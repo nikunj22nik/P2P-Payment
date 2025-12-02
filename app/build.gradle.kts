@@ -95,17 +95,15 @@ dependencies {
     implementation(libs.google.scanner)
     implementation(libs.play.services)
     implementation(libs.gsonWork)
+//    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     //image picker
     implementation("com.github.Dhaval2404:ImagePicker:2.1")
-
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
-
     // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.47")
     kapt ("com.google.dagger:hilt-android-compiler:2.47")
@@ -113,24 +111,21 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     kapt("androidx.lifecycle:lifecycle-compiler:2.3.1")
-
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.activity:activity-ktx:1.3.1")
-
     ///app lottie for android
     implementation ("com.airbnb.android:lottie:3.4.0")
-
-
     //Retrofit for api
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
-
-
     // firebase crashlytics
     implementation("com.google.firebase:firebase-crashlytics:18.2.9")
     implementation("com.google.firebase:firebase-analytics:20.1.2")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1")) // example: latest BOM
+    implementation("com.google.firebase:firebase-messaging-ktx")
 
 }

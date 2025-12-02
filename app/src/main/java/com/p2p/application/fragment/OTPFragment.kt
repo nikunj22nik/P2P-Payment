@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import kotlin.toString
 import androidx.core.graphics.toColorInt
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Locale
 
 
@@ -38,6 +40,7 @@ class OTPFragment : Fragment() {
     private val startTimeInMillis: Long = 60000
     private var mTimeLeftInMillis = startTimeInMillis
     private var countDownTimer: CountDownTimer? = null
+    private var fcmToken: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -146,6 +149,25 @@ class OTPFragment : Fragment() {
         val seconds = mTimeLeftInMillis.toInt() / 1000 % 60
         val timeLeftFormatted = String.format(Locale.getDefault(), "%02d", seconds)
         binding.tvResend.text = "Resend in $timeLeftFormatted sec"
+    }
+
+
+    private fun fetchToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    fcmToken = task.result
+                    Log.d("FCM", "FCM Token: ${task.result}")
+                } else {
+                    fcmToken = "Fetching FCM token failed"
+                    Log.e("FCM", "Fetching FCM token failed", task.exception)
+                }
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchToken()
     }
 
 }

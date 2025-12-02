@@ -13,7 +13,9 @@ sdp = "1.1.1"
 ssp = "1.1.1"
 googleScanner = "16.1.0"
 playServices = "18.5.0"
+firebaseBom = "34.6.0"
 gson="2.10.1"
+firebaseMessagingKtx = "25.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,7 +31,9 @@ ssp-android = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "s
 google-scanner = { group = "com.google.android.gms", name = "play-services-code-scanner", version.ref = "googleScanner" }
 play-services = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServices" }
 gsonWork ={group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
