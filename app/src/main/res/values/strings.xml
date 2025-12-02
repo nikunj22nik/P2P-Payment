@@ -104,4 +104,6 @@
     <string name="scanner">Scanner</string>
     <string name="business_logo">Business Logo</string>
     <string name="upload_business_logo">Upload your business logo</string>
+    <string name="contact">Contact</string>
+    <string name="new_number">New Number</string>
 </resources>

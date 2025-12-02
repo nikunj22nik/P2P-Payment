@@ -1,15 +1,14 @@
 package com.p2p.application.fragment
 
-import android.graphics.Color
-import android.os.Binder
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.moduleinstall.ModuleInstall
@@ -22,8 +21,6 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
-import kotlinx.coroutines.launch
-import androidx.core.graphics.toColorInt
 
 
 class QRFragment : Fragment() {
@@ -71,8 +68,8 @@ class QRFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         scanQrBtn.background = null
-        scanQrBtn.setTextColor(Color.parseColor("#ffffff"))
-        binding.myCard.setTextColor(Color.parseColor("#1B1B1B"))
+        scanQrBtn.setTextColor("#ffffff".toColorInt())
+        binding.myCard.setTextColor("#1B1B1B".toColorInt())
         binding.myCard.setBackgroundResource(R.drawable.active)
     }
 
@@ -85,8 +82,8 @@ class QRFragment : Fragment() {
         scanQrBtn.setOnClickListener {
             scanQrBtn.setBackgroundResource(R.drawable.active)
             binding.myCard.background = null
-            scanQrBtn.setTextColor(Color.parseColor("#1B1B1B"))
-            binding.myCard.setTextColor(Color.parseColor("#ffffff"))
+            scanQrBtn.setTextColor("#1B1B1B".toColorInt())
+            binding.myCard.setTextColor("#ffffff".toColorInt())
             if (isScannerInstalled) {
                 startScanning()
             } else {
@@ -101,7 +98,7 @@ class QRFragment : Fragment() {
         }
 
         binding.imgBack.setOnClickListener {
-            findNavController().navigate(R.id.userWelcomeFragment)
+            findNavController().navigateUp()
         }
 
     }
@@ -125,6 +122,7 @@ class QRFragment : Fragment() {
                     }
 
                 } catch (e: Exception) {
+                    Log.d("Error","*******"+e.message)
                     Toast.makeText(
                         requireContext(),
                         "Oops! We couldn’t locate a merchant account with that ID.",

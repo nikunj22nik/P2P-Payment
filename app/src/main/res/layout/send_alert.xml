@@ -58,7 +58,7 @@
                          android:gravity="start|center"
                          android:fontFamily="@font/satoshi_medium"
                          android:drawablePadding="@dimen/_10sdp"
-                         android:text="New Number"
+                         android:text="@string/new_number"
                          android:textSize="@dimen/_10sdp"
                          app:drawableStartCompat="@drawable/numbericon" />
                  </LinearLayout>
@@ -79,7 +79,7 @@
                          android:gravity="start|center"
                          android:fontFamily="@font/satoshi_medium"
                          android:drawablePadding="@dimen/_10sdp"
-                         android:text="Contact"
+                         android:text="@string/contact"
                          android:textSize="@dimen/_10sdp"
                          app:drawableStartCompat="@drawable/contacticon" />
                  </LinearLayout>
