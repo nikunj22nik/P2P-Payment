@@ -24,8 +24,6 @@ import com.p2p.application.util.AuthInterceptor
 @InstallIn(SingletonComponent::class)
 object  NetworkModule {
 
-
-
     @Provides
     fun p2pConnectivityManager(@ApplicationContext context: Context): ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

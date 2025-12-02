@@ -47,6 +47,7 @@
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:background="@drawable/edit_custom">
                 <EditText
+                    android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="@dimen/_13sdp"
@@ -66,6 +67,7 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:background="@drawable/edit_custom">
                 <EditText
+                    android:id="@+id/et_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="@dimen/_13sdp"
@@ -113,6 +115,7 @@
                 android:layout_height="match_parent"
                 android:background="#CBD5E1"/>
             <EditText
+                android:id="@+id/et_number"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/_13sdp"

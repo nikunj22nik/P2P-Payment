@@ -25,9 +25,9 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             api.sendOtp(phone, userType, countryCode, apiType).apply {
                 if (isSuccessful) {
                     body()?.let { resp ->
-                        if (resp.has("status") && resp.get("status").asBoolean) {
-                            var obj = resp.get("data").asJsonObject
-                            var otp = obj.get("otp").asInt
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+                            val obj = resp.get("data").asJsonObject
+                            val otp = obj.get("otp").asInt
                             emit(NetworkResult.Success<String>(otp.toString()))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))

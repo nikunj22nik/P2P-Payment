@@ -18,7 +18,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.p2p.application.R
 
 class LoadingUtils {
-    companion object{
+    companion object {
         fun showErrorDialog(context: Context?, text: String) {
 
             if (context == null) return
@@ -111,9 +111,9 @@ class LoadingUtils {
             loader?.let { decorView.removeView(it) }
         }
 
-    fun ensurePeriod(input: String): String {
-        return if (input.endsWith(".")) input else "$input."
-    }
+        fun ensurePeriod(input: String): String {
+            return if (input.endsWith(".")) input else "$input."
         }
+    }
 
 }

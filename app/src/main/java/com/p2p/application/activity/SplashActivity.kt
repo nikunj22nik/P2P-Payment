@@ -25,14 +25,12 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplaceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setContentView(R.layout.activity_splace)
-        LoadingUtils.show(this,true)
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
 
-            // Check login session and navigate accordingly
-//            val intent = Intent(this@SplashActivity, MainActivity::class.java)
-//            startActivity(intent)
-//            finish()
+            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
 
         }
 

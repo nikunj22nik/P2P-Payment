@@ -31,7 +31,7 @@ class AccountTypeFragment : Fragment() {
     ): View {
         binding = FragmentAccountTypeBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
-        selectType = sessionManager.getLoginType() ?: ""
+        selectType = sessionManager.getLoginType() ?: MessageError.USER
         handleBackPress()
         return binding.root
     }
@@ -47,6 +47,7 @@ class AccountTypeFragment : Fragment() {
                 findNavController().navigate(R.id.loginFragment)
             }
         }
+        updateSelection(selectType)
 
         binding.user.setOnClickListener { updateSelection(AppConstant.USER) }
         binding.merchant.setOnClickListener { updateSelection(AppConstant.MERCHANT) }

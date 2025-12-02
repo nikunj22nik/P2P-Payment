@@ -2,8 +2,6 @@ package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -42,6 +40,7 @@ class OTPFragment : Fragment() {
     private var countDownTimer: CountDownTimer? = null
     private var fcmToken: String = ""
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +49,7 @@ class OTPFragment : Fragment() {
         screenType = arguments?.getString("screenType") ?: ""
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
+
         return binding.root
     }
 

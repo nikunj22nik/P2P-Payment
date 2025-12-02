@@ -26,12 +26,17 @@ import com.p2p.application.viewModel.SendOtpRegisterViewModel
 import com.p2p.application.listener.ItemClickListener
 
 import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.lifecycleScope
 import com.p2p.application.activity.MainActivity
+import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.countrymodel.Data
+import com.p2p.application.util.LoadingUtils
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class CreateAccountFragment : Fragment(),ItemClickListener {
 
     private var _binding: FragmentCreateAccountBinding? = null
@@ -68,9 +73,7 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
                 findNavController().navigate(R.id.loginFragment)
             }
             btncreate.setOnClickListener {
-                val bundle = bundleOf("screenType" to "Registration")
-
-                findNavController().navigate(R.id.OTPFragment, bundle)
+                createAccountApi()
             }
         }
 
@@ -88,8 +91,61 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
     }
 
+    private fun createAccountApi(){
+        if(validation()){
+           lifecycleScope.launch {
+               val type = SessionManager(requireContext()).getLoginType()
+               type?.let {
+                   LoadingUtils.show(requireActivity())
+                   viewModel.sendOtp(
+                       binding.etNumber.text.toString(), type, "+229","registration"
+                   ).collect {
+                     when(it){
+                         is NetworkResult.Success ->{
+                             LoadingUtils.hide(requireActivity())
+                             val otp = it.data
+                             val bundle = bundleOf("screenType" to "Registration",
+                                                            "firstName" to binding.etFirstName.text.toString(),
+                                                            "lastName" to binding.etLastName.text.toString(),
+                                                            "phone_number" to binding.etNumber.text.toString(),
+                                                            "otp" to otp
+                                 )
 
-    fun showCountry() {
+                             findNavController().navigate(R.id.OTPFragment, bundle)
+                         }
+                         is NetworkResult.Error ->{
+                             LoadingUtils.hide(requireActivity())
+                             LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                         }
+
+                         else->{
+
+                         }
+                     }
+
+                   }
+               }
+
+           }
+        }
+    }
+
+    private fun validation() : Boolean{
+        if(binding.etFirstName.text.toString().length <3){
+            LoadingUtils.showErrorDialog(requireContext(),"The name must be at least 3 characters long.")
+            return false
+        }
+        else if(binding.etNumber.text.toString().length <=8){
+            LoadingUtils.showErrorDialog(requireContext(),"Please Enter a Valid Phone Number")
+            return false
+        }
+
+        return true
+    }
+
+
+
+    private fun showCountry() {
         val anchorView = binding.layCountry
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
@@ -121,8 +177,8 @@ class CreateAccountFragment : Fragment(),ItemClickListener {
 
     private fun setupUserRoleView() {
         val title = when (selectedType) {
-            AppConstant.USER -> "User Registration"
-            AppConstant.MERCHANT -> "Merchant Registration"
+            MessageError.USER -> "User Registration"
+            MessageError.MERCHANT -> "Merchant Registration"
             MessageError.AGENT -> "Agent Registration"
             MessageError.MASTER_AGENT -> "Master Agent Registration"
             else -> "Login"
