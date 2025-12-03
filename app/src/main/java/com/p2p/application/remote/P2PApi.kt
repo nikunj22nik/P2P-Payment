@@ -14,7 +14,7 @@ interface P2PApi {
     @FormUrlEncoded
     suspend fun sendOtp(@Field("phone")phone :String,
                         @Field("user_type")userType :String?,
-                        @Field("country_code")countryCode :String ,
+                        @Field("countryCode")countryCode :String ,
                         @Field("apiType") apiType :String,
                       ) :Response<JsonObject>
 
@@ -28,7 +28,7 @@ interface P2PApi {
     suspend fun register(
         @Field("firstName") firstName :String,
         @Field("lastName") lastName :String,
-        @Field("CountryCode") countryCode :String,
+        @Field("countryCode") countryCode :String,
         @Field("phone") phone :String,
         @Field("otp") otp :String,
         @Field("user_type") userType :String,
