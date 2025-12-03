@@ -12,33 +12,45 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.messaging.FirebaseMessaging
+import com.p2p.application.Error.ErrorHandler
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentOTPBinding
+import com.p2p.application.di.NetworkResult
+import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.OtpViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
+@AndroidEntryPoint
 class OTPFragment : Fragment() {
 
     private lateinit var binding: FragmentOTPBinding
     private var screenType: String = ""
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
-    private var firsName :String=""
+    private var firstName :String=""
     private var lastName :String=""
     private var phoneNumber :String=""
-
+    private var countryCode :String =""
+    private var otp :String =""
     private val startTimeInMillis: Long = 60000
     private var mTimeLeftInMillis = startTimeInMillis
     private var countDownTimer: CountDownTimer? = null
     private var fcmToken: String = ""
-
+    private lateinit var viewModel : OtpViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +59,7 @@ class OTPFragment : Fragment() {
         binding = FragmentOTPBinding.inflate(layoutInflater, container, false)
         screenType = arguments?.getString("screenType") ?: ""
         sessionManager = SessionManager(requireContext())
+        viewModel = ViewModelProvider(this)[OtpViewModel::class.java]
         selectedType = sessionManager.getLoginType().orEmpty()
          extractingParameter()
         return binding.root
@@ -58,26 +71,42 @@ class OTPFragment : Fragment() {
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
         startTime()
         binding.btnVerify.setOnClickListener {
-            if (screenType.equals("Registration",true)){
-                showAlertDialog()
+
+            if(getOtp().equals(otp)){
+                callingCreateAccount()
+
+            }else{
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.OTP_NOT_MATCH)
             }
-            if (screenType.equals("Login",true)){
-                sessionManager.setIsLogin(true)
-                findNavController().navigate(R.id.userWelcomeFragment)
-            }
+
+//            if (screenType.equals("Registration",true)){
+//                showAlertDialog()
+//            }
+//            if (screenType.equals("Login",true)){
+//                sessionManager.setIsLogin(true)
+//                findNavController().navigate(R.id.userWelcomeFragment)
+//            }
         }
     }
 
     private fun extractingParameter(){
         if(screenType.equals("Registration")){
-
+            countryCode = arguments?.getString("country_code")?:""
+            firstName = arguments?.getString("firstName")?:""
+            lastName = arguments?.getString("lastName")?:""
+            phoneNumber = arguments?.getString("phone_number")?:""
+            otp = arguments?.getString("otp")?:""
         }else{
-
+            countryCode = arguments?.getString("country_code")?:""
+            phoneNumber = arguments?.getString("phone_number")?:""
+            otp = arguments?.getString("otp")?:""
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showAlertDialog(){
+    private fun showAlertDialog(header:String, subheader:String,
+                                content:String,
+                                buttonContent:String){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
         dialog?.setContentView(R.layout.account_create_alert)
@@ -88,19 +117,72 @@ class OTPFragment : Fragment() {
         dialog.window!!.attributes = layoutParams
         val btnContinue: LinearLayout =dialog.findViewById(R.id.btnContinue)
         val tvSubHeader: TextView =dialog.findViewById(R.id.tvSubHeader)
+        val tvContent : TextView = dialog.findViewById<TextView>(R.id.tvContent)
+        val tvHeader : TextView = dialog.findViewById<TextView>(R.id.tvHeader)
+        val btnTv : TextView = dialog.findViewById<TextView>(R.id.tvBtn)
+        val logo : ImageView = dialog.findViewById<ImageView>(R.id.logo)
+          tvContent.text =content
+         tvHeader.text = header
 
-        tvSubHeader.text="Your ${selectedType.lowercase()} account has been created \nsuccessfully."
+
+        btnTv.setText(buttonContent)
+
+        tvSubHeader.text= subheader
+
 
         btnContinue.setOnClickListener {
             dialog.dismiss()
-            if (selectedType.equals(MessageError.MERCHANT,true)){
-                findNavController().navigate(R.id.notificationFragment)
-            }else{
+            if(selectedType.equals(AppConstant.USER)){
                 sessionManager.setIsLogin(true)
                 findNavController().navigate(R.id.secretCodeFragment)
+            }else{
+                 findNavController().navigate(R.id.loginFragment)
             }
         }
         dialog.show()
+    }
+
+
+    private fun callingCreateAccount(){
+        lifecycleScope.launch {
+            val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
+            LoadingUtils.show(requireActivity())
+            viewModel.register(firstName,lastName,countryCode,phoneNumber,otp,type,fcmToken).collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                        LoadingUtils.hide(requireActivity())
+                        val obj = it.data
+                        it.data?.let {
+                            if(selectedType.equals(AppConstant.USER)) {
+                                SessionManager(requireContext()).setAuthToken(it.token ?: "")
+                                SessionManager(requireContext()).setFirstName(it.user?.first_name?:"")
+                                SessionManager(requireContext()).setLastName(it.user?.first_name?:"")
+                                SessionManager(requireContext()).setPhoneNumber(it.user?.phone?:"")
+                                showAlertDialog("Account Created !","","Your user account has been created successfully.","Continue")
+                            }
+                            else if(selectedType.equals(AppConstant.MERCHANT)){
+                                findNavController().navigate(R.id.notificationFragment)
+                            }
+                            else if(selectedType.equals(AppConstant.AGENT)){
+                                showAlertDialog("Registration Successful!","Please wait while we verify your details.",
+                                    "You will be notified once your agent account is approved by Many Mobile Money.","Go to Login")
+                            }
+                            else if(selectedType.equals(AppConstant.MASTER_AGENT)){
+                                showAlertDialog("Registration Successful!","Please wait while we verify your details.","You will be notified once your\n" +
+                                        "Master Agent account is approved by Many Mobile Money.","Go to Login")
+                            }
+                        }
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                    }
+                    else ->{
+
+                    }
+                }
+
+            }
+        }
     }
 
     private fun getOtp(): String {

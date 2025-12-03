@@ -37,6 +37,34 @@ class SessionManager(var context: Context) {
         editor?.commit()
     }
 
+    fun setFirstName(name :String){
+        editor?.putString(AppConstant.NAME, name)
+        editor?.commit()
+    }
+
+    fun setLastName(lastName:String){
+        editor?.putString(AppConstant.LASTNAME, lastName)
+        editor?.commit()
+    }
+
+    fun setPhoneNumber(phone:String){
+        editor?.putString(AppConstant.phoneNumber, phone)
+        editor?.commit()
+    }
+
+    fun getPhoneNumber():String{
+        return pref?.getString(AppConstant.phoneNumber, "")?:""
+    }
+
+    fun getFirstName(): String {
+        return pref?.getString(AppConstant.NAME, "")?:""
+    }
+
+    fun getLastName(): String {
+        return pref?.getString(AppConstant.LASTNAME, "")?:""
+    }
+
+
 
     fun getLoginType(): String? {
         return pref?.getString(AppConstant.LOGIN_TYPE, "")

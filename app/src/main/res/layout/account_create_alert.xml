@@ -36,9 +36,19 @@
                 android:text="@string/account_created"
                 android:textColor="#0F0D1C"
                 android:textSize="@dimen/_18sdp" />
-
             <TextView
                 android:id="@+id/tvSubHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/urbanist_bold"
+                android:text="@string/account_created"
+                android:textColor="#444444"
+                android:textSize="@dimen/_15sdp" />
+
+            <TextView
+                android:id="@+id/tvContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

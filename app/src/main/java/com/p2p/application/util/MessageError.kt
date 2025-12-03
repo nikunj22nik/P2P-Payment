@@ -17,5 +17,6 @@ class MessageError {
         const val NAME_ERROR:String="The name must be at least 3 characters long."
         const val NUMBER_VALIDATION:String="Please Enter a Valid Phone Number"
         const val OTP_NUMBER:String="OTP Can't be empty"
+        const val OTP_NOT_MATCH:String ="Otp Not Matched"
     }
 }

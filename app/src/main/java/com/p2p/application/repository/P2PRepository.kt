@@ -2,6 +2,7 @@ package com.p2p.application.repository
 
 import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,16 @@ interface P2PRepository {
 
     suspend fun countryRequest() :Flow<NetworkResult<CountryModel>>
 
+
+    suspend fun register(
+        @Field("firstName") firstName :String,
+        @Field("lastName") lastName :String,
+        @Field("CountryCode") countryCode :String,
+        @Field("phone") phone :String,
+        @Field("otp") otp :String,
+        @Field("user_type") userType :String,
+        @Field("fcm_token") fcmToken :String
+    ) :Flow<NetworkResult<RegisterResponse>>
 
 
 

@@ -18,7 +18,9 @@ class AppConstant {
         const val MASTER_AGENT:String="Master Agent"
         val unKnownError = "There was an unknown error. Check your connection, and try again."
         val serverError = "There was an unknown error. Check your connection, and try again."
-
+        val NAME ="name"
+        val LASTNAME ="last_name"
+        val phoneNumber ="phone_number"
 
         fun mapperType(value: String?): String {
             return when (value) {
