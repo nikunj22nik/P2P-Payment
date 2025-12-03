@@ -14,22 +14,44 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.databinding.FragmentSecretCodeBinding
+import com.p2p.application.di.NetworkResult
+import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.hide
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.show
+import com.p2p.application.util.MessageError
+import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.OtpViewModel
+import com.p2p.application.viewModel.SecretCodeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class  SecretCodeFragment : Fragment() {
 
     private lateinit var binding: FragmentSecretCodeBinding
+    private lateinit var viewModel : SecretCodeViewModel
+    private lateinit var sessionManager: SessionManager
+    private var selectedType: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSecretCodeBinding.inflate(layoutInflater, container, false)
+        viewModel = ViewModelProvider(this)[SecretCodeViewModel::class.java]
+        sessionManager = SessionManager(requireContext())
+        selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
         return binding.root
     }
@@ -39,9 +61,52 @@ class  SecretCodeFragment : Fragment() {
 
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
         setupOtpFieldsRe(binding.etOtp11, binding.etOtp22, binding.etOtp33, binding.etOtp44)
+
         binding.btnOkay.setOnClickListener {
-            showAlert()
+            if (isOnline(requireContext())){
+                if (isValidation()){
+                    setCode()
+                }
+            }else{
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
         }
+    }
+
+
+    private fun setCode(){
+        lifecycleScope.launch {
+            val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
+            show(requireActivity())
+            viewModel.setSecretCodeRequest(getOtp(),type).collect {
+                hide(requireActivity())
+                when(it){
+                    is NetworkResult.Success ->{
+                        showAlert()
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isValidation(): Boolean{
+        if(getOtp().isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.SECRET_CODE)
+            return false
+        }else if(getOtpRe().isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.SECRET_CODE)
+            return false
+        }else if(!getOtpRe().equals(getOtpRe(),true)){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.CODE_NOT_MATCH)
+            return false
+        }
+        return true
     }
 
     private fun handleBackPress() {
@@ -64,15 +129,11 @@ class  SecretCodeFragment : Fragment() {
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.window!!.attributes = layoutParams
-
         val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
-
         btnOk.setOnClickListener {
             dialog.dismiss()
-//            findNavController().navigate(R.id.enterSecretCodeFragment)
             findNavController().navigate(R.id.notificationFragment)
         }
-
         dialog.show()
     }
 

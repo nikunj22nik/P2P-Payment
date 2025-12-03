@@ -64,13 +64,14 @@
             android:text="We’ve sent a 4-digit code to"/>
 
         <TextView
+            android:id="@+id/tvNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#949494"
             android:textSize="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="+1 (221) 78 123 45 67."/>
+            android:text=""/>
 
 
         <LinearLayout
@@ -146,7 +147,7 @@
                     android:layout_gravity="center"
                     android:text="@string/didn_t_receive_a_code"/>
                 <TextView
-                    android:id="@+id/btnRegister"
+                    android:id="@+id/btnResend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#E2692B"

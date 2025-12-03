@@ -58,9 +58,10 @@
                     android:gravity="center"
                     android:background="@drawable/button_custom">
                     <TextView
+                        android:id="@+id/tvShortName"
                         android:layout_width="wrap_content"
                         android:text="@string/sd"
-                        android:textSize="@dimen/_20sdp"
+                        android:textSize="@dimen/_15sdp"
                         android:textColor="#FFFFFF"
                         android:fontFamily="@font/satoshi_bold"
                         android:layout_height="wrap_content"/>
@@ -73,6 +74,7 @@
                     android:layout_toStartOf="@id/layswitch"
                     android:layout_toEndOf="@id/lay">
                     <TextView
+                        android:id="@+id/tvName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"
@@ -81,6 +83,7 @@
                         android:layout_gravity="center"
                         android:text="@string/beryl_orou" />
                     <TextView
+                        android:id="@+id/tvNumbar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#949494"

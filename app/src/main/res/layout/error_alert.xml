@@ -36,11 +36,11 @@
                     android:gravity="center"
                     android:text=""
                     android:textColor="#444444"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/_15sdp" />
                 <LinearLayout
                     android:id="@+id/btnOk"
-                    android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:gravity="center"
                     android:layout_marginVertical="@dimen/_20sdp"
                     android:background="@drawable/button_custom">

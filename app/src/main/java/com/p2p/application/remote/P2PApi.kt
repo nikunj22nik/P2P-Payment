@@ -24,6 +24,12 @@ interface P2PApi {
     @GET("get_country")
     suspend fun countryRequest() :Response<JsonObject>
 
+    @POST("home")
+    suspend fun homeRequest() :Response<JsonObject>
+
+    @POST("get_recent_people")
+    suspend fun recentPeopleRequest() :Response<JsonObject>
+
 
     @POST("register")
     @FormUrlEncoded
@@ -37,6 +43,7 @@ interface P2PApi {
         @Field("fcm_token") fcmToken :String
     ) : Response<JsonObject>
 
+
     @POST("login")
     @FormUrlEncoded
     suspend fun login(
@@ -46,6 +53,39 @@ interface P2PApi {
         @Field("user_type") userType :String,
         @Field("fcm_token") fcmToken :String
     ) : Response<JsonObject>
+
+    @POST("set_edit_secret_code")
+    @FormUrlEncoded
+    suspend fun setSecretCodeRequest(
+        @Field("secret_code") code :String,
+        @Field("user_type") userType :String
+    ) : Response<JsonObject>
+
+    @POST("search_new_number")
+    @FormUrlEncoded
+    suspend fun searchNewNumberRequest(
+        @Field("phone") code :String,
+        @Field("countryCode") countryCode :String,
+        @Field("user_type") userType :String
+    ) : Response<JsonObject>
+
+    @POST("forgot_secret_code")
+    @FormUrlEncoded
+    suspend fun sendSecretCodeRequest(
+        @Field("countryCode")countryCode :String ,
+        @Field("phone") phone :String,
+        @Field("user_type") apiType :String
+    ) : Response<JsonObject>
+
+    @POST("forgot_secret_code")
+    @FormUrlEncoded
+    suspend fun otpVerifySecretCodeRequest(
+        @Field("countryCode")countryCode :String ,
+        @Field("phone") phone :String,
+        @Field("otp") otp :String,
+        @Field("user_type") apiType :String
+    ) : Response<JsonObject>
+
 
     @POST("send_otp")
     @FormUrlEncoded

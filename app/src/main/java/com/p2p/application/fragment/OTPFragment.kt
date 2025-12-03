@@ -82,8 +82,9 @@ class OTPFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
-        startTime()
+
         binding.btnVerify.setOnClickListener {
+
             if (getOtp().equals( viewModel.otp)) {
                 if (viewModel.screenType.equals("Registration", true))  callingCreateAccount()
                 else callingLoginApi()
@@ -130,7 +131,11 @@ class OTPFragment : Fragment() {
     }
 
     private fun extractingParameter(){
-        if(viewModel.screenType.equals("Registration")){
+
+
+
+        if(viewModel.screenType.equals("Registration",true)){
+
             countryCode = arguments?.getString("country_code")?:""
             firstName = arguments?.getString("firstName")?:""
             lastName = arguments?.getString("lastName")?:""
@@ -157,34 +162,45 @@ class OTPFragment : Fragment() {
     private fun showAlertDialog(header:String, subheader:String,
                                 content:String,
                                 buttonContent:String,
-                                iconRes: Int){
-        val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
+                                iconRes: Int) {
+        val dialog = context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
         dialog?.setContentView(R.layout.account_create_alert)
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.copyFrom(dialog?.window!!.attributes)
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
-        dialog.window!!.attributes = layoutParams
-        val btnContinue: LinearLayout =dialog.findViewById(R.id.btnContinue)
-        val tvSubHeader: TextView =dialog.findViewById(R.id.tvSubHeader)
-        val tvContent : TextView = dialog.findViewById<TextView>(R.id.tvContent)
-        val tvHeader : TextView = dialog.findViewById<TextView>(R.id.tvHeader)
-        val btnTv : TextView = dialog.findViewById<TextView>(R.id.tvBtn)
-        val logo : ImageView = dialog.findViewById<ImageView>(R.id.logo)
-        logo.setImageResource(iconRes)
-          tvContent.text =content
-         tvHeader.text = header
+        dialog.window?.attributes = layoutParams
+        val btnContinue: LinearLayout = dialog.findViewById(R.id.btnContinue)
+        val tvSubHeader: TextView = dialog.findViewById(R.id.tvSubHeader)
 
-        if(subheader.isEmpty())tvSubHeader.visibility =View.GONE
+        val tvContent: TextView = dialog.findViewById<TextView>(R.id.tvContent)
+        val tvHeader: TextView = dialog.findViewById<TextView>(R.id.tvHeader)
+        val btnTv: TextView = dialog.findViewById<TextView>(R.id.tvBtn)
+        val logo: ImageView = dialog.findViewById<ImageView>(R.id.logo)
+        logo.setImageResource(iconRes)
+        tvContent.text = content
+        tvHeader.text = header
+
+        if (subheader.isEmpty()) tvSubHeader.visibility = View.GONE
 
         btnTv.setText(buttonContent)
 
-        tvSubHeader.text= subheader
 
 
+        tvContent.text = content
+        tvHeader.text = header
+        btnTv.text = buttonContent
+        if (subheader.equals("", true)) {
+            tvSubHeader.visibility = View.GONE
+        } else {
+            tvSubHeader.visibility = View.VISIBLE
+        }
+
+        tvSubHeader.text = subheader
         btnContinue.setOnClickListener {
             dialog.dismiss()
+
             if (viewModel.screenType.equals("Registration", true)) {
                 if (selectedType.equals(AppConstant.USER)) {
                     sessionManager.setIsLogin(true)
@@ -192,25 +208,24 @@ class OTPFragment : Fragment() {
                 } else {
                     findNavController().navigate(R.id.loginFragment)
                 }
-            }
-            else{
-                if(buttonContent.equals(AppConstant.BACK_TO_HOME)){
-                   findNavController().navigate(R.id.userWelcomeFragment)
-                }
-                else if(buttonContent.equals(AppConstant.BACK_TO_LOGIN)){
+            } else {
+                if (buttonContent.equals(AppConstant.BACK_TO_HOME)) {
+                    findNavController().navigate(R.id.userWelcomeFragment)
+                } else if (buttonContent.equals(AppConstant.BACK_TO_LOGIN)) {
                     findNavController().navigate(R.id.loginFragment)
-              }
-                else if(buttonContent.equals(AppConstant.TRY_AGAIN)){
-                   findNavController().navigate(R.id.createAccountFragment)
-              }
-            }
-        }
+                } else if (buttonContent.equals(AppConstant.TRY_AGAIN)) {
+                    findNavController().navigate(R.id.createAccountFragment)
+                }
 
-        dialog.show()
+            }
+
+            dialog.show()
+        }
     }
 
 
     private fun callingCreateAccount(){
+
         if (isOnline(requireContext())) {
             lifecycleScope.launch {
                 val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
@@ -264,17 +279,14 @@ class OTPFragment : Fragment() {
                                         "Please wait while we verify your details.",
                                         "You will be notified once your\n" +
                                                 "Master Agent account is approved by Many Mobile Money.",
-                                        "Go to Login"
-                                        ,R.drawable.icon_park_outline_check_one
+                                        "Go to Login", R.drawable.icon_park_outline_check_one
                                     )
                                 }
                             }
                         }
-
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
                         }
-
                         else -> {
 
                         }
@@ -522,7 +534,6 @@ class OTPFragment : Fragment() {
         val timeLeftFormatted = String.format(Locale.getDefault(), "%02d", seconds)
         binding.tvResend.text = "Resend in $timeLeftFormatted sec"
     }
-
 
     private fun fetchToken() {
         FirebaseMessaging.getInstance().token

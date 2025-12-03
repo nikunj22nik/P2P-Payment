@@ -18,5 +18,8 @@ class MessageError {
         const val NUMBER_VALIDATION:String="Please Enter a Valid Phone Number"
         const val OTP_NUMBER:String="OTP Can't be empty"
         const val OTP_NOT_MATCH:String ="Otp Not Matched"
+        const val SECRET_CODE:String ="Code Can't be empty"
+        const val CODE_NOT_MATCH:String ="Code Not Matched"
+
     }
 }
