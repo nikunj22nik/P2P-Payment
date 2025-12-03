@@ -28,6 +28,9 @@ interface P2PApi {
     @POST("get_recent_people")
     suspend fun recentPeopleRequest() :Response<JsonObject>
 
+    @POST("get_balance")
+    suspend fun balanceRequest() :Response<JsonObject>
+
 
     @POST("register")
     @FormUrlEncoded

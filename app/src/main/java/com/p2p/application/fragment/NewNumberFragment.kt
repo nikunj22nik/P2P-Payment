@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.toString
 
 @AndroidEntryPoint
 class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
@@ -149,6 +151,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     }
     private fun loadRecentPeople(){
         if (isOnline(requireContext())){
+            balanceRequest()
             show(requireActivity())
             lifecycleScope.launch {
                 viewModel.recentPeopleRequest().collect { result ->
@@ -177,7 +180,28 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         }else{
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
+    }
 
+    private fun balanceRequest(){
+        lifecycleScope.launch {
+            viewModel.balanceRequest().collect { result ->
+                hide(requireActivity())
+                when (result) {
+                    is NetworkResult.Success -> {
+                        result.data?.let {
+                            binding.tvBalance.text = it
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        Log.d("Api Error ","******"+result.message.toString())
+                        binding.tvBalance.text = "0"
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
+            }
+        }
     }
     private fun countryListApi() {
         show(requireActivity())
