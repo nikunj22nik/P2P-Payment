@@ -20,14 +20,9 @@ import com.p2p.application.util.SessionManager
 
 
 class NotificationFragment : Fragment() {
-
-
     private lateinit var binding: FragmentNotificationBinding
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

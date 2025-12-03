@@ -113,7 +113,7 @@ class LoginFragment : Fragment(),ItemClickListener {
     private fun loginApi(){
         lifecycleScope.launch {
             val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
-            val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
+            val countryCode  = /*binding.tvCountryCode.text.replace("[()]".toRegex(), "")*/"+91"
             show(requireActivity())
             viewModel.sendOtp(binding.edPhone.text.toString(),type , countryCode,"login").collect {
                 hide(requireActivity())

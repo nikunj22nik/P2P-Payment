@@ -105,7 +105,30 @@ class LoadingUtils {
                 .joinToString("") { it[0].uppercase() }
         }
 
-    fun ensurePeriod(input: String): String {
+        fun formatTime(iso: String?): String {
+            // null ya empty → direct return ""
+            if (iso.isNullOrBlank()) return ""
+            return try {
+                val instant = java.time.Instant.parse(iso)
+                val zone = java.time.ZoneId.systemDefault()
+                val dateTime = instant.atZone(zone)
+                val now = java.time.ZonedDateTime.now(zone)
+                val time = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
+                val date = dateTime.toLocalDate()
+                when (date) {
+                    now.toLocalDate() -> "Today · $time"
+                    now.minusDays(1).toLocalDate() -> "Yesterday · $time"
+                    else -> dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy · HH:mm"))
+                }
+            } catch (e: Exception) {
+                // agar invalid format hua to safely empty string
+                ""
+            }
+        }
+
+
+
+        fun ensurePeriod(input: String): String {
         return if (input.endsWith(".")) input else "$input."
     }
 
