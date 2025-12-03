@@ -2,10 +2,12 @@ package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,23 +19,29 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterMerchantVerification
 import com.p2p.application.databinding.FragmentMerchantVerificationBinding
 import com.p2p.application.databinding.FragmentSettingBinding
+import com.p2p.application.di.NetworkResult
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.MultipartUtil
 import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.MerchantVerificationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.w3c.dom.Text
 
-
+@AndroidEntryPoint
 class MerchantVerificationFragment : Fragment() {
-
 
     private lateinit var binding: FragmentMerchantVerificationBinding
     private lateinit var sessionManager: SessionManager
@@ -46,7 +54,7 @@ class MerchantVerificationFragment : Fragment() {
     private var selected = AppConstant.BUSINESS_ID
     val MAX_TOTAL_IMAGES = 5
     private var selectedImageUri : Uri? = null
-
+    private lateinit var viewModel: MerchantVerificationViewModel
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
@@ -87,7 +95,6 @@ class MerchantVerificationFragment : Fragment() {
                                     if(taxIdUri.size>5)break
                                 }
                             }
-
                             AppConstant.PROFILE ->{ binding.mainImage.setImageURI(newUri)
                              selectedImageUri = newUri
                             }
@@ -125,20 +132,48 @@ class MerchantVerificationFragment : Fragment() {
 
         if (arr.size < originalSize) {
             LoadingUtils.showErrorDialog(
-                requireContext(), "Please upload images less than 5 MB."
+                requireContext(), "Please upload images or PDF files smaller than 5 MB."
             )
         }
         Log.d("TESTING_SIZE",arr.size.toString())
 
     }
 
-    fun openGallery(selectType: String) {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.putExtra("SELECT_TYPE", selectType) // <<----- parameter
-        imagePickerLauncher.launch(intent)
+    fun openGallery(selectType: String,format :String ="image") {
+
+//        val intent = Intent(Intent.ACTION_GET_CONTENT)
+//        intent.type = "image/*"
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+//        intent.putExtra("SELECT_TYPE", selectType) // <<----- parameter
+//        imagePickerLauncher.launch(intent)
+
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Upload File")
+                .setMessage("Choose a file type to upload")
+                .setPositiveButton("Image") { _, _ ->
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                  intent.type = "image/*"
+               intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                   intent.putExtra("SELECT_TYPE", selectType) // <<----- parameter
+                   imagePickerLauncher.launch(intent)
+                }
+                .setNegativeButton("PDF") { _, _ ->
+                    val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                        setType("application/pdf")
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                    }
+                    imagePickerLauncher.launch(intent)
+                }
+                        .setNeutralButton("Cancel", null)
+                        .show()
+
     }
+
+
+
+
+
     fun openGalleryForSingle(selectType: String) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -152,7 +187,7 @@ class MerchantVerificationFragment : Fragment() {
         sessionManager= SessionManager(requireContext())
         adapterInitializationTask()
 
-
+       viewModel = ViewModelProvider(this)[MerchantVerificationViewModel::class.java]
         handleBackPress()
         handleClickListener()
         return binding.root
@@ -164,9 +199,85 @@ class MerchantVerificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnVerify.setOnClickListener {
-            showAlert()
+            callingMerchantVerification()
+
         }
     }
+
+    private fun callingMerchantVerification(){
+        if(validation()) {
+            val businessIdParts = businessIdUri.mapNotNull {
+                MultipartUtil.uriToMultipart(
+                    requireContext(),
+                    it,
+                    "businessRegistrationDocument[]"
+                )
+            }
+            val businessRegisterParts = businessRegister.mapNotNull {
+                MultipartUtil.uriToMultipart(
+                    requireContext(),
+                    it,
+                    "businessRegistrationCertificate[]"
+                )
+            }
+            val taxIdParts = taxIdUri.mapNotNull {
+                MultipartUtil.uriToMultipart(
+                    requireContext(),
+                    it,
+                    "tax_identification_docs[]"
+                )
+            }
+            val profileImage =
+                selectedImageUri?.let { MultipartUtil.uriToMultipart(requireContext(), it, "business_logo") }
+            val userType = MultipartUtil.stringToRequestBody("merchant")
+            lifecycleScope.launch {
+                LoadingUtils.show(requireActivity())
+                viewModel.merchantVerification(
+                    ArrayList(businessIdParts), ArrayList(businessRegisterParts),
+                    ArrayList(taxIdParts) ,
+                    profileImage,
+                    userType
+                ).collect {
+                    when(it){
+                        is NetworkResult.Success ->{
+                            LoadingUtils.hide(requireActivity())
+                            showAlert()
+                        }
+                        is NetworkResult.Error ->{
+                            LoadingUtils.hide(requireActivity())
+                            LoadingUtils.showErrorDialog(requireContext(), it.message.toString())
+                        }
+                        else ->{
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun validation() :Boolean{
+        if(businessIdUri.isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_BUSINESS_ID)
+         return false
+        }
+        else if(businessRegister.isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_BUSINESS_Register)
+            return false
+        }
+        else if(taxIdUri.isEmpty()){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_TAX_ID)
+            return false
+        }
+        else if(selectedImageUri == null){
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_BUSINESS_LOGO)
+            return false
+        }
+
+        return true;
+    }
+
 
     private fun adapterInitializationTask(){
 
