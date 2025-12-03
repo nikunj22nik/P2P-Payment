@@ -6,7 +6,9 @@ import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+
 import androidx.recyclerview.widget.RecyclerView
+import com.p2p.application.R
 import com.p2p.application.databinding.ItemImageUploadBinding
 import com.p2p.application.databinding.ItemNotificationBinding
 import com.p2p.application.databinding.ItemPaymentBinding
@@ -34,8 +36,22 @@ class AdapterMerchantVerification(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val uri = dataList[position]
+        val mime = getMimeType(holder.binding.root.context, uri)
 
-        holder.binding.mainImage.setImageURI(uri)
+        when {
+            mime?.startsWith("image") == true -> {
+                Log.d("TYPE1", "It's an image")
+                holder.binding.mainImage.setImageURI(uri)
+            }
+            mime == "application/pdf" -> {
+                Log.d("TYPE1", "It's a PDF")
+                holder.binding.mainImage.setImageResource(R.drawable.pdf_img)
+            }
+            else -> {
+
+            }
+        }
+
 
         holder.binding.cutImg.setOnClickListener {
             val pos = holder.adapterPosition
@@ -73,5 +89,10 @@ class AdapterMerchantVerification(
         dataList = newList
         Log.d("AdapterMerchantVerification", "List updated size: ${dataList.size}")
         notifyDataSetChanged()
+    }
+
+    fun getMimeType(context: Context, uri: Uri): String? {
+        val contentResolver = context.contentResolver
+        return contentResolver.getType(uri)
     }
 }

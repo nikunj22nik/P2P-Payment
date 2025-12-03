@@ -3,11 +3,15 @@ package com.p2p.application.remote
 import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 
 interface P2PApi {
@@ -94,6 +98,18 @@ interface P2PApi {
                         @Field("countryCode")countryCode :String ,
                         @Field("apiType") apiType :String,
     ) :Response<JsonObject>
+
+
+    @POST("merchant_verification")
+    @Multipart
+    suspend fun merchantVerification(
+        @Part businessIdList : ArrayList<MultipartBody.Part>?,
+        @Part List : ArrayList<MultipartBody.Part>?,
+        @Part pdfList : ArrayList<MultipartBody.Part>?,
+        @Part profileImage: MultipartBody.Part?,
+        @Part("user_type") userType : RequestBody
+    ) : Response<JsonObject>
+
 
 
   }

@@ -60,7 +60,7 @@ class OTPFragment : Fragment() {
     ): View {
         binding = FragmentOTPBinding.inflate(layoutInflater, container, false)
         screenType = arguments?.getString("screenType") ?: ""
-
+        startTime()
         sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[OtpViewModel::class.java]
         selectedType = sessionManager.getLoginType().orEmpty()
@@ -132,10 +132,7 @@ class OTPFragment : Fragment() {
 
     private fun extractingParameter(){
 
-
-
         if(viewModel.screenType.equals("Registration",true)){
-
             countryCode = arguments?.getString("country_code")?:""
             firstName = arguments?.getString("firstName")?:""
             lastName = arguments?.getString("lastName")?:""
@@ -183,20 +180,9 @@ class OTPFragment : Fragment() {
         tvHeader.text = header
 
         if (subheader.isEmpty()) tvSubHeader.visibility = View.GONE
-
-        btnTv.setText(buttonContent)
-
-
-
         tvContent.text = content
         tvHeader.text = header
         btnTv.text = buttonContent
-        if (subheader.equals("", true)) {
-            tvSubHeader.visibility = View.GONE
-        } else {
-            tvSubHeader.visibility = View.VISIBLE
-        }
-
         tvSubHeader.text = subheader
         btnContinue.setOnClickListener {
             dialog.dismiss()
@@ -219,8 +205,10 @@ class OTPFragment : Fragment() {
 
             }
 
-            dialog.show()
+
         }
+        dialog.show()
+
     }
 
 
@@ -256,6 +244,7 @@ class OTPFragment : Fragment() {
                                     SessionManager(requireContext()).setPhoneNumber(
                                         it.user?.phone ?: ""
                                     )
+                                    SessionManager(requireContext()).setIsLogin(true)
                                     showAlertDialog(
                                         "Account Created !",
                                         "",
@@ -264,6 +253,7 @@ class OTPFragment : Fragment() {
                                         R.drawable.icon_park_outline_check_one
                                     )
                                 } else if (selectedType.equals(AppConstant.MERCHANT)) {
+                                    SessionManager(requireContext()).setAuthToken(it.token ?: "")
                                     findNavController().navigate(R.id.notificationFragment)
                                 } else if (selectedType.equals(AppConstant.AGENT)) {
                                     showAlertDialog(
@@ -286,6 +276,7 @@ class OTPFragment : Fragment() {
                         }
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
+                            LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
                         }
                         else -> {
 
@@ -317,17 +308,18 @@ class OTPFragment : Fragment() {
                             LoadingUtils.hide(requireActivity())
 
                             val response = result.data ?: return@collect
-                            val user = response.user ?: return@collect
+                            val user = response.user
 
                             when (selectedType) {
                                 AppConstant.USER -> handleUserLogin(response)
                                 AppConstant.MERCHANT -> {
-                                    if(response?.user?.verification_status ==1){
+                                    if(response.user.verification_status ==1){
                                     SessionManager(requireContext()).apply {
-                                        setAuthToken(response.token ?: "")
+                                        setAuthToken(response.token)
                                         setFirstName(user.first_name ?: "")
                                         setLastName(user.last_name ?: "")
                                         setPhoneNumber(user.phone ?: "")
+                                        setIsLogin(true)
                                     }
                                     }
                                     handleVerificationStatus(
@@ -336,12 +328,13 @@ class OTPFragment : Fragment() {
                                     )
                                 }
                                 AppConstant.AGENT -> {
-                                    if(response?.user?.verification_status ==1){
+                                    if(response.user?.verification_status ==1){
                                         SessionManager(requireContext()).apply {
-                                            setAuthToken(response.token ?: "")
+                                            setAuthToken(response.token)
                                             setFirstName(user.first_name ?: "")
                                             setLastName(user.last_name ?: "")
                                             setPhoneNumber(user.phone ?: "")
+                                            setIsLogin(true)
                                         }
                                     }
                                     handleVerificationStatus(
@@ -356,6 +349,7 @@ class OTPFragment : Fragment() {
                                             setFirstName(user.first_name ?: "")
                                             setLastName(user.last_name ?: "")
                                             setPhoneNumber(user.phone ?: "")
+                                             setIsLogin(true)
                                         }
                                     }
                                     handleVerificationStatus(
@@ -385,13 +379,14 @@ class OTPFragment : Fragment() {
 
     // helper to persist user and navigate for normal user
     private fun handleUserLogin(response: LoginModel) {
-        val user = response.user ?: return
+        val user = response.user
 
         SessionManager(requireContext()).apply {
-            setAuthToken(response.token ?: "")
+            setAuthToken(response.token)
             setFirstName(user.first_name ?: "")
             setLastName(user.last_name ?: "")
             setPhoneNumber(user.phone ?: "")
+            setIsLogin(true)
         }
 
         findNavController().navigate(R.id.userWelcomeFragment)

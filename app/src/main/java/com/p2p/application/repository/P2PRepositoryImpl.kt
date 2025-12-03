@@ -13,6 +13,8 @@ import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Field
 import javax.inject.Inject
 
@@ -303,6 +305,35 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             emit(NetworkResult.Error(AppConstant.serverError))
         }
 
+    }
+
+    override suspend fun merchantVerification(
+        businessIdList: ArrayList<MultipartBody.Part>?,
+        List: ArrayList<MultipartBody.Part>?,
+        pdfList: ArrayList<MultipartBody.Part>?,
+        profileImage: MultipartBody.Part?,
+        userType: RequestBody
+    ): Flow<NetworkResult<String>> = flow {
+        try {
+            api.merchantVerification(businessIdList, List,pdfList, profileImage, userType).apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+
+                            val message = resp.get("message").asString
+                            emit(NetworkResult.Success<String>(message))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
     }
 
 

@@ -11,8 +11,11 @@ import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Field
+import retrofit2.http.Part
 
 interface P2PRepository {
     suspend fun sendOtp(@Field("phone")phone :String,@Field("user_type")userType :String?,
@@ -65,5 +68,14 @@ interface P2PRepository {
     suspend fun resendOtp(@Field("phone")phone :String,@Field("user_type")userType :String?,
                         @Field("countryCode")countryCode :String ,@Field("apiType") apiType :String,
     ) :Flow<NetworkResult<String>>
+
+
+    suspend fun merchantVerification(
+        @Part businessIdList : ArrayList<MultipartBody.Part>?,
+        @Part List : ArrayList<MultipartBody.Part>?,
+        @Part pdfList : ArrayList<MultipartBody.Part>?,
+        @Part profileImage: MultipartBody.Part?,
+        @Part("user_type") userType : RequestBody
+    ): Flow<NetworkResult<String>>
 
 }

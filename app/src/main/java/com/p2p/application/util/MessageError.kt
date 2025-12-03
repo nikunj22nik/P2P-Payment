@@ -20,6 +20,9 @@ class MessageError {
         const val OTP_NOT_MATCH:String ="Otp Not Matched"
         const val SECRET_CODE:String ="Code Can't be empty"
         const val CODE_NOT_MATCH:String ="Code Not Matched"
-
+        const val UPLOAD_BUSINESS_ID ="Please Upload Business Id."
+        const val UPLOAD_BUSINESS_Register ="Please Upload Business Registration Document."
+        val UPLOAD_TAX_ID ="Please Upload Your Tax Verification Document."
+        val UPLOAD_BUSINESS_LOGO= "Please Upload Your Business logo."
     }
 }
