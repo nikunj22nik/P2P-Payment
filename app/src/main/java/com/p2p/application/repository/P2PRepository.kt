@@ -46,6 +46,8 @@ interface P2PRepository {
 
     suspend fun recentPeopleRequest() :Flow<NetworkResult<RecentPeopleModel>>
 
+    suspend fun balanceRequest() :Flow<NetworkResult<String>>
+
 
     suspend fun register(
         @Field("firstName") firstName :String,

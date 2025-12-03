@@ -76,7 +76,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
 
 
         homeApi()
-        
+
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
             if (selectedType.equals(MessageError.AGENT,true)){
                 binding.tvHeader.text = "Welcome Agent"

@@ -31,5 +31,8 @@ class NumberViewModel @Inject constructor(private var repository: P2PRepository)
         return repository.searchNewNumberRequest(phone,countryCode,apiType)
     }
 
+    suspend fun balanceRequest() : Flow<NetworkResult<String>>{
+        return repository.balanceRequest()
+    }
 
 }
