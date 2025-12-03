@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ import com.p2p.application.databinding.FragmentSettingBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.countrymodel.Country
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -54,6 +56,9 @@ class ForgotCodeFragment : Fragment() ,ItemClickListener{
         sessionManager= SessionManager(requireContext())
         screenType=arguments?.getString("screenType","")?:""
         viewModel = ViewModelProvider(requireActivity())[SendOtpForgotSecretViewModel::class.java]
+
+
+
 
         return binding.root
     }
@@ -88,12 +93,38 @@ class ForgotCodeFragment : Fragment() ,ItemClickListener{
         binding.btnSend.setOnClickListener {
             if (isOnline(requireContext())){
                 if (validation()){
-                    val bundle = Bundle();
-                    bundle.putString("screenType", screenType)
-                    findNavController().navigate(R.id.forgotCodeOtpVerifyFragment,bundle)
+                    sendOtp()
                 }
             }else{
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
+        }
+    }
+
+    private fun sendOtp(){
+        lifecycleScope.launch {
+            val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
+            val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
+            show(requireActivity())
+            viewModel.sendSecretCodeRequest( countryCode,binding.edPhone.text.toString() , type).collect {
+                hide(requireActivity())
+                when(it){
+                    is NetworkResult.Success ->{
+                        val otp = it.data
+                        val bundle = bundleOf("screenType" to screenType,
+                            "phone_number" to binding.edPhone.text.toString(),
+                            "otp" to otp,
+                            "country_code" to countryCode
+                        )
+                        findNavController().navigate(R.id.forgotCodeOtpVerifyFragment, bundle)
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
             }
         }
     }

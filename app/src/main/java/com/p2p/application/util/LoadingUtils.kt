@@ -37,7 +37,7 @@ class LoadingUtils {
             dialog.window!!.attributes = layoutParams
             val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
             val tvSubHeader: TextView =dialog.findViewById(R.id.tvSms)
-            tvSubHeader.text=text
+            tvSubHeader.text=ensurePeriod(text)
             btnOk.setOnClickListener {
                 dialog.dismiss()
             }
@@ -96,6 +96,13 @@ class LoadingUtils {
                 }
                 else -> false
             }
+        }
+
+        fun toInitials(name: String): String {
+            return name.trim()
+                .split("\\s+".toRegex())
+                .filter { it.isNotEmpty() }
+                .joinToString("") { it[0].uppercase() }
         }
 
     fun ensurePeriod(input: String): String {

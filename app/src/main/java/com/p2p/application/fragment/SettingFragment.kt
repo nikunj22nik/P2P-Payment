@@ -21,32 +21,26 @@ import com.p2p.application.R
 import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentSettingBinding
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils.Companion.toInitials
 import com.p2p.application.util.SessionManager
 
-
 class SettingFragment : Fragment() {
-
     private lateinit var binding: FragmentSettingBinding
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
-
+        setValueFromSession()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.tvUserType.text = selectedType
-
         binding.layswitch.setOnClickListener {
           showAlertSwitch()
         }
@@ -73,14 +67,18 @@ class SettingFragment : Fragment() {
         binding.btnTransaction.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
-
-
         if (selectedType.equals(AppConstant.MERCHANT,true)){
             binding.btnAccountLimit.visibility = View.GONE
+            binding.btnEditCode.visibility = View.GONE
         }
-
     }
 
+    private fun setValueFromSession(){
+        val name = sessionManager.getFirstName() +" "+ sessionManager.getLastName()
+        binding.tvName.text = name
+        binding.tvNumbar.text = sessionManager.getPhoneNumber()
+        binding.tvShortName.text = toInitials(name)
+    }
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -91,8 +89,6 @@ class SettingFragment : Fragment() {
             }
         )
     }
-
-
     fun showAlertSwitch(){
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogWeight.setContentView(R.layout.switch_alert)
@@ -109,7 +105,6 @@ class SettingFragment : Fragment() {
         }
         dialogWeight.show()
     }
-
     fun alertSessionClear(viewType: String){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
@@ -126,7 +121,6 @@ class SettingFragment : Fragment() {
         val imgCross: ImageView =dialog.findViewById(R.id.imgcross)
         val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
         val btnNo: LinearLayout =dialog.findViewById(R.id.btnNo)
-
         imgCross.setOnClickListener {
             dialog.dismiss()
         }
@@ -140,7 +134,6 @@ class SettingFragment : Fragment() {
         btnNo.setOnClickListener {
             dialog.dismiss()
         }
-
         dialog.show()
     }
 

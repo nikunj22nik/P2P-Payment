@@ -8,8 +8,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +17,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -31,17 +32,25 @@ import com.p2p.application.R
 import com.p2p.application.adapter.AdapterHomeTransaction
 import com.p2p.application.adapter.AdapterMerchant
 import com.p2p.application.databinding.FragmentUserWelcomeBinding
+import com.p2p.application.di.NetworkResult
+import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.hide
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.show
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.core.graphics.toColorInt
-import com.p2p.application.listener.ItemClickListener
 
+@AndroidEntryPoint
 class WelcomeFragment : Fragment(), ItemClickListener {
 
     private lateinit var binding: FragmentUserWelcomeBinding
+    private lateinit var viewModel: HomeViewModel
     private lateinit var adapter: AdapterHomeTransaction
     private lateinit var adapterMerchant: AdapterMerchant
     private lateinit var sessionManager: SessionManager
@@ -58,6 +67,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         binding = FragmentUserWelcomeBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
         selectedType=sessionManager.getLoginType()?:""
+        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
         adapter=AdapterHomeTransaction(requireContext(),this)
         adapterMerchant=AdapterMerchant(requireContext())
         binding.itemRcy.adapter=adapter
@@ -65,6 +75,8 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         handleBackPress()
 
 
+        homeApi()
+        
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
             if (selectedType.equals(MessageError.AGENT,true)){
                 binding.tvHeader.text = "Welcome Agent"
@@ -179,6 +191,32 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
+        }
+    }
+
+
+    private fun homeApi(){
+        if (isOnline(requireContext())) {
+            show(requireActivity())
+            lifecycleScope.launch {
+                viewModel.homeRequest().collect {
+                    hide(requireActivity())
+                    when(it){
+                        is NetworkResult.Success ->{
+                            val dataModel = it.data?.data
+                            Log.d("Api Response", "*****$dataModel")
+                        }
+                        is NetworkResult.Error ->{
+                            LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                        }
+                        is NetworkResult.Loading -> {
+                            // optional: loading indicator dismayed
+                        }
+                    }
+                }
+            }
+        } else {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
 

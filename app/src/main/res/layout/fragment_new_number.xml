@@ -89,15 +89,18 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center">
             <LinearLayout
+                android:id="@+id/layCountry"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <ImageView
+                    android:id="@+id/imgIcon"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_5sdp"
                     android:src="@drawable/countryicon"
                     android:layout_height="@dimen/_15sdp"/>
                 <TextView
+                    android:id="@+id/tvCountryCode"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -108,11 +111,14 @@
                     app:drawableEndCompat="@drawable/icondown" />
             </LinearLayout>
             <EditText
+                android:id="@+id/edUser"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/_10sdp"
-                android:hint="Search users, phone numbers, etc."
+                android:textSize="@dimen/_13sdp"
+                android:hint="Phone numbers"
                 android:background="@null"
+                android:inputType="number"
+                android:singleLine="true"
                 android:textColor="#696969"
                 android:textColorHint="#696969"
                 android:paddingHorizontal="@dimen/_5sdp"
@@ -122,8 +128,53 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+
             android:background="#696969"
             android:layout_marginHorizontal="@dimen/_15sdp"/>
+
+        <LinearLayout
+            android:id="@+id/layRecentPeople"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:textColor="#121212"
+                android:textSize="@dimen/_15sdp"
+                android:text="People"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcyPeople"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layTransaction"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/refreshicon"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_10sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:textColor="#121212"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:textSize="@dimen/_15sdp"
+                android:drawableEnd="@drawable/rightarrowicon"
+                android:text="See transaction history"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

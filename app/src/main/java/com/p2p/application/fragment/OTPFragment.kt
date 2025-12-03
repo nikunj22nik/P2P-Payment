@@ -72,9 +72,8 @@ class OTPFragment : Fragment() {
         startTime()
         binding.btnVerify.setOnClickListener {
 
-            if(getOtp().equals(otp)){
+            if(getOtp().equals(otp,true)){
                 callingCreateAccount()
-
             }else{
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.OTP_NOT_MATCH)
             }
@@ -90,7 +89,7 @@ class OTPFragment : Fragment() {
     }
 
     private fun extractingParameter(){
-        if(screenType.equals("Registration")){
+        if(screenType.equals("Registration",true)){
             countryCode = arguments?.getString("country_code")?:""
             firstName = arguments?.getString("firstName")?:""
             lastName = arguments?.getString("lastName")?:""
@@ -114,25 +113,25 @@ class OTPFragment : Fragment() {
         layoutParams.copyFrom(dialog?.window!!.attributes)
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
-        dialog.window!!.attributes = layoutParams
+        dialog.window?.attributes = layoutParams
         val btnContinue: LinearLayout =dialog.findViewById(R.id.btnContinue)
         val tvSubHeader: TextView =dialog.findViewById(R.id.tvSubHeader)
-        val tvContent : TextView = dialog.findViewById<TextView>(R.id.tvContent)
-        val tvHeader : TextView = dialog.findViewById<TextView>(R.id.tvHeader)
-        val btnTv : TextView = dialog.findViewById<TextView>(R.id.tvBtn)
-        val logo : ImageView = dialog.findViewById<ImageView>(R.id.logo)
-          tvContent.text =content
-         tvHeader.text = header
-
-
-        btnTv.setText(buttonContent)
-
+        val tvContent : TextView = dialog.findViewById(R.id.tvContent)
+        val tvHeader : TextView = dialog.findViewById(R.id.tvHeader)
+        val btnTv : TextView = dialog.findViewById(R.id.tvBtn)
+        val logo : ImageView = dialog.findViewById(R.id.logo)
+        tvContent.text =content
+        tvHeader.text = header
+        btnTv.text = buttonContent
+        if (subheader.equals("",true)){
+            tvSubHeader.visibility = View.GONE
+        }else{
+            tvSubHeader.visibility = View.VISIBLE
+        }
         tvSubHeader.text= subheader
-
-
         btnContinue.setOnClickListener {
             dialog.dismiss()
-            if(selectedType.equals(AppConstant.USER)){
+            if(selectedType.equals(AppConstant.USER,true)){
                 sessionManager.setIsLogin(true)
                 findNavController().navigate(R.id.secretCodeFragment)
             }else{
@@ -151,23 +150,22 @@ class OTPFragment : Fragment() {
                 when(it){
                     is NetworkResult.Success ->{
                         LoadingUtils.hide(requireActivity())
-                        val obj = it.data
-                        it.data?.let {
-                            if(selectedType.equals(AppConstant.USER)) {
-                                SessionManager(requireContext()).setAuthToken(it.token ?: "")
-                                SessionManager(requireContext()).setFirstName(it.user?.first_name?:"")
-                                SessionManager(requireContext()).setLastName(it.user?.first_name?:"")
-                                SessionManager(requireContext()).setPhoneNumber(it.user?.phone?:"")
+                        it.data?.let { userData->
+                            if(selectedType.equals(AppConstant.USER,true)) {
+                                SessionManager(requireContext()).setAuthToken(userData.token ?: "")
+                                SessionManager(requireContext()).setFirstName(userData.user?.first_name?:"")
+                                SessionManager(requireContext()).setLastName(userData.user?.last_name?:"")
+                                SessionManager(requireContext()).setPhoneNumber(userData.user?.phone?:"")
                                 showAlertDialog("Account Created !","","Your user account has been created successfully.","Continue")
                             }
-                            else if(selectedType.equals(AppConstant.MERCHANT)){
+                            else if(selectedType.equals(AppConstant.MERCHANT,true)){
                                 findNavController().navigate(R.id.notificationFragment)
                             }
-                            else if(selectedType.equals(AppConstant.AGENT)){
+                            else if(selectedType.equals(AppConstant.AGENT,true)){
                                 showAlertDialog("Registration Successful!","Please wait while we verify your details.",
                                     "You will be notified once your agent account is approved by Many Mobile Money.","Go to Login")
                             }
-                            else if(selectedType.equals(AppConstant.MASTER_AGENT)){
+                            else if(selectedType.equals(AppConstant.MASTER_AGENT,true)){
                                 showAlertDialog("Registration Successful!","Please wait while we verify your details.","You will be notified once your\n" +
                                         "Master Agent account is approved by Many Mobile Money.","Go to Login")
                             }
@@ -234,7 +232,6 @@ class OTPFragment : Fragment() {
         val timeLeftFormatted = String.format(Locale.getDefault(), "%02d", seconds)
         binding.tvResend.text = "Resend in $timeLeftFormatted sec"
     }
-
 
     private fun fetchToken() {
         FirebaseMessaging.getInstance().token
