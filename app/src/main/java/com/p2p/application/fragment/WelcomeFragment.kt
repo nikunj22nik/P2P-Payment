@@ -104,6 +104,10 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            homeApi()
+        }
     }
 
 
@@ -217,6 +221,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             lifecycleScope.launch {
                 viewModel.homeRequest().collect {
                     hide(requireActivity())
+                    binding.swipeRefresh.isRefreshing = false
                     when(it){
                         is NetworkResult.Success ->{
                             it.data?.data?.let { data->
@@ -241,6 +246,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private fun showUIData(){
         dataHome?.let { data ->
             binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")
+            transactionsList.clear()
             data.transactions?.let { list->
                 transactionsList.addAll(list)
             }
@@ -251,14 +257,11 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             }else{
                 showNoData()
             }
-
-
-           /* if (selectedType.equals(MessageError.USER,true) || selectedType.equals(MessageError.AGENT,true)) {
+           /*if (selectedType.equals(MessageError.USER,true) || selectedType.equals(MessageError.AGENT,true)) {
                 if(data.secret_code_status){
                     findNavController().navigate(R.id.secretCodeFragment)
                 }
             }*/
-
         }
     }
 
@@ -303,7 +306,6 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             showAlertPayMerchant()
         }
         dialogWeight.show()
-
     }
 
     fun showAlertSend(){
@@ -312,19 +314,15 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialogSend.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialogSend.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         dialogSend.window?.setGravity(Gravity.BOTTOM)
-
         val bottomSheet = dialogSend.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val layNumber = dialogSend.findViewById<LinearLayout>(R.id.layNumber)
         val layContact = dialogSend.findViewById<LinearLayout>(R.id.layContact)
-
-
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
-            behavior.isHideable = true // Prevent swipe down to hide
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED // Fully expand
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
         }
-
         layContact?.setOnClickListener {
             askContactPermission()
         }
@@ -390,7 +388,6 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
 
     }
-
     private fun showAlertContact() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -410,8 +407,6 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialog.window?.setGravity(Gravity.CENTER)
         dialog.show()
     }
-
-
     override fun onResume() {
         super.onResume()
         if (openedSettings){
@@ -420,6 +415,4 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
         sessionManager.setIsWelcome(false)
     }
-
-
 }

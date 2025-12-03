@@ -26,6 +26,7 @@ import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.countrymodel.Country
+import com.p2p.application.model.recentpepole.RecentPeople
 import com.p2p.application.model.recentpepole.Data
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
@@ -53,7 +54,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     private lateinit var adapter: AdapterCountry
     private lateinit var adapterPeople: AdapterRecentPeople
     private var countryList: MutableList<Country> = mutableListOf()
-    private var peopleList: MutableList<Data> = mutableListOf()
+    private var peopleList: MutableList<RecentPeople> = mutableListOf()
     private lateinit var textListener: TextWatcher
     private var textChangedJob: Job? = null
     private var searchFor = ""
@@ -151,22 +152,23 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     }
     private fun loadRecentPeople(){
         if (isOnline(requireContext())){
-            balanceRequest()
             show(requireActivity())
             lifecycleScope.launch {
                 viewModel.recentPeopleRequest().collect { result ->
                     hide(requireActivity())
                     when (result) {
                         is NetworkResult.Success -> {
-                            result.data?.data?.let {
+                            peopleList.clear()
+                            result.data?.data?.recent_people?.let {
                                 peopleList.addAll(it)
                             }
-                            adapterPeople.updateData(peopleList)
                             if (peopleList.isNotEmpty()){
+                                adapterPeople.updateData(peopleList)
                                 binding.layRecentPeople.visibility = View.VISIBLE
                             }else{
                                 binding.layRecentPeople.visibility = View.GONE
                             }
+                            binding.tvBalance.text = (result.data?.data?.wallet?.balance?:"")+" "+(result.data?.data?.wallet?.currency?:"")
                         }
                         is NetworkResult.Error -> {
                             binding.layRecentPeople.visibility = View.GONE
@@ -182,27 +184,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         }
     }
 
-    private fun balanceRequest(){
-        lifecycleScope.launch {
-            viewModel.balanceRequest().collect { result ->
-                hide(requireActivity())
-                when (result) {
-                    is NetworkResult.Success -> {
-                        result.data?.let {
-                            binding.tvBalance.text = it
-                        }
-                    }
-                    is NetworkResult.Error -> {
-                        Log.d("Api Error ","******"+result.message.toString())
-                        binding.tvBalance.text = "0"
-                    }
-                    is NetworkResult.Loading -> {
-                        // optional: loading indicator dismayed
-                    }
-                }
-            }
-        }
-    }
     private fun countryListApi() {
         show(requireActivity())
         lifecycleScope.launch {

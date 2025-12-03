@@ -231,7 +231,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                             ""
                         }
                         val balance = if (data.has("balance") && !data.get("balance").isJsonNull) {
-                            data.get("balance").asString + currency
+                            data.get("balance").asString +" "+ currency
                         } else {
                             "0"
                         }

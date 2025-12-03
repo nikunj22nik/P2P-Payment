@@ -41,6 +41,7 @@ class AdapterHomeTransaction(
         holder.binding.tvDate.text = formatTime(data.created_at?:"")
         data.transaction_type?.let { type->
             if (type.equals("debit",true)){
+                holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
                 holder.binding.price.text = "-"+(data.amount?:"")+" "+ (data.currency?:"")
                 data.user?.business_logo?.let { url->
                     holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
@@ -49,6 +50,20 @@ class AdapterHomeTransaction(
                         .into(holder.binding.imageProfile)
                 }?:run {
                     holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                    Glide.with(requireActivity)
+                        .load(R.drawable.transfericon)
+                        .into(holder.binding.imageProfile)
+                }
+            }else{
+                holder.binding.tvName.setTextColor(Color.parseColor("#03B961"))
+                holder.binding.price.text = "-"+(data.amount?:"")+" "+ (data.currency?:"")
+                data.user?.business_logo?.let { url->
+                    holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
+                    Glide.with(requireActivity)
+                        .load(BuildConfig.MEDIA_URL+url)
+                        .into(holder.binding.imageProfile)
+                }?:run {
+                    holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     Glide.with(requireActivity)
                         .load(R.drawable.transfericon)
                         .into(holder.binding.imageProfile)
@@ -71,7 +86,6 @@ class AdapterHomeTransaction(
         transactionsList = list
         notifyDataSetChanged()
     }
-
     class ViewHolder(var binding: ItemHomeTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
     }
 

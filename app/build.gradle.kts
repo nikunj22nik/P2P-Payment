@@ -127,4 +127,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.5.1")) // example: latest BOM
     implementation("com.google.firebase:firebase-messaging-ktx")
 
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 }
