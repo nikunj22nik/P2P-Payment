@@ -44,9 +44,11 @@ class TransactionFragment : Fragment() {
         if (selectedType.equals(AppConstant.MASTER_AGENT,true)){
             binding.layShow.visibility = View.GONE
             binding.imgQuestion.visibility = View.VISIBLE
+            binding.layHide.visibility = View.VISIBLE
         }else{
             binding.layShow.visibility = View.VISIBLE
             binding.imgQuestion.visibility = View.VISIBLE
+            binding.layHide.visibility = View.GONE
         }
 
         val items = listOf(
@@ -69,17 +71,9 @@ class TransactionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
-
-
-
-
-
-
 
     }
 
