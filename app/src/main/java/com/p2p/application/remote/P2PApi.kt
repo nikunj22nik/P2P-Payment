@@ -1,6 +1,8 @@
 package com.p2p.application.remote
 
 import com.google.gson.JsonObject
+import com.p2p.application.di.NetworkResult
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -44,6 +46,17 @@ interface P2PApi {
         @Field("fcm_token") fcmToken :String
     ) : Response<JsonObject>
 
+
+    @POST("login")
+    @FormUrlEncoded
+    suspend fun login(
+        @Field("phone") phone :String,
+        @Field("otp") otp:String,
+        @Field("countryCode") countryCode :String,
+        @Field("user_type") userType :String,
+        @Field("fcm_token") fcmToken :String
+    ) : Response<JsonObject>
+
     @POST("set_edit_secret_code")
     @FormUrlEncoded
     suspend fun setSecretCodeRequest(
@@ -77,6 +90,13 @@ interface P2PApi {
     ) : Response<JsonObject>
 
 
+    @POST("send_otp")
+    @FormUrlEncoded
+    suspend fun resendOtp(@Field("phone")phone :String,
+                        @Field("user_type")userType :String?,
+                        @Field("countryCode")countryCode :String ,
+                        @Field("apiType") apiType :String,
+    ) :Response<JsonObject>
 
 
   }

@@ -37,6 +37,16 @@ class SessionManager(var context: Context) {
         editor?.commit()
     }
 
+    fun setIsWelcome(value: Boolean) {
+        editor?.putBoolean("WELCOME", value)
+        editor?.apply()
+    }
+
+    fun getIsWelcome(): Boolean {
+        return pref?.getBoolean("WELCOME", false) ?: false
+    }
+
+
     fun setFirstName(name :String){
         editor?.putString(AppConstant.NAME, name)
         editor?.commit()
