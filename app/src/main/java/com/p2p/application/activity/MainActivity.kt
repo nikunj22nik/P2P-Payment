@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         if (sessionManager.getIsLogin()?:false){
             navGraph.setStartDestination(R.id.userWelcomeFragment)
         }else{
-            navGraph.setStartDestination(R.id.loginFragment)
+            navGraph.setStartDestination(R.id.accountTypeFragment)
         }
         navController.graph = navGraph
     }

@@ -2,6 +2,8 @@ package com.p2p.application.repository
 
 import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.LoginModel
+import com.p2p.application.model.LoginUserModel
 import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.util.AppConstant
@@ -12,7 +14,7 @@ import retrofit2.http.Field
 
 interface P2PRepository {
     suspend fun sendOtp(@Field("phone")phone :String,@Field("user_type")userType :String?,
-                        @Field("country_code")countryCode :String ,@Field("apiType") apiType :String,
+                        @Field("countryCode")countryCode :String ,@Field("apiType") apiType :String,
     ) :Flow<NetworkResult<String>>
 
 
@@ -22,13 +24,23 @@ interface P2PRepository {
     suspend fun register(
         @Field("firstName") firstName :String,
         @Field("lastName") lastName :String,
-        @Field("CountryCode") countryCode :String,
+        @Field("countryCode") countryCode :String,
         @Field("phone") phone :String,
         @Field("otp") otp :String,
         @Field("user_type") userType :String,
         @Field("fcm_token") fcmToken :String
     ) :Flow<NetworkResult<RegisterResponse>>
 
+    suspend fun login(
+        @Field("phone") phone :String,
+        @Field("otp") otp:String,
+        @Field("countryCode") countryCode :String,
+        @Field("user_type") userType :String,
+        @Field("fcm_token") fcmToken :String
+    ) :Flow<NetworkResult<LoginModel>>
 
+    suspend fun resendOtp(@Field("phone")phone :String,@Field("user_type")userType :String?,
+                        @Field("countryCode")countryCode :String ,@Field("apiType") apiType :String,
+    ) :Flow<NetworkResult<String>>
 
 }

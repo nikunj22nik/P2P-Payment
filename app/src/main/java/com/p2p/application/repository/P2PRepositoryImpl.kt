@@ -3,6 +3,8 @@ package com.p2p.application.repository
 
 import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.LoginModel
+import com.p2p.application.model.LoginUserModel
 import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.remote.P2PApi
@@ -91,6 +93,64 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         catch (e: Exception) {
             emit(NetworkResult.Error(AppConstant.serverError))
         }
+    }
+
+    override suspend fun login(
+        phone: String,
+        otp: String,
+        countryCode: String,
+        userType: String,
+        fcmToken: String
+    ): Flow<NetworkResult<LoginModel>> =flow{
+        try {
+            api.login(phone, otp, countryCode, userType,fcmToken).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                        val data = resp.get("data").asJsonObject
+                        var loginResponse = Gson().fromJson(data, LoginModel::class.java)
+                        emit(NetworkResult.Success<LoginModel>(loginResponse))
+                    } else {
+                        emit(NetworkResult.Error(resp.get("message").asString))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun resendOtp(
+        phone: String,
+        userType: String?,
+        countryCode: String,
+        apiType: String
+    ): Flow<NetworkResult<String>> =flow{
+        try {
+            api.sendOtp(phone, userType, countryCode, apiType).apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+                            val obj = resp.get("data").asJsonObject
+                            val otp = obj.get("otp").asInt
+                            emit(NetworkResult.Success<String>(otp.toString()))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+
     }
 
 

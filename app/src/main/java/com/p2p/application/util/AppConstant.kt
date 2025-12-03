@@ -21,7 +21,9 @@ class AppConstant {
         val NAME ="name"
         val LASTNAME ="last_name"
         val phoneNumber ="phone_number"
-
+        val BACK_TO_LOGIN ="Back to Login"
+        val BACK_TO_HOME ="Back to Home"
+        val TRY_AGAIN ="Try Again"
         fun mapperType(value: String?): String {
             return when (value) {
                 USER -> "user"

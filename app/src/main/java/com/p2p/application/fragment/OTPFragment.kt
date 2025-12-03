@@ -24,8 +24,10 @@ import com.p2p.application.Error.ErrorHandler
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.LoginModel
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.OtpViewModel
@@ -58,24 +60,34 @@ class OTPFragment : Fragment() {
     ): View {
         binding = FragmentOTPBinding.inflate(layoutInflater, container, false)
         screenType = arguments?.getString("screenType") ?: ""
+
         sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[OtpViewModel::class.java]
         selectedType = sessionManager.getLoginType().orEmpty()
+        viewModel.screenType = screenType
          extractingParameter()
+          callingResendTask()
         return binding.root
     }
 
+    fun callingResendTask(){
+        binding.btnRegister.setOnClickListener {
+            otp =""
+            viewModel.otp =""
+            callingResendOtp()
+
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
         startTime()
         binding.btnVerify.setOnClickListener {
-
-            if(getOtp().equals(otp)){
-                callingCreateAccount()
-
-            }else{
+            if (getOtp().equals( viewModel.otp)) {
+                if (viewModel.screenType.equals("Registration", true))  callingCreateAccount()
+                else callingLoginApi()
+            } else {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.OTP_NOT_MATCH)
             }
 
@@ -89,24 +101,63 @@ class OTPFragment : Fragment() {
         }
     }
 
+    private fun callingResendOtp(){
+        lifecycleScope.launch {
+            val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
+             val screenType = if(viewModel.screenType.equals("Registration")) "registration" else "login"
+            LoadingUtils.show(requireActivity())
+            viewModel.resendOtp( viewModel.phoneNumber,type, viewModel.countryCode,screenType).collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                        LoadingUtils.hide(requireActivity())
+                        startTime()
+                      val currentOtp = it.data
+                        if (currentOtp != null) {
+                            otp= currentOtp
+                            viewModel.otp = currentOtp
+                        }
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                        LoadingUtils.showErrorDialog(requireActivity(),it.message.toString())
+                    }
+                    else->{
+                    }
+                }
+
+            }
+        }
+    }
+
     private fun extractingParameter(){
-        if(screenType.equals("Registration")){
+        if(viewModel.screenType.equals("Registration")){
             countryCode = arguments?.getString("country_code")?:""
             firstName = arguments?.getString("firstName")?:""
             lastName = arguments?.getString("lastName")?:""
             phoneNumber = arguments?.getString("phone_number")?:""
             otp = arguments?.getString("otp")?:""
+
+            viewModel.countryCode =countryCode
+            viewModel.firstName = firstName
+            viewModel.lastName = lastName
+            viewModel.otp = otp
+            viewModel.phoneNumber = phoneNumber
         }else{
             countryCode = arguments?.getString("country_code")?:""
             phoneNumber = arguments?.getString("phone_number")?:""
             otp = arguments?.getString("otp")?:""
+
+            viewModel.countryCode =countryCode
+            viewModel.otp = otp
+            viewModel.phoneNumber = phoneNumber
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun showAlertDialog(header:String, subheader:String,
                                 content:String,
-                                buttonContent:String){
+                                buttonContent:String,
+                                iconRes: Int){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
         dialog?.setContentView(R.layout.account_create_alert)
@@ -121,9 +172,11 @@ class OTPFragment : Fragment() {
         val tvHeader : TextView = dialog.findViewById<TextView>(R.id.tvHeader)
         val btnTv : TextView = dialog.findViewById<TextView>(R.id.tvBtn)
         val logo : ImageView = dialog.findViewById<ImageView>(R.id.logo)
+        logo.setImageResource(iconRes)
           tvContent.text =content
          tvHeader.text = header
 
+        if(subheader.isEmpty())tvSubHeader.visibility =View.GONE
 
         btnTv.setText(buttonContent)
 
@@ -132,58 +185,291 @@ class OTPFragment : Fragment() {
 
         btnContinue.setOnClickListener {
             dialog.dismiss()
-            if(selectedType.equals(AppConstant.USER)){
-                sessionManager.setIsLogin(true)
-                findNavController().navigate(R.id.secretCodeFragment)
-            }else{
-                 findNavController().navigate(R.id.loginFragment)
+            if (viewModel.screenType.equals("Registration", true)) {
+                if (selectedType.equals(AppConstant.USER)) {
+                    sessionManager.setIsLogin(true)
+                    findNavController().navigate(R.id.secretCodeFragment)
+                } else {
+                    findNavController().navigate(R.id.loginFragment)
+                }
+            }
+            else{
+                if(buttonContent.equals(AppConstant.BACK_TO_HOME)){
+                   findNavController().navigate(R.id.userWelcomeFragment)
+                }
+                else if(buttonContent.equals(AppConstant.BACK_TO_LOGIN)){
+                    findNavController().navigate(R.id.loginFragment)
+              }
+                else if(buttonContent.equals(AppConstant.TRY_AGAIN)){
+                   findNavController().navigate(R.id.createAccountFragment)
+              }
             }
         }
+
         dialog.show()
     }
 
 
     private fun callingCreateAccount(){
-        lifecycleScope.launch {
-            val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
-            LoadingUtils.show(requireActivity())
-            viewModel.register(firstName,lastName,countryCode,phoneNumber,otp,type,fcmToken).collect {
-                when(it){
-                    is NetworkResult.Success ->{
-                        LoadingUtils.hide(requireActivity())
-                        val obj = it.data
-                        it.data?.let {
-                            if(selectedType.equals(AppConstant.USER)) {
-                                SessionManager(requireContext()).setAuthToken(it.token ?: "")
-                                SessionManager(requireContext()).setFirstName(it.user?.first_name?:"")
-                                SessionManager(requireContext()).setLastName(it.user?.first_name?:"")
-                                SessionManager(requireContext()).setPhoneNumber(it.user?.phone?:"")
-                                showAlertDialog("Account Created !","","Your user account has been created successfully.","Continue")
-                            }
-                            else if(selectedType.equals(AppConstant.MERCHANT)){
-                                findNavController().navigate(R.id.notificationFragment)
-                            }
-                            else if(selectedType.equals(AppConstant.AGENT)){
-                                showAlertDialog("Registration Successful!","Please wait while we verify your details.",
-                                    "You will be notified once your agent account is approved by Many Mobile Money.","Go to Login")
-                            }
-                            else if(selectedType.equals(AppConstant.MASTER_AGENT)){
-                                showAlertDialog("Registration Successful!","Please wait while we verify your details.","You will be notified once your\n" +
-                                        "Master Agent account is approved by Many Mobile Money.","Go to Login")
+        if (isOnline(requireContext())) {
+            lifecycleScope.launch {
+                val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
+                LoadingUtils.show(requireActivity())
+                viewModel.register(
+                    viewModel.firstName,
+                    viewModel.lastName,
+                    viewModel.countryCode,
+                    viewModel.phoneNumber,
+                    viewModel.otp,
+                    type,
+                    fcmToken
+                ).collect {
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            LoadingUtils.hide(requireActivity())
+                            val obj = it.data
+                            SessionManager(requireContext()).setIsWelcome(true)
+                            it.data?.let {
+                                if (selectedType.equals(AppConstant.USER)) {
+                                    SessionManager(requireContext()).setAuthToken(it.token ?: "")
+                                    SessionManager(requireContext()).setFirstName(
+                                        it.user?.first_name ?: ""
+                                    )
+                                    SessionManager(requireContext()).setLastName(
+                                        it.user?.last_name ?: ""
+                                    )
+                                    SessionManager(requireContext()).setPhoneNumber(
+                                        it.user?.phone ?: ""
+                                    )
+                                    showAlertDialog(
+                                        "Account Created !",
+                                        "",
+                                        "Your user account has been created successfully.",
+                                        "Continue",
+                                        R.drawable.icon_park_outline_check_one
+                                    )
+                                } else if (selectedType.equals(AppConstant.MERCHANT)) {
+                                    findNavController().navigate(R.id.notificationFragment)
+                                } else if (selectedType.equals(AppConstant.AGENT)) {
+                                    showAlertDialog(
+                                        "Registration Successful!",
+                                        "Please wait while we verify your details.",
+                                        "You will be notified once your agent account is approved by Many Mobile Money.",
+                                        "Go to Login",
+                                        R.drawable.icon_park_outline_check_one
+                                    )
+                                } else if (selectedType.equals(AppConstant.MASTER_AGENT)) {
+                                    showAlertDialog(
+                                        "Registration Successful!",
+                                        "Please wait while we verify your details.",
+                                        "You will be notified once your\n" +
+                                                "Master Agent account is approved by Many Mobile Money.",
+                                        "Go to Login"
+                                        ,R.drawable.icon_park_outline_check_one
+                                    )
+                                }
                             }
                         }
-                    }
-                    is NetworkResult.Error ->{
-                        LoadingUtils.hide(requireActivity())
-                    }
-                    else ->{
 
+                        is NetworkResult.Error -> {
+                            LoadingUtils.hide(requireActivity())
+                        }
+
+                        else -> {
+
+                        }
+                    }
+
+                }
+            }
+        }else{
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+        }
+    }
+
+    private fun callingLoginApi() {
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+
+        lifecycleScope.launch {
+            LoadingUtils.show(requireActivity())
+
+            val loginType = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
+
+            viewModel.login( viewModel.phoneNumber,  viewModel.otp,  viewModel.countryCode, loginType, fcmToken)
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            LoadingUtils.hide(requireActivity())
+
+                            val response = result.data ?: return@collect
+                            val user = response.user ?: return@collect
+
+                            when (selectedType) {
+                                AppConstant.USER -> handleUserLogin(response)
+                                AppConstant.MERCHANT -> {
+                                    if(response?.user?.verification_status ==1){
+                                    SessionManager(requireContext()).apply {
+                                        setAuthToken(response.token ?: "")
+                                        setFirstName(user.first_name ?: "")
+                                        setLastName(user.last_name ?: "")
+                                        setPhoneNumber(user.phone ?: "")
+                                    }
+                                    }
+                                    handleVerificationStatus(
+                                        status = user.verification_status,
+                                        role = AppConstant.MERCHANT
+                                    )
+                                }
+                                AppConstant.AGENT -> {
+                                    if(response?.user?.verification_status ==1){
+                                        SessionManager(requireContext()).apply {
+                                            setAuthToken(response.token ?: "")
+                                            setFirstName(user.first_name ?: "")
+                                            setLastName(user.last_name ?: "")
+                                            setPhoneNumber(user.phone ?: "")
+                                        }
+                                    }
+                                    handleVerificationStatus(
+                                        status = user.verification_status,
+                                        role = AppConstant.AGENT
+                                    )
+                                }
+                                AppConstant.MASTER_AGENT -> {
+                                    if(response?.user?.verification_status ==1){
+                                        SessionManager(requireContext()).apply {
+                                            setAuthToken(response.token ?: "")
+                                            setFirstName(user.first_name ?: "")
+                                            setLastName(user.last_name ?: "")
+                                            setPhoneNumber(user.phone ?: "")
+                                        }
+                                    }
+                                    handleVerificationStatus(
+                                        status = user.verification_status,
+                                        role = AppConstant.MASTER_AGENT
+                                    )
+                                }
+                                else -> {
+
+                                    LoadingUtils.showErrorDialog(requireContext(), "Unknown user type")
+                                }
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            LoadingUtils.hide(requireActivity())
+                            LoadingUtils.showErrorDialog(requireContext(), result.message.toString())
+                        }
+
+                        is NetworkResult.Loading -> {
+                            // optionally handle
+                        }
                     }
                 }
+        }
+    }
 
+    // helper to persist user and navigate for normal user
+    private fun handleUserLogin(response: LoginModel) {
+        val user = response.user ?: return
+
+        SessionManager(requireContext()).apply {
+            setAuthToken(response.token ?: "")
+            setFirstName(user.first_name ?: "")
+            setLastName(user.last_name ?: "")
+            setPhoneNumber(user.phone ?: "")
+        }
+
+        findNavController().navigate(R.id.userWelcomeFragment)
+    }
+
+
+    private fun handleVerificationStatus(status: Int, role: String) {
+        when (role) {
+            AppConstant.MERCHANT -> {
+                when (status) {
+                    0 -> showAlertDialog(
+                        header = "Verification In Progress",
+                        subheader = "",
+                        content = "Your account is under review, and we’ll get back to you within 24–48 hours once verification is complete.",
+                        buttonContent = AppConstant.BACK_TO_LOGIN,
+                        iconRes = R.drawable.ic_verification_progress
+                    )
+                    1 -> showAlertDialog(
+                        header = "Documents Approved",
+                        subheader = "",
+                        content = "Your agent account has been verified successfully. You can now use all features.",
+                        buttonContent = AppConstant.BACK_TO_HOME,
+                        iconRes = R.drawable.ic_document_approve
+                    )
+                    2 -> showAlertDialog(
+                        header = "Documents Rejected",
+                        subheader = "",
+                        content = "Verification failed. Please re-upload valid documents.",
+                        buttonContent = AppConstant.TRY_AGAIN,
+                        iconRes = R.drawable.ic_document_rejected
+                    )
+                }
+            }
+
+            AppConstant.AGENT, AppConstant.MASTER_AGENT -> {
+                when (status) {
+                    0 -> showAlertDialog(
+                        header = "Verification In Progress",
+                        subheader = "",
+                        content = "Your account is under review, and we’ll get back to you within 24–48 hours once verification is complete.",
+                        buttonContent = AppConstant.BACK_TO_LOGIN,
+                        iconRes = R.drawable.ic_verification_progress
+                    )
+                    1 -> showAlertDialog(
+                        header = "Verification Approved",
+                        subheader = "",
+                        content = "Your agent account has been verified successfully. You can now use all features.",
+                        buttonContent = AppConstant.BACK_TO_HOME,
+                        iconRes = R.drawable.ic_document_approve
+                    )
+                    2 -> showAlertDialog(
+                        header = "Verification Rejected",
+                        subheader = "",
+                        content = "Verification failed. Please re-upload valid documents.",
+                        buttonContent = AppConstant.TRY_AGAIN,
+                        iconRes = R.drawable.ic_document_rejected
+                    )
+                }
+            }
+
+            else -> {
+
+                when (status) {
+                    0 -> showAlertDialog(
+                        header = "Verification In Progress",
+                        subheader = "",
+                        content = "Your account is under review.",
+                        buttonContent = "Back",
+                        iconRes = R.drawable.ic_verification_progress
+                    )
+                    1 -> showAlertDialog(
+                        header = "Verification Approved",
+                        subheader = "",
+                        content = "Verification completed.",
+                        buttonContent = AppConstant.BACK_TO_HOME,
+                        iconRes = R.drawable.ic_document_approve
+                    )
+                    2 -> showAlertDialog(
+                        header = "Verification Rejected",
+                        subheader = "",
+                        content = "Verification failed.",
+                        buttonContent = AppConstant.TRY_AGAIN,
+                        iconRes = R.drawable.ic_document_rejected
+                    )
+                }
             }
         }
     }
+
+
 
     private fun getOtp(): String {
         return binding.etOtp1.text.toString() +
@@ -193,16 +479,18 @@ class OTPFragment : Fragment() {
     }
 
     private fun setupOtpFields(vararg fields: EditText) {
+
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
+
             val prev = fields.getOrNull(index - 1)
 
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     when {
-                        s?.length == 1 -> next?.requestFocus()             // move next
-                        s?.isEmpty() == true -> prev?.requestFocus()        // move back
+                        s?.length == 1 -> next?.requestFocus()
+                        s?.isEmpty() == true -> prev?.requestFocus()
                     }
                 }
 
