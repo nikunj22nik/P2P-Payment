@@ -17,11 +17,8 @@ import com.p2p.application.util.SessionManager
 
 class SendMoneyFragment : Fragment() {
 
-
     private lateinit var binding: FragmentSendMoneyBinding
     private lateinit var sessionManager: SessionManager
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +27,7 @@ class SendMoneyFragment : Fragment() {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
 
-  /*      val json = arguments?.getString("receiver_json")
+  /*    val json = arguments?.getString("receiver_json")
         val receiver = Gson().fromJson(json, Receiver::class.java)
         Log.d("INSIDE_TESTING",receiver.name.toString())
 */
@@ -40,7 +37,7 @@ class SendMoneyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
