@@ -5,34 +5,51 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterToContact
 import com.p2p.application.databinding.FragmentToContactBinding
+import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.contactmodel.ContactModel
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.hide
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.show
+import com.p2p.application.util.MessageError
+import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.NumberViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class ToContactFragment : Fragment(), ItemClickListener {
     private lateinit var adapter: AdapterToContact
     private lateinit var binding: FragmentToContactBinding
+    private lateinit var viewModel : NumberViewModel
     private val readContactsPermission = 100
     private var contactsList : MutableList<ContactModel> = mutableListOf()
+    private lateinit var sessionManager: SessionManager
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentToContactBinding.inflate(layoutInflater, container, false)
+        viewModel = ViewModelProvider(this)[NumberViewModel::class.java]
+        sessionManager = SessionManager(requireContext())
         adapter=AdapterToContact(requireContext(),this,contactsList)
         binding.itemRcy.adapter=adapter
         askContactPermission()
+
+        loadBalance()
+
         return binding.root
     }
 
@@ -77,6 +94,30 @@ class ToContactFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(data: String) {
         findNavController().navigate(R.id.sendMoneyFragment)
+    }
+
+    private fun loadBalance(){
+        if (isOnline(requireContext())){
+            show(requireActivity())
+            lifecycleScope.launch {
+                viewModel.balanceRequest().collect { result ->
+                    hide(requireActivity())
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            binding.tvBalance.text = result.data.toString()
+                        }
+                        is NetworkResult.Error -> {
+                            binding.tvBalance.text = "0"
+                        }
+                        is NetworkResult.Loading -> {
+                            // optional: loading indicator dismayed
+                        }
+                    }
+                }
+            }
+        }else{
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+        }
     }
 
     private fun askContactPermission() {

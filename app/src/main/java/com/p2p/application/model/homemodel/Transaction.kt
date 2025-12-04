@@ -2,7 +2,8 @@ package com.p2p.application.model.homemodel
 
 data class Transaction(
     val amount: String?,
-    val created_at: String?,
+    val date: String?,
+    val time: String?,
     val currency: String?,
     val id: Int,
     val status: String?,

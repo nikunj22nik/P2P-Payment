@@ -133,12 +133,12 @@
                           android:text="" />
                       <ImageView
                           android:id="@+id/imgHide"
-                          android:layout_width="@dimen/_20sdp"
+                          android:layout_width="wrap_content"
                           android:contentDescription="@string/todo"
                           android:src="@drawable/eye_off"
                           android:layout_marginStart="@dimen/_10sdp"
                           android:layout_gravity="center"
-                          android:layout_height="@dimen/_15sdp"
+                          android:layout_height="wrap_content"
                           app:tint="#FFFFFF" />
                   </LinearLayout>
 
@@ -305,7 +305,8 @@
                           android:layout_gravity="center"
                           android:drawablePadding="@dimen/_5sdp"
                           android:text="@string/see_all"
-                          app:drawableEndCompat="@drawable/arrow_right_alt" />
+                          app:drawableEndCompat="@drawable/arrow_right_alt"
+                          tools:ignore="RelativeOverlap" />
                   </RelativeLayout>
                   <androidx.recyclerview.widget.RecyclerView
                       android:id="@+id/itemRcy"

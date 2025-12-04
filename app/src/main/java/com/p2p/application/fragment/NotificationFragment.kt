@@ -41,8 +41,6 @@ class NotificationFragment : Fragment() {
 
         binding.btnOn.setOnClickListener {
             askNotificationPermission()
-
-
         }
         binding.btnOff.setOnClickListener {
             if (selectedType.equals(MessageError.MERCHANT,true)){

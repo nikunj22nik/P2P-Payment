@@ -1,19 +1,16 @@
 package com.p2p.application.repository
 
-import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
-import com.p2p.application.model.LoginUserModel
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.accountlimit.AccountLimitModel
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
-import com.p2p.application.util.AppConstant
+import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.Part
 
@@ -47,6 +44,12 @@ interface P2PRepository {
     suspend fun recentPeopleRequest() :Flow<NetworkResult<RecentPeopleModel>>
 
     suspend fun balanceRequest() :Flow<NetworkResult<String>>
+    suspend fun accountLimitRequest() :Flow<NetworkResult<AccountLimitModel>>
+
+    suspend fun apiCallLogOutAndDelete(viewType: String):Flow<NetworkResult<String>>
+
+    suspend fun switchUserApiRequest(id: String,phone: String,loginType: String,fcmToken: String):Flow<NetworkResult<LoginModel>>
+    suspend fun userAccountList():Flow<NetworkResult<SwitchUserModel>>
 
 
     suspend fun register(
@@ -74,7 +77,7 @@ interface P2PRepository {
 
     suspend fun merchantVerification(
         @Part businessIdList : ArrayList<MultipartBody.Part>?,
-        @Part List : ArrayList<MultipartBody.Part>?,
+        @Part list : ArrayList<MultipartBody.Part>?,
         @Part pdfList : ArrayList<MultipartBody.Part>?,
         @Part profileImage: MultipartBody.Part?,
         @Part("user_type") userType : RequestBody

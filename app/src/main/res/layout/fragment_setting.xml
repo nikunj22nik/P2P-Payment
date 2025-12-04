@@ -28,7 +28,6 @@
             android:textColor="#0F0D1C"
             android:textSize="@dimen/_20sdp"
             android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/_15sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
             android:text="@string/settings" />
@@ -228,6 +227,7 @@
                 android:text="@string/support" />
 
             <LinearLayout
+                android:id="@+id/btnService"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_setting"
