@@ -16,4 +16,414 @@
     android:layout_centerInParent="true"
     android:src="@drawable/splashbg"/>
 
+
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:scrollbars="none"-->
+<!--        android:fillViewport="true">-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/shimmerRootContainer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:orientation="vertical"-->
+<!--            android:paddingBottom="16dp">-->
+
+<!--            &lt;!&ndash; NOTE: The 'bg_shimmer_anim' background should be defined to give the placeholder a solid color, e.g., <shape android:color="#dddddd" /> &ndash;&gt;-->
+
+<!--            &lt;!&ndash; ITEM 1 &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar1"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine1_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar1"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar1"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine1_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine1_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine1_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine1_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine1_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine1_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 2 &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar2"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine2_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar2"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar2"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine2_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine2_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine2_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine2_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine2_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine2_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 3 &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar3"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine3_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar3"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar3"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine3_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine3_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine3_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine3_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine3_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine3_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 4 &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar4"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine4_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar4"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar4"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine4_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine4_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine4_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine4_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine4_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine4_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 5 &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar5"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine5_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar5"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar5"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine5_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine5_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine5_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine5_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine5_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine5_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 6 (Additional for visual fill) &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar6"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine6_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar6"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar6"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine6_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine6_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine6_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine6_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine6_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine6_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 7 (Additional for visual fill) &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar7"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine7_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar7"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar7"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine7_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine7_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine7_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine7_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine7_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine7_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            &lt;!&ndash; ITEM 8 (Additional for visual fill) &ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="16dp">-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerAvatar8"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine8_1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/shimmerAvatar8"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/shimmerAvatar8"-->
+<!--                    app:layout_constraintWidth_percent="0.70" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine8_2"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine8_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine8_1"-->
+<!--                    app:layout_constraintWidth_percent="0.50" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/shimmerLine8_3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:background="#dddddd"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/shimmerLine8_1"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/shimmerLine8_2"-->
+<!--                    app:layout_constraintWidth_percent="0.90" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </LinearLayout>-->
+<!--    </ScrollView>-->
 </RelativeLayout>

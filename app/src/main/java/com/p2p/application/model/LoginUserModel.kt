@@ -19,5 +19,6 @@ data class LoginUserModel(
     val tax_identification_docs: String?,
     val created_at: String?,
     val updated_at: String?,
-    val deleted_at: String?
+    val deleted_at: String?,
+    val verification_docs_upload_status:Int
 )

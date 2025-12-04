@@ -85,6 +85,13 @@ class NotificationFragment : Fragment() {
             ) {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+            else{
+                if (selectedType.equals(MessageError.MERCHANT,true)){
+                    findNavController().navigate(R.id.merchantVerificationFragment)
+                }else{
+                    findNavController().navigate(R.id.userWelcomeFragment)
+                }
+            }
         }
     }
 
