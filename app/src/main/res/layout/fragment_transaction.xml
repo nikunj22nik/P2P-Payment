@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="#FFFFFF"
     tools:context=".fragment.TransactionFragment">
 
     <RelativeLayout
@@ -96,15 +96,17 @@
             android:id="@+id/layHide"
             android:layout_width="match_parent"
             android:gravity="center|end"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/layTransaction"
+                android:layout_width="@dimen/_150sdp"
                 android:background="@drawable/transation_custom"
                 android:gravity="center"
                 android:layout_margin="@dimen/_5sdp"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#0F0D1C"

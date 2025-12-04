@@ -1,10 +1,8 @@
 package com.p2p.application.model.newnumber
 
+import com.p2p.application.model.recentpepole.RecentPeople
+
 data class Data(
-    val business_logo: String?,
-    val first_name: String?,
-    val id: Int,
-    val last_name: String?,
-    val phone: String?,
-    val role: String?
-)
+    val recent_people: MutableList<RecentPeople>?,
+
+    )

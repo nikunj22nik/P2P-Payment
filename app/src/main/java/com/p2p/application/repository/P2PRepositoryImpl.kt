@@ -4,7 +4,6 @@ package com.p2p.application.repository
 import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
-import com.p2p.application.model.LoginUserModel
 import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
@@ -226,12 +225,17 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 if (respBody != null) {
                     if (respBody.has("success") && respBody.get("success").asBoolean) {
                         val data = respBody.get("data").asJsonObject
+                        val currency = if (data.has("currency") && !data.get("currency").isJsonNull) {
+                            data.get("currency").asString
+                        } else {
+                            ""
+                        }
                         val balance = if (data.has("balance") && !data.get("balance").isJsonNull) {
-                            data.get("balance").asString
+                            data.get("balance").asString +" "+ currency
                         } else {
                             "0"
                         }
-                        emit(NetworkResult.Success<String>(balance.toString()))
+                        emit(NetworkResult.Success(balance))
                     } else {
                         emit(NetworkResult.Error(respBody.get("message").asString))
                     }
@@ -303,6 +307,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             }
         }
         catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -331,6 +336,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             }
         }
         catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
 

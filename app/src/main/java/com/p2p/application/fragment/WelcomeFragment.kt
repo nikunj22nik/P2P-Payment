@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +33,8 @@ import com.p2p.application.adapter.AdapterMerchant
 import com.p2p.application.databinding.FragmentUserWelcomeBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
-import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
+import com.p2p.application.model.homemodel.Data
+import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -43,7 +43,6 @@ import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -58,6 +57,8 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private var selectedType: String=""
     private val readContactsPermission = 100
     private var openedSettings = false
+    private var dataHome: Data? = null
+    private var transactionsList: MutableList<Transaction> = mutableListOf()
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -68,101 +69,12 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         sessionManager= SessionManager(requireContext())
         selectedType=sessionManager.getLoginType()?:""
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
-        adapter=AdapterHomeTransaction(requireContext(),this)
+        adapter=AdapterHomeTransaction(requireContext(),this,transactionsList)
         adapterMerchant=AdapterMerchant(requireContext())
         binding.itemRcy.adapter=adapter
-
         handleBackPress()
-
-
         homeApi()
-
-        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
-            if (selectedType.equals(MessageError.AGENT,true)){
-                binding.tvHeader.text = "Welcome Agent"
-                binding.tvHSubHeader.text = "Manage Transfer & Rebalancing Tasks Easily."
-            }
-            if (selectedType.equals(MessageError.MASTER_AGENT,true)){
-                binding.tvHeader.text = "Welcome Master Agent"
-                binding.tvHSubHeader.text = "Handle transfers and Rebalancing from BBS \nefficiently."
-            }
-
-            binding.btnSetting.setColorFilter("#FFFFFF".toColorInt())
-            binding.imgHide.setColorFilter("#FFFFFF".toColorInt())
-            binding.btnNotification.setColorFilter("#FFFFFF".toColorInt())
-            binding.tvHeader.setTextColor("#FFFFFF".toColorInt())
-            binding.tvHSubHeader.setTextColor("#FFFFFF".toColorInt())
-            binding.tvBalance.setTextColor("#FFFFFF".toColorInt())
-            binding.tvBalanceTitle.setTextColor("#FFFFFF".toColorInt())
-            binding.recentTitle.setTextColor("#000000".toColorInt())
-
-            binding.viewPayOr.visibility = View.GONE
-            binding.viewPay.visibility = View.VISIBLE
-            binding.noData.setBackgroundResource(R.drawable.rafikiicon)
-            binding.main.setBackgroundResource(R.drawable.bgimg)
-            binding.view.setBackgroundResource(R.drawable.circletopcurve)
-
-            binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize, 0, 0, 0)
-            binding.tvRebalancing.setTextColor("#444444".toColorInt())
-            binding.btnRebalancing.setBackgroundResource(R.drawable.button_custom_border)
-            binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
-
-
-
-            lifecycleScope.launch {
-                delay(SPLASH_DELAY)
-                binding.layTitle.visibility = View.GONE
-                binding.layBalance.visibility = View.VISIBLE
-                binding.noData.visibility = View.GONE
-                binding.layTransaction.visibility = View.VISIBLE
-                binding.main.setBackgroundResource(R.drawable.circletopcurve)
-                binding.view.setBackgroundResource(R.drawable.circletopcurveblack)
-                binding.btnSetting.setColorFilter("#000000".toColorInt())
-                binding.imgHide.setColorFilter("#000000".toColorInt())
-                binding.btnNotification.setColorFilter("#000000".toColorInt())
-                binding.tvHeader.setTextColor("#000000".toColorInt())
-                binding.tvHSubHeader.setTextColor("#000000".toColorInt())
-                binding.tvBalance.setTextColor("#000000".toColorInt())
-                binding.tvBalanceTitle.setTextColor("#000000".toColorInt())
-                binding.recentTitle.setTextColor("#FFFFFF".toColorInt())
-                binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize_white, 0, 0, 0)
-                binding.tvRebalancing.setTextColor("#FFFFFF".toColorInt())
-                adapter.updateColor("#FFFFFF")
-                binding.btnRebalancing.setBackgroundResource(R.drawable.user_select_inactive)
-                binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
-            }
-        }else{
-            lifecycleScope.launch {
-                delay(SPLASH_DELAY)
-                if (selectedType.equals(MessageError.USER,true)){
-                    binding.layTitle.visibility = View.GONE
-                    binding.layBalance.visibility = View.VISIBLE
-                    binding.noData.visibility = View.GONE
-                    binding.layTransaction.visibility = View.VISIBLE
-                    binding.viewPayOr.visibility = View.VISIBLE
-                    binding.viewPay.visibility = View.GONE
-                    binding.imgPay.visibility = View.VISIBLE
-                    binding.imgSend.visibility = View.VISIBLE
-                    binding.imgText.visibility = View.INVISIBLE
-                    binding.tvHeader.text = "Welcome to \nMany Mobile Money"
-                    binding.tvHSubHeader.text = "Send and receive money instantly with just a few \ntaps."
-                }
-                if (selectedType.equals(MessageError.MERCHANT,true)){
-                    binding.layTitle.visibility = View.GONE
-                    binding.layBalance.visibility = View.VISIBLE
-                    binding.noData.visibility = View.GONE
-                    binding.layTransaction.visibility = View.VISIBLE
-                    binding.viewPayOr.visibility = View.VISIBLE
-                    binding.viewPay.visibility = View.GONE
-                    binding.tvHeader.text = "Welcome Merchant"
-                    binding.tvHSubHeader.text = "Let customers pay you via QR and keep full visibility \nof your transfer records."
-                    binding.imgPay.visibility = View.GONE
-                    binding.imgSend.visibility = View.GONE
-                    binding.imgText.visibility = View.VISIBLE
-                }
-            }
-        }
-
+        handleWelComeScreen()
         return binding.root
     }
 
@@ -192,8 +104,116 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            homeApi()
+        }
     }
 
+
+    private fun handleWelComeScreen(){
+        if (sessionManager.getIsWelcome()){
+            if (selectedType.equals(MessageError.USER,true)){
+                binding.layTitle.visibility = View.VISIBLE
+                binding.layBalance.visibility = View.GONE
+                binding.noData.visibility = View.VISIBLE
+                binding.layTransaction.visibility = View.GONE
+                binding.viewPayOr.visibility = View.VISIBLE
+                binding.viewPay.visibility = View.GONE
+                binding.imgPay.visibility = View.VISIBLE
+                binding.imgSend.visibility = View.VISIBLE
+                binding.imgText.visibility = View.INVISIBLE
+                binding.tvHeader.text = "Welcome to \nMany Mobile Money"
+                binding.tvHSubHeader.text = "Send and receive money instantly with just a few \ntaps."
+            }
+            if (selectedType.equals(MessageError.MERCHANT,true)){
+                binding.layTitle.visibility = View.VISIBLE
+                binding.layBalance.visibility = View.GONE
+                binding.noData.visibility = View.VISIBLE
+                binding.layTransaction.visibility = View.GONE
+                binding.viewPayOr.visibility = View.VISIBLE
+                binding.viewPay.visibility = View.GONE
+                binding.tvHeader.text = "Welcome Merchant"
+                binding.tvHSubHeader.text = "Let customers pay you via QR and keep full visibility \nof your transfer records."
+                binding.imgPay.visibility = View.GONE
+                binding.imgSend.visibility = View.GONE
+                binding.imgText.visibility = View.VISIBLE
+            }
+            if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
+                if (selectedType.equals(MessageError.AGENT,true)){
+                    binding.tvHeader.text = "Welcome Agent"
+                    binding.tvHSubHeader.text = "Manage Transfer & Rebalancing Tasks Easily."
+                }
+                if (selectedType.equals(MessageError.MASTER_AGENT,true)){
+                    binding.tvHeader.text = "Welcome Master Agent"
+                    binding.tvHSubHeader.text = "Handle transfers and Rebalancing from BBS \nefficiently."
+                }
+                binding.btnSetting.setColorFilter("#FFFFFF".toColorInt())
+                binding.imgHide.setColorFilter("#FFFFFF".toColorInt())
+                binding.btnNotification.setColorFilter("#FFFFFF".toColorInt())
+                binding.tvHeader.setTextColor("#FFFFFF".toColorInt())
+                binding.tvHSubHeader.setTextColor("#FFFFFF".toColorInt())
+                binding.tvBalance.setTextColor("#FFFFFF".toColorInt())
+                binding.tvBalanceTitle.setTextColor("#FFFFFF".toColorInt())
+                binding.recentTitle.setTextColor("#000000".toColorInt())
+                binding.viewPayOr.visibility = View.GONE
+                binding.viewPay.visibility = View.VISIBLE
+                binding.noData.setBackgroundResource(R.drawable.rafikiicon)
+                binding.main.setBackgroundResource(R.drawable.bgimg)
+                binding.view.setBackgroundResource(R.drawable.circletopcurve)
+                binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize, 0, 0, 0)
+                binding.tvRebalancing.setTextColor("#444444".toColorInt())
+                binding.btnRebalancing.setBackgroundResource(R.drawable.button_custom_border)
+                binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
+            }
+        } else{
+            if (selectedType.equals(MessageError.USER,true)){
+                binding.layTitle.visibility = View.GONE
+                binding.layBalance.visibility = View.VISIBLE
+                binding.noData.visibility = View.GONE
+                binding.layTransaction.visibility = View.VISIBLE
+                binding.viewPayOr.visibility = View.VISIBLE
+                binding.viewPay.visibility = View.GONE
+                binding.imgPay.visibility = View.VISIBLE
+                binding.imgSend.visibility = View.VISIBLE
+                binding.imgText.visibility = View.INVISIBLE
+            }
+            if (selectedType.equals(MessageError.MERCHANT,true)){
+                binding.layTitle.visibility = View.GONE
+                binding.layBalance.visibility = View.VISIBLE
+                binding.noData.visibility = View.GONE
+                binding.layTransaction.visibility = View.VISIBLE
+                binding.viewPayOr.visibility = View.VISIBLE
+                binding.viewPay.visibility = View.GONE
+                binding.tvHeader.text = "Welcome Merchant"
+                binding.tvHSubHeader.text = "Let customers pay you via QR and keep full visibility \nof your transfer records."
+                binding.imgPay.visibility = View.GONE
+                binding.imgSend.visibility = View.GONE
+                binding.imgText.visibility = View.VISIBLE
+            }
+            if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
+                binding.layTitle.visibility = View.GONE
+                binding.layBalance.visibility = View.VISIBLE
+                binding.noData.visibility = View.GONE
+                binding.layTransaction.visibility = View.VISIBLE
+                binding.main.setBackgroundResource(R.drawable.circletopcurve)
+                binding.view.setBackgroundResource(R.drawable.circletopcurveblack)
+                binding.btnSetting.setColorFilter("#000000".toColorInt())
+                binding.imgHide.setColorFilter("#000000".toColorInt())
+                binding.btnNotification.setColorFilter("#000000".toColorInt())
+                binding.tvHeader.setTextColor("#000000".toColorInt())
+                binding.tvHSubHeader.setTextColor("#000000".toColorInt())
+                binding.tvBalance.setTextColor("#000000".toColorInt())
+                binding.tvBalanceTitle.setTextColor("#000000".toColorInt())
+                binding.recentTitle.setTextColor("#FFFFFF".toColorInt())
+                binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize_white, 0, 0, 0)
+                binding.tvRebalancing.setTextColor("#FFFFFF".toColorInt())
+                adapter.updateColor("#FFFFFF")
+                binding.btnRebalancing.setBackgroundResource(R.drawable.user_select_inactive)
+                binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
+            }
+        }
+    }
 
     private fun homeApi(){
         if (isOnline(requireContext())) {
@@ -201,10 +221,13 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             lifecycleScope.launch {
                 viewModel.homeRequest().collect {
                     hide(requireActivity())
+                    binding.swipeRefresh.isRefreshing = false
                     when(it){
                         is NetworkResult.Success ->{
-                            val dataModel = it.data?.data
-                            Log.d("Api Response", "*****$dataModel")
+                            it.data?.data?.let { data->
+                                dataHome=data
+                            }
+                            showUIData()
                         }
                         is NetworkResult.Error ->{
                             LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
@@ -220,7 +243,37 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
     }
 
+    private fun showUIData(){
+        dataHome?.let { data ->
+            binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")
+            transactionsList.clear()
+            data.transactions?.let { list->
+                transactionsList.addAll(list)
+            }
+            if (transactionsList.isNotEmpty()){
+                adapter.updateList(transactionsList)
+                binding.layTransaction.visibility = View.VISIBLE
+                binding.noData.visibility = View.GONE
+            }else{
+                showNoData()
+            }
+           /*if (selectedType.equals(MessageError.USER,true) || selectedType.equals(MessageError.AGENT,true)) {
+                if(data.secret_code_status){
+                    findNavController().navigate(R.id.secretCodeFragment)
+                }
+            }*/
+        }
+    }
 
+    private fun showNoData(){
+        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
+            binding.noData.setBackgroundResource(R.drawable.rafikiicon)
+        }else{
+            binding.noData.setBackgroundResource(R.drawable.userhomeicon)
+        }
+        binding.layTransaction.visibility = View.GONE
+        binding.noData.visibility = View.VISIBLE
+    }
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -232,34 +285,27 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         )
     }
 
-
     fun showAlertPay(){
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogWeight.setContentView(R.layout.choosemerchent_alert)
         dialogWeight.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialogWeight.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         dialogWeight.window?.setGravity(Gravity.BOTTOM)
-
         val bottomSheet = dialogWeight.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val btnTransfer = dialogWeight.findViewById<LinearLayout>(R.id.btnTransfer)
         val itemRcy = dialogWeight.findViewById<RecyclerView>(R.id.itemRcy)
-
         itemRcy?.adapter=adapterMerchant
-
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true // Prevent swipe down to hide
             behavior.state = BottomSheetBehavior.STATE_EXPANDED // Fully expand
             behavior.skipCollapsed = true
         }
-
         btnTransfer?.setOnClickListener {
             dialogWeight.dismiss()
             showAlertPayMerchant()
         }
-
         dialogWeight.show()
-
     }
 
     fun showAlertSend(){
@@ -268,19 +314,15 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialogSend.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialogSend.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         dialogSend.window?.setGravity(Gravity.BOTTOM)
-
         val bottomSheet = dialogSend.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val layNumber = dialogSend.findViewById<LinearLayout>(R.id.layNumber)
         val layContact = dialogSend.findViewById<LinearLayout>(R.id.layContact)
-
-
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
-            behavior.isHideable = true // Prevent swipe down to hide
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED // Fully expand
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
         }
-
         layContact?.setOnClickListener {
             askContactPermission()
         }
@@ -346,7 +388,6 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
 
     }
-
     private fun showAlertContact() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -366,15 +407,12 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialog.window?.setGravity(Gravity.CENTER)
         dialog.show()
     }
-
-
     override fun onResume() {
         super.onResume()
         if (openedSettings){
             openedSettings = false
             askContactPermission()
         }
+        sessionManager.setIsWelcome(false)
     }
-
-
 }

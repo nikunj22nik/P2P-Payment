@@ -4,17 +4,24 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_5sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageProfile"
+    <LinearLayout
+        android:id="@+id/layImg"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:src="@drawable/transfericon"/>
+        android:gravity="center"
+        android:background="@drawable/circle_bg"
+        android:layout_marginTop="@dimen/_15sdp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/transfericon"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_toEndOf="@id/imageProfile"
+        android:layout_toEndOf="@id/layImg"
         android:layout_toStartOf="@id/price"
         android:orientation="vertical"
         android:layout_centerInParent="true"
@@ -30,6 +37,7 @@
             android:layout_gravity="center"
             android:text="To Beryl Orou (01 33 23 43 44)" />
         <TextView
+            android:id="@+id/tvDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#949494"
@@ -47,7 +55,7 @@
         android:textSize="@dimen/_12sdp"
         android:fontFamily="@font/satoshi_medium"
         android:layout_gravity="center"
-        android:text="-1400 fcfa"
+        android:text=""
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"/>
 </RelativeLayout>
