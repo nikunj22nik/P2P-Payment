@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.p2p.application.R
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.SessionManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +25,15 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
         if (sessionManager.getIsLogin()?:false){
-            navGraph.setStartDestination(R.id.userWelcomeFragment)
+            if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)) {
+                if (sessionManager.getIsPin()){
+                    navGraph.setStartDestination(R.id.userWelcomeFragment)
+                }else{
+                    navGraph.setStartDestination(R.id.secretCodeFragment)
+                }
+            }else{
+                navGraph.setStartDestination(R.id.userWelcomeFragment)
+            }
         }else{
             navGraph.setStartDestination(R.id.accountTypeFragment)
         }

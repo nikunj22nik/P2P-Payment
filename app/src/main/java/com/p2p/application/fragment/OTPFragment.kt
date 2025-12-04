@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.messaging.FirebaseMessaging
-import com.p2p.application.Error.ErrorHandler
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.di.NetworkResult
@@ -82,23 +81,13 @@ class OTPFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
-
         binding.btnVerify.setOnClickListener {
-
-            if (getOtp().equals( viewModel.otp)) {
+            if (getOtp().equals( viewModel.otp,true)) {
                 if (viewModel.screenType.equals("Registration", true))  callingCreateAccount()
                 else callingLoginApi()
             } else {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.OTP_NOT_MATCH)
             }
-
-//            if (screenType.equals("Registration",true)){
-//                showAlertDialog()
-//            }
-//            if (screenType.equals("Login",true)){
-//                sessionManager.setIsLogin(true)
-//                findNavController().navigate(R.id.userWelcomeFragment)
-//            }
         }
     }
 
@@ -125,20 +114,17 @@ class OTPFragment : Fragment() {
                     else->{
                     }
                 }
-
             }
         }
     }
 
     private fun extractingParameter(){
-
         if(viewModel.screenType.equals("Registration",true)){
             countryCode = arguments?.getString("country_code")?:""
             firstName = arguments?.getString("firstName")?:""
             lastName = arguments?.getString("lastName")?:""
             phoneNumber = arguments?.getString("phone_number")?:""
             otp = arguments?.getString("otp")?:""
-
             viewModel.countryCode =countryCode
             viewModel.firstName = firstName
             viewModel.lastName = lastName
@@ -148,7 +134,6 @@ class OTPFragment : Fragment() {
             countryCode = arguments?.getString("country_code")?:""
             phoneNumber = arguments?.getString("phone_number")?:""
             otp = arguments?.getString("otp")?:""
-
             viewModel.countryCode =countryCode
             viewModel.otp = otp
             viewModel.phoneNumber = phoneNumber
@@ -186,35 +171,38 @@ class OTPFragment : Fragment() {
         tvSubHeader.text = subheader
         btnContinue.setOnClickListener {
             dialog.dismiss()
-
             if (viewModel.screenType.equals("Registration", true)) {
-                if (selectedType.equals(AppConstant.USER)) {
+                if (selectedType.equals(AppConstant.USER,true)) {
                     sessionManager.setIsLogin(true)
                         findNavController().navigate(R.id.secretCodeFragment)
                 } else {
                         findNavController().navigate(R.id.loginFragment)
                 }
             } else {
-                if (buttonContent.equals(AppConstant.BACK_TO_HOME)) {
+                if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
+                    if (sessionManager.getScreenType().equals(AppConstant.AGENT,true)){
+                        if (sessionManager.getIsPin()){
+                            findNavController().navigate(R.id.userWelcomeFragment)
+                        }else{
+                            findNavController().navigate(R.id.secretCodeFragment)
+                        }
+                    }else{
                         findNavController().navigate(R.id.userWelcomeFragment)
-                } else if (buttonContent.equals(AppConstant.BACK_TO_LOGIN)) {
+                    }
+                } else if (buttonContent.equals(AppConstant.BACK_TO_LOGIN,true)) {
                         findNavController().navigate(R.id.loginFragment)
-                } else if (buttonContent.equals(AppConstant.TRY_AGAIN)) {
-                    if(selectedType.equals(AppConstant.MERCHANT)){
+                } else if (buttonContent.equals(AppConstant.TRY_AGAIN,true)) {
+                    if(selectedType.equals(AppConstant.MERCHANT,true)){
                         findNavController().navigate(R.id.merchantVerificationFragment)
                     }else {
                         findNavController().navigate(R.id.createAccountFragment)
                     }
                 }
-
             }
-
-
         }
         dialog.show()
 
     }
-
 
     private fun callingCreateAccount(){
 
@@ -237,7 +225,7 @@ class OTPFragment : Fragment() {
                             val obj = it.data
                             SessionManager(requireContext()).setIsWelcome(true)
                             it.data?.let {
-                                if (selectedType.equals(AppConstant.USER)) {
+                                if (selectedType.equals(AppConstant.USER,true)) {
                                     SessionManager(requireContext()).setAuthToken(it.token ?: "")
                                     SessionManager(requireContext()).setFirstName(
                                         it.user?.first_name ?: ""
@@ -256,10 +244,10 @@ class OTPFragment : Fragment() {
                                         "Continue",
                                         R.drawable.icon_park_outline_check_one
                                     )
-                                } else if (selectedType.equals(AppConstant.MERCHANT)) {
+                                } else if (selectedType.equals(AppConstant.MERCHANT,true)) {
                                     SessionManager(requireContext()).setAuthToken(it.token ?: "")
                                     findNavController().navigate(R.id.notificationFragment)
-                                } else if (selectedType.equals(AppConstant.AGENT)) {
+                                } else if (selectedType.equals(AppConstant.AGENT,true)) {
                                     showAlertDialog(
                                         "Registration Successful!",
                                         "Please wait while we verify your details.",
@@ -267,7 +255,7 @@ class OTPFragment : Fragment() {
                                         "Go to Login",
                                         R.drawable.icon_park_outline_check_one
                                     )
-                                } else if (selectedType.equals(AppConstant.MASTER_AGENT)) {
+                                } else if (selectedType.equals(AppConstant.MASTER_AGENT,true)) {
                                     showAlertDialog(
                                         "Registration Successful!",
                                         "Please wait while we verify your details.",
@@ -319,55 +307,53 @@ class OTPFragment : Fragment() {
                                 AppConstant.MERCHANT -> {
                                     if(response.user.verification_status ==1){
                                     SessionManager(requireContext()).apply {
-                                        setAuthToken(response.token)
+                                        setAuthToken(response.token?:"")
                                         setFirstName(user.first_name ?: "")
                                         setLastName(user.last_name ?: "")
                                         setPhoneNumber(user.phone ?: "")
                                         setIsLogin(true)
-                                         }
+                                        if (response.user.mpin!=null){
+                                            setIsPin(true)
+                                        }
+                                     }
                                     }
-
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
-                                        handleVerificationStatus(
-                                            status = user.verification_status,
-                                            role = AppConstant.MERCHANT
-                                        )
+                                        handleVerificationStatus(status = user.verification_status, role = AppConstant.MERCHANT)
                                     }
                                 }
                                 AppConstant.AGENT -> {
-                                    if(response.user?.verification_status ==1){
+                                    if(response.user.verification_status ==1){
                                         SessionManager(requireContext()).apply {
-                                            setAuthToken(response.token)
+                                            setAuthToken(response.token?:"")
                                             setFirstName(user.first_name ?: "")
                                             setLastName(user.last_name ?: "")
                                             setPhoneNumber(user.phone ?: "")
                                             setIsLogin(true)
+                                            if (response.user.mpin!=null){
+                                                setIsPin(true)
+                                            }
                                         }
                                     }
-                                    handleVerificationStatus(
-                                        status = user.verification_status,
-                                        role = AppConstant.AGENT
-                                    )
+                                    handleVerificationStatus(status = user.verification_status, role = AppConstant.AGENT)
                                 }
                                 AppConstant.MASTER_AGENT -> {
-                                    if(response?.user?.verification_status ==1){
+                                    if(response.user.verification_status ==1){
                                         SessionManager(requireContext()).apply {
-                                            setAuthToken(response.token ?: "")
+                                            setAuthToken(response.token?:"")
                                             setFirstName(user.first_name ?: "")
                                             setLastName(user.last_name ?: "")
                                             setPhoneNumber(user.phone ?: "")
                                              setIsLogin(true)
+                                            if (response.user.mpin!=null){
+                                                setIsPin(true)
+                                            }
                                         }
                                     }
-                                    handleVerificationStatus(
-                                        status = user.verification_status,
-                                        role = AppConstant.MASTER_AGENT
-                                    )
+                                    handleVerificationStatus(status = user.verification_status, role = AppConstant.MASTER_AGENT)
                                 }
                                 else -> {
-
                                     LoadingUtils.showErrorDialog(requireContext(), "Unknown user type")
                                 }
                             }
@@ -389,16 +375,21 @@ class OTPFragment : Fragment() {
     // helper to persist user and navigate for normal user
     private fun handleUserLogin(response: LoginModel) {
         val user = response.user
-
         SessionManager(requireContext()).apply {
-            setAuthToken(response.token)
+            setAuthToken(response.token?:"")
             setFirstName(user.first_name ?: "")
             setLastName(user.last_name ?: "")
             setPhoneNumber(user.phone ?: "")
             setIsLogin(true)
+            if (response.user.mpin!=null){
+                setIsPin(true)
+            }
         }
-
-        findNavController().navigate(R.id.userWelcomeFragment)
+        if (sessionManager.getIsPin()){
+            findNavController().navigate(R.id.userWelcomeFragment)
+        }else{
+            findNavController().navigate(R.id.secretCodeFragment)
+        }
     }
 
 
@@ -429,7 +420,6 @@ class OTPFragment : Fragment() {
                     )
                 }
             }
-
             AppConstant.AGENT, AppConstant.MASTER_AGENT -> {
                 when (status) {
                     0 -> showAlertDialog(
@@ -455,9 +445,7 @@ class OTPFragment : Fragment() {
                     )
                 }
             }
-
             else -> {
-
                 when (status) {
                     0 -> showAlertDialog(
                         header = "Verification In Progress",

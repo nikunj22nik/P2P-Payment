@@ -82,6 +82,7 @@ class  SecretCodeFragment : Fragment() {
                 hide(requireActivity())
                 when(it){
                     is NetworkResult.Success ->{
+                        sessionManager.setIsPin(true)
                         showAlert()
                     }
                     is NetworkResult.Error ->{

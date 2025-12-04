@@ -257,11 +257,6 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             }else{
                 showNoData()
             }
-           /*if (selectedType.equals(MessageError.USER,true) || selectedType.equals(MessageError.AGENT,true)) {
-                if(data.secret_code_status){
-                    findNavController().navigate(R.id.secretCodeFragment)
-                }
-            }*/
         }
     }
 
