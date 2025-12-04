@@ -37,7 +37,7 @@ class AdapterMerchantVerification(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val uri = dataList[position]
         val mime = getMimeType(holder.binding.root.context, uri)
-
+        Log.d("TYPE1", "Mime is "+mime)
         when {
             mime?.startsWith("image") == true -> {
                 Log.d("TYPE1", "It's an image")

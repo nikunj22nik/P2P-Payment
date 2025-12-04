@@ -55,73 +55,149 @@ class MerchantVerificationFragment : Fragment() {
     val MAX_TOTAL_IMAGES = 5
     private var selectedImageUri : Uri? = null
     private lateinit var viewModel: MerchantVerificationViewModel
+//    private val imagePickerLauncher =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                val type =selected
+//
+//                Log.d("TESTING_SIZE",type.toString())
+//
+//
+//                val clipData = result.data?.clipData
+//                val singleUri = result.data?.data
+//                if (clipData != null) {
+//                    Log.d("TESTING_SIZE","clip data is"+clipData.itemCount.toString())
+//
+//                    for (i in 0 until clipData.itemCount) {
+//                        val newUri = clipData.getItemAt(i).uri
+//
+//                        when (type) {
+//                            AppConstant.BUSINESS_ID -> {
+//                                // Check if businessIdUri already contains the newUri
+//                                if (!businessIdUri.contains(newUri)) {
+//                                    businessIdUri.add(newUri)
+//                                    if(businessIdUri.size>5) break
+//                                }
+//                            }
+//                            AppConstant.BUSINESS_REGISTER -> {
+//                                // Check if businessRegister already contains the newUri
+//                                if (!businessRegister.contains(newUri)) {
+//                                    businessRegister.add(newUri)
+//                                    if(businessRegister.size>5)break
+//
+//                                }
+//                            }
+//                            AppConstant.TAX_ID -> {
+//                                // Check if taxIdUri already contains the newUri
+//                                if (!taxIdUri.contains(newUri)) {
+//                                    taxIdUri.add(newUri)
+//                                    if(taxIdUri.size>5)break
+//                                }
+//                            }
+//                            AppConstant.PROFILE ->{ binding.mainImage.setImageURI(newUri)
+//                             selectedImageUri = newUri
+//                            }
+//                        }
+//                    }
+//                }
+//                else if(singleUri != null){
+//                    binding.mainImage.setImageURI(singleUri)
+//                    selectedImageUri = singleUri
+//                }
+//                when(type){
+//                    AppConstant.BUSINESS_ID->{
+//                        Log.d("TESTING_SIZE",businessIdUri.size.toString())
+//                        checkAndShowErrorForImageSize(businessIdUri)
+//                        adapterBusinessId.updateAdapter(businessIdUri)
+//                    }
+//                    AppConstant.BUSINESS_REGISTER ->{
+//                        checkAndShowErrorForImageSize(businessRegister)
+//                        adapterBusinessRegister.updateAdapter(businessRegister)
+//                    }
+//                    AppConstant.TAX_ID ->{
+//                        checkAndShowErrorForImageSize(taxIdUri)
+//                        adapterBusinessTax.updateAdapter(taxIdUri)
+//                    }
+//                }
+//            }
+//        }
+
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
-            if (result.resultCode == Activity.RESULT_OK) {
-                val type =selected
+            if (result.resultCode != Activity.RESULT_OK || result.data == null) return@registerForActivityResult
 
-                Log.d("TESTING_SIZE",type.toString())
+            val data = result.data
+            val type = selected
+            val uriList = mutableListOf<Uri>()
 
+            // 1️⃣ Handle multiple selected files
+            data?.clipData?.let { clip ->
+                for (i in 0 until clip.itemCount) {
+                    uriList.add(clip.getItemAt(i).uri)
+                }
+            }
 
-                val clipData = result.data?.clipData
-                val singleUri = result.data?.data
-                if (clipData != null) {
-                    Log.d("TESTING_SIZE","clip data is"+clipData.itemCount.toString())
+            // 2️⃣ Handle single selected file (images OR pdf)
+            data?.data?.let { uriList.add(it) }
 
-                    for (i in 0 until clipData.itemCount) {
-                        val newUri = clipData.getItemAt(i).uri
+            // 3️⃣ SAF fallback (some PDF providers return only dataString)
+            data?.dataString?.let {
+                val parsed = Uri.parse(it)
+                if (!uriList.contains(parsed)) uriList.add(parsed)
+            }
 
-                        when (type) {
-                            AppConstant.BUSINESS_ID -> {
-                                // Check if businessIdUri already contains the newUri
-                                if (!businessIdUri.contains(newUri)) {
-                                    businessIdUri.add(newUri)
-                                    if(businessIdUri.size>5) break
-                                }
-                            }
-                            AppConstant.BUSINESS_REGISTER -> {
-                                // Check if businessRegister already contains the newUri
-                                if (!businessRegister.contains(newUri)) {
-                                    businessRegister.add(newUri)
-                                    if(businessRegister.size>5)break
+            uriList.forEach { uri ->
+                when (type) {
 
-                                }
-                            }
-                            AppConstant.TAX_ID -> {
-                                // Check if taxIdUri already contains the newUri
-                                if (!taxIdUri.contains(newUri)) {
-                                    taxIdUri.add(newUri)
-                                    if(taxIdUri.size>5)break
-                                }
-                            }
-                            AppConstant.PROFILE ->{ binding.mainImage.setImageURI(newUri)
-                             selectedImageUri = newUri
-                            }
+                    // ---------------- BUSINESS ID ----------------
+                    AppConstant.BUSINESS_ID -> {
+                        if (!businessIdUri.contains(uri)) {
+                            if (businessIdUri.size < 5) businessIdUri.add(uri)
                         }
                     }
-                }
-                else if(singleUri != null){
-                    binding.mainImage.setImageURI(singleUri)
-                    selectedImageUri = singleUri
-                }
-                when(type){
-                    AppConstant.BUSINESS_ID->{
-                        Log.d("TESTING_SIZE",businessIdUri.size.toString())
-                        checkAndShowErrorForImageSize(businessIdUri)
-                        adapterBusinessId.updateAdapter(businessIdUri)
+
+                    // ---------------- BUSINESS REGISTER ----------------
+                    AppConstant.BUSINESS_REGISTER -> {
+                        if (!businessRegister.contains(uri)) {
+                            if (businessRegister.size < 5) businessRegister.add(uri)
+                        }
                     }
-                    AppConstant.BUSINESS_REGISTER ->{
-                        checkAndShowErrorForImageSize(businessRegister)
-                        adapterBusinessRegister.updateAdapter(businessRegister)
+
+                    // ---------------- TAX ID ----------------
+                    AppConstant.TAX_ID -> {
+                        if (!taxIdUri.contains(uri)) {
+                            if (taxIdUri.size < 5) taxIdUri.add(uri)
+                        }
                     }
-                    AppConstant.TAX_ID ->{
-                        checkAndShowErrorForImageSize(taxIdUri)
-                        adapterBusinessTax.updateAdapter(taxIdUri)
+
+                    // ---------------- PROFILE IMAGE ----------------
+                    AppConstant.PROFILE -> {
+                        selectedImageUri = uri
+                        binding.mainImage.setImageURI(uri)
                     }
                 }
             }
+
+            when (type) {
+                AppConstant.BUSINESS_ID -> {
+                    checkAndShowErrorForImageSize(businessIdUri)
+                    adapterBusinessId.updateAdapter(businessIdUri)
+                }
+
+                AppConstant.BUSINESS_REGISTER -> {
+                    checkAndShowErrorForImageSize(businessRegister)
+                    adapterBusinessRegister.updateAdapter(businessRegister)
+                }
+
+                AppConstant.TAX_ID -> {
+                    checkAndShowErrorForImageSize(taxIdUri)
+                    adapterBusinessTax.updateAdapter(taxIdUri)
+                }
+            }
         }
+
 
     private fun checkAndShowErrorForImageSize(arr:  MutableList<Uri>){
         val originalSize = arr.size
@@ -160,8 +236,10 @@ class MerchantVerificationFragment : Fragment() {
                 }
                 .setNegativeButton("PDF") { _, _ ->
                     val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                        setType("application/pdf")
+                        type = "*/*"
+                        putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/pdf", "image/*"))
                         addCategory(Intent.CATEGORY_OPENABLE)
+                        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                     }
                     imagePickerLauncher.launch(intent)
                 }
@@ -174,10 +252,11 @@ class MerchantVerificationFragment : Fragment() {
 
 
 
-    fun openGalleryForSingle(selectType: String) {
+    fun openGalleryForSingle(selectType1: String) {
+        selected = AppConstant.PROFILE
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        intent.putExtra("SELECT_TYPE", selectType) // Optional param
+        intent.putExtra("SELECT_TYPE", selected) // Optional param
         imagePickerLauncher.launch(intent)
     }
 

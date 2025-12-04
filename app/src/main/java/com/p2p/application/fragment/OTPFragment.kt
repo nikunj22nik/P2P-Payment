@@ -190,17 +190,21 @@ class OTPFragment : Fragment() {
             if (viewModel.screenType.equals("Registration", true)) {
                 if (selectedType.equals(AppConstant.USER)) {
                     sessionManager.setIsLogin(true)
-                    findNavController().navigate(R.id.secretCodeFragment)
+                        findNavController().navigate(R.id.secretCodeFragment)
                 } else {
-                    findNavController().navigate(R.id.loginFragment)
+                        findNavController().navigate(R.id.loginFragment)
                 }
             } else {
                 if (buttonContent.equals(AppConstant.BACK_TO_HOME)) {
-                    findNavController().navigate(R.id.userWelcomeFragment)
+                        findNavController().navigate(R.id.userWelcomeFragment)
                 } else if (buttonContent.equals(AppConstant.BACK_TO_LOGIN)) {
-                    findNavController().navigate(R.id.loginFragment)
+                        findNavController().navigate(R.id.loginFragment)
                 } else if (buttonContent.equals(AppConstant.TRY_AGAIN)) {
-                    findNavController().navigate(R.id.createAccountFragment)
+                    if(selectedType.equals(AppConstant.MERCHANT)){
+                        findNavController().navigate(R.id.merchantVerificationFragment)
+                    }else {
+                        findNavController().navigate(R.id.createAccountFragment)
+                    }
                 }
 
             }
@@ -320,12 +324,17 @@ class OTPFragment : Fragment() {
                                         setLastName(user.last_name ?: "")
                                         setPhoneNumber(user.phone ?: "")
                                         setIsLogin(true)
+                                         }
                                     }
+
+                                    if(response.user.verification_docs_upload_status ==1 ){
+                                         findNavController().navigate(R.id.merchantVerificationFragment)
+                                    }else {
+                                        handleVerificationStatus(
+                                            status = user.verification_status,
+                                            role = AppConstant.MERCHANT
+                                        )
                                     }
-                                    handleVerificationStatus(
-                                        status = user.verification_status,
-                                        role = AppConstant.MERCHANT
-                                    )
                                 }
                                 AppConstant.AGENT -> {
                                     if(response.user?.verification_status ==1){
