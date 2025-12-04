@@ -131,6 +131,18 @@ interface P2PApi {
         @Part("user_type") userType : RequestBody
     ) : Response<JsonObject>
 
+    @POST("get_transaction_history")
+    @FormUrlEncoded
+    suspend fun getTransactionHistory(
+        @Field("page")page:Int,
 
+        @Field("limit") limit:Int
+    ) : Response<JsonObject>
+
+    @POST("get_one_to_one_transaction_history")
+    @FormUrlEncoded
+    suspend fun genOneToOneTransactionHistory(
+        @Field("user_id") userId :Int
+    ) : Response<JsonObject>
 
   }

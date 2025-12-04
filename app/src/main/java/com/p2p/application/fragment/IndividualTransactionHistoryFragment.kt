@@ -1,89 +1,96 @@
 package com.p2p.application.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Choreographer
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
-import android.widget.TextView
-import androidx.core.graphics.drawable.toDrawable
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.p2p.application.BuildConfig
 import com.p2p.application.R
-import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.adapter.TransactionAdapter
-import com.p2p.application.databinding.FragmentTransactionBinding
+import com.p2p.application.databinding.FragmentIndividualTransactionHistoryBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.HistoryItem
 import com.p2p.application.model.TransactionItem
 import com.p2p.application.util.AppConstant
-import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
 import com.p2p.application.util.LoadingUtils
-import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.TransactionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@AndroidEntryPoint
-class TransactionFragment : Fragment() {
 
-    private lateinit var binding: FragmentTransactionBinding
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
+
+@AndroidEntryPoint
+class IndividualTransactionHistoryFragment : Fragment() {
+
+    private lateinit  var binding : FragmentIndividualTransactionHistoryBinding
+
     private lateinit var adapter: TransactionAdapter
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
     private var popupWindow: PopupWindow?=null
     private lateinit var viewModel : TransactionViewModel
+    private  var userId :Int =0
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+         userId = requireArguments().getInt("userId")
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
+    ): View? {
+
+        binding = FragmentIndividualTransactionHistoryBinding.inflate(layoutInflater,container,false)
         sessionManager= SessionManager(requireContext())
 
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
-
+        val userName = requireArguments().getString("userName")
+        val userNumber = requireArguments().getString("userNumber")
+        val userProfile = requireArguments().getString("userProfile")
         selectedType = sessionManager.getLoginType().orEmpty()
 
         lifecycleScope.launch {
-             binding.itemRcy.visibility = View.VISIBLE
-        }
-
-        if (selectedType.equals(AppConstant.MASTER_AGENT,true)){
-            binding.layShow.visibility = View.GONE
-            binding.imgQuestion.visibility = View.VISIBLE
-            binding.layHide.visibility = View.VISIBLE
-        }
-
-        else{
-            binding.layShow.visibility = View.VISIBLE
-            binding.imgQuestion.visibility = View.GONE
-            binding.layHide.visibility = View.GONE
+            binding.itemRcy.visibility = View.VISIBLE
         }
 
         val items = mutableListOf<HistoryItem>()
+        adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile ->
 
-        adapter = TransactionAdapter(items){  userId, userName, userNumber, userProfile->
-            val bundle = Bundle()
-            bundle.putInt("userId", userId)
-            bundle.putString("userName", userName)
-            bundle.putString("userNumber", userNumber)
-            bundle.putString("userProfile", userProfile)
-            findNavController().navigate(R.id.individualTransactionFragment,bundle)
         }
+
         binding.itemRcy.adapter = adapter
+        binding.tvName.setText(userName)
+        binding.tvPhoneNumber.text = userNumber
+
+        Glide.with(requireActivity())
+            .load(BuildConfig.MEDIA_URL + userProfile)
+            .placeholder(R.drawable.usernoimg)
+            .error(R.drawable.usernoimg)         // shown if URL fails
+            .into(binding.ivProfile)
+
         callingRecyclerSetupPagination()
         callingTransactionHistoryApi()
+        binding.ivBackArrow.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         return binding.root
     }
 
@@ -120,7 +127,7 @@ class TransactionFragment : Fragment() {
 
                                         viewModel.isLoading = false
                                         binding.itemRcy.post {
-                                          //  LoadingUtils.hide(requireActivity())
+                                            //  LoadingUtils.hide(requireActivity())
                                         }
                                         viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
                                     }
@@ -141,44 +148,12 @@ class TransactionFragment : Fragment() {
         })
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.imgBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-        binding.layTransaction.setOnClickListener {
-            alertView()
-        }
-    }
-
-    private fun alertView(){
-        val anchorView = binding.layTransaction
-        anchorView.post {
-            val inflater = LayoutInflater.from(requireContext())
-            val popupView = inflater.inflate(R.layout.alert_transation, null)
-            popupWindow = PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-            val tvAll = popupView.findViewById<TextView>(R.id.tvAll)
-            val tvFrom = popupView.findViewById<TextView>(R.id.tvFrom)
-            tvAll.setOnClickListener {
-                binding.tvName.text="All Transactions"
-                popupWindow?.dismiss()
-            }
-            tvFrom.setOnClickListener {
-                binding.tvName.text="From BBS"
-                popupWindow?.dismiss()
-            }
-            popupWindow?.setBackgroundDrawable(null)
-            popupWindow?.isOutsideTouchable = true
-            popupWindow?.showAsDropDown(anchorView, 0, 20) // 20px margin from top
-        }
-    }
-
-   private fun callingTransactionHistoryApi(){
+    private fun callingTransactionHistoryApi(){
         lifecycleScope.launch {
 
             LoadingUtils.show(requireActivity())
 
-            viewModel.getTransactionHistory().collect { result ->
+            viewModel.genOneToOneTransactionHistory(userId).collect { result ->
 
                 when (result) {
 
@@ -192,14 +167,11 @@ class TransactionFragment : Fragment() {
                             } ?: mutableListOf()
                         }
 
-
                         adapter.updateAdapter(list)
-
 
                         Choreographer.getInstance().postFrameCallback{
                             LoadingUtils.hide(requireActivity())
                         }
-
                         viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
                     }
 
@@ -218,11 +190,11 @@ class TransactionFragment : Fragment() {
 
     fun buildHistoryList(transactions: List<TransactionItem>): List<HistoryItem> {
 
-            val historyList = mutableListOf<HistoryItem>()
-            val grouped = transactions.groupBy { item ->
-                val dateStr = item.date ?: "Unknown"  // Handle null
-                val parts = dateStr.split(" ")
-                if (parts.size >= 3) {
+        val historyList = mutableListOf<HistoryItem>()
+        val grouped = transactions.groupBy { item ->
+            val dateStr = item.date ?: "Unknown"  // Handle null
+            val parts = dateStr.split(" ")
+            if (parts.size >= 3) {
                 val month = parts[1]
                 val year = parts[2]
                 "$month $year"
@@ -230,11 +202,11 @@ class TransactionFragment : Fragment() {
                 "Unknown"
             }
         }
-            val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
+        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
             val (month, year) = monthYear.split(" ")
             val monthNum = monthToNumber(month)
             year.toInt() * 100 + monthNum     // For proper sorting
-           })
+        })
 
         // Convert each group into header + transactions
         sortedGroups.forEach { (monthYear, list) ->
@@ -251,7 +223,7 @@ class TransactionFragment : Fragment() {
                         date = "${item.date} ${item.time}",
                         amount = if(item.transaction_type.equals("debit",true)) -1*item.amount.toDouble() else item.amount.toDouble()
                         , profile = item.user.business_logo,
-                        id = item.user.id.toString()
+                        id = item.id.toString()
 
                     )
                 )
@@ -289,6 +261,7 @@ class TransactionFragment : Fragment() {
         }
 
     }
+
     fun monthToNumber(mon: String): Int {
         return when (mon) {
             "Jan" -> 1
@@ -306,7 +279,5 @@ class TransactionFragment : Fragment() {
             else -> 0
         }
     }
-
-
 
 }
