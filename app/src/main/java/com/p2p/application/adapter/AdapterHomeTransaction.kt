@@ -12,7 +12,8 @@ import com.p2p.application.R
 import com.p2p.application.databinding.ItemHomeTransactionBinding
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.homemodel.Transaction
-import com.p2p.application.util.LoadingUtils.Companion.formatTime
+import com.p2p.application.util.LoadingUtils.Companion.formatDateOnly
+
 
 class AdapterHomeTransaction(
     private var requireActivity: Context,
@@ -25,20 +26,17 @@ class AdapterHomeTransaction(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding: ItemHomeTransactionBinding =
-            ItemHomeTransactionBinding.inflate(inflater, parent, false);
+            ItemHomeTransactionBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = transactionsList[position]
-//        holder.binding.tvName.setTextColor(Color.parseColor(color))
-        /*if (position==0){
-            holder.binding.imageProfile.setBackgroundResource(R.drawable.transfericon)
-        }else{
-            holder.binding.imageProfile.setBackgroundResource(R.drawable.rebalancingicon)
-        }*/
-        holder.binding.tvDate.text = formatTime(data.created_at?:"")
+        val date = formatDateOnly(data.date ?: "")
+        val time = data.time ?: ""
+        val text = "$date · $time"
+        holder.binding.tvDate.text = text
         data.transaction_type?.let { type->
             if (type.equals("debit",true)){
                 holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))

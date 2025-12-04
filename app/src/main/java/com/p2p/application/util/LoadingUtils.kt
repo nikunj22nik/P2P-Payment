@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -105,25 +107,77 @@ class LoadingUtils {
                 .joinToString("") { it[0].uppercase() }
         }
 
-        fun formatTime(iso: String?): String {
-            // null ya empty → direct return ""
-            if (iso.isNullOrBlank()) return ""
+        fun formatDisplay(dateStr: String?, timeStr: String?): String {
+            if (dateStr.isNullOrBlank() || timeStr.isNullOrBlank()) {
+                return ""
+            }
             return try {
-                val instant = java.time.Instant.parse(iso)
+                // Parse date
+                val date = java.time.LocalDate.parse(
+                    dateStr,
+                    java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
+                )
+
+                // Parse time
+                val time = java.time.LocalTime.parse(
+                    timeStr,
+                    java.time.format.DateTimeFormatter.ofPattern("hh:mm a")
+                )
+
                 val zone = java.time.ZoneId.systemDefault()
-                val dateTime = instant.atZone(zone)
-                val now = java.time.ZonedDateTime.now(zone)
-                val time = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
-                val date = dateTime.toLocalDate()
-                when (date) {
-                    now.toLocalDate() -> "Today · $time"
-                    now.minusDays(1).toLocalDate() -> "Yesterday · $time"
-                    else -> dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy · HH:mm"))
+                val now = java.time.ZonedDateTime.now(zone).toLocalDate()
+
+                val formattedTime = time.format(
+                    java.time.format.DateTimeFormatter.ofPattern("HH:mm")
+                )
+
+                val label = when (date) {
+                    now -> "Today"
+                    now.minusDays(1) -> "Yesterday"
+                    else -> date.format(
+                        java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
+                    )
                 }
+
+                "$label · $formattedTime"
+
             } catch (e: Exception) {
-                // agar invalid format hua to safely empty string
                 ""
             }
+        }
+
+
+        fun formatDateOnly(dateStr: String?): String {
+            if (dateStr.isNullOrBlank()) return ""
+
+            return try {
+                val date = java.time.LocalDate.parse(
+                    dateStr,
+                    java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
+                )
+
+                val today = java.time.LocalDate.now()
+                val yesterday = today.minusDays(1)
+
+                when (date) {
+                    today -> "Today"
+                    yesterday -> "Yesterday"
+                    else -> date.format(
+                        java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
+                    )
+                }
+
+            } catch (e: Exception) {
+                ""
+            }
+        }
+
+
+        fun getBitmapFromView(view: View): Bitmap {
+            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+            return bitmap
         }
 
 

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentInviteContactBinding
 import com.p2p.application.databinding.FragmentInviteFriendBinding
@@ -22,13 +23,15 @@ class InviteFriendFragment : Fragment() {
     ): View {
         binding = FragmentInviteFriendBinding.inflate(layoutInflater, container, false)
 
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.imgBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.btninvite.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"

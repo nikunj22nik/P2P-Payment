@@ -5,12 +5,17 @@ import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.RegisterResponse
+
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.TransactionItem
 import com.p2p.application.model.UserInfo
+
+import com.p2p.application.model.accountlimit.AccountLimitModel
+
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
+import com.p2p.application.model.switchmodel.SwitchUserModel
 import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +37,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         if (resp.has("success") && resp.get("success").asBoolean) {
                             val obj = resp.get("data").asJsonObject
                             val otp = obj.get("otp").asInt
-                            emit(NetworkResult.Success<String>(otp.toString()))
+                            emit(NetworkResult.Success(otp.toString()))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
@@ -42,6 +47,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 }
             }
         }catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -65,6 +71,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 }
             }
         }catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -89,6 +96,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 }
             }
         }catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -105,7 +113,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         if (resp.has("success") && resp.get("success").asBoolean) {
                             val obj = resp.get("data").asJsonObject
                             val otp = obj.get("otp").asInt
-                            emit(NetworkResult.Success<String>(otp.toString()))
+                            emit(NetworkResult.Success(otp.toString()))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
@@ -115,6 +123,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 }
             }
         }catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -140,6 +149,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 }
             }
         }catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -254,6 +264,115 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
+    override suspend fun accountLimitRequest(): Flow<NetworkResult<AccountLimitModel>> = flow {
+        try {
+            val response = api.accountLimitRequest()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                        val response = Gson().fromJson(respBody, AccountLimitModel::class.java)
+                        if (response.success) {
+                            emit(NetworkResult.Success(response))
+                        } else {
+                            emit(NetworkResult.Error(response.message))
+                        }
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun apiCallLogOutAndDelete(viewType: String): Flow<NetworkResult<String>> = flow {
+        try {
+            val response =  if (viewType.equals("logout",true)){
+                api.logOutApi()
+            }else{
+                api.deleteApi()
+            }
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                        emit(NetworkResult.Success(respBody.toString()))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun switchUserApiRequest(
+        id: String,
+        phone: String,
+        loginType: String,
+        fcmToken: String
+    ): Flow<NetworkResult<LoginModel>> = flow {
+        try {
+            val response = api.switchUserApiRequest(id,loginType,phone,fcmToken)
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                        val data = respBody.get("data").asJsonObject
+                        val loginResponse = Gson().fromJson(data, LoginModel::class.java)
+                        emit(NetworkResult.Success(loginResponse))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun userAccountList(): Flow<NetworkResult<SwitchUserModel>> = flow {
+        try {
+            val response = api.userAccountList()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    val response = Gson().fromJson(respBody, SwitchUserModel::class.java)
+                    if (response.success) {
+                        emit(NetworkResult.Success(response))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
     override suspend fun register(
         firstName: String,
         lastName: String,
@@ -270,7 +389,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         resp -> if (resp.has("success") && resp.get("success").asBoolean) {
                          val data = resp.get("data").asJsonObject
                         val registerResponse = Gson().fromJson(data, RegisterResponse::class.java)
-                            emit(NetworkResult.Success<RegisterResponse>(registerResponse))
+                            emit(NetworkResult.Success(registerResponse))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
@@ -281,6 +400,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             }
         }
         catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
@@ -298,8 +418,8 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                     body()?.let {
                             resp -> if (resp.has("success") && resp.get("success").asBoolean) {
                         val data = resp.get("data").asJsonObject
-                        var loginResponse = Gson().fromJson(data, LoginModel::class.java)
-                        emit(NetworkResult.Success<LoginModel>(loginResponse))
+                        val loginResponse = Gson().fromJson(data, LoginModel::class.java)
+                        emit(NetworkResult.Success(loginResponse))
                     } else {
                         emit(NetworkResult.Error(resp.get("message").asString))
                     }
@@ -328,7 +448,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         if (resp.has("success") && resp.get("success").asBoolean) {
                             val obj = resp.get("data").asJsonObject
                             val otp = obj.get("otp").asInt
-                            emit(NetworkResult.Success<String>(otp.toString()))
+                            emit(NetworkResult.Success(otp.toString()))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
@@ -347,19 +467,19 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
 
     override suspend fun merchantVerification(
         businessIdList: ArrayList<MultipartBody.Part>?,
-        List: ArrayList<MultipartBody.Part>?,
+        list: ArrayList<MultipartBody.Part>?,
         pdfList: ArrayList<MultipartBody.Part>?,
         profileImage: MultipartBody.Part?,
         userType: RequestBody
     ): Flow<NetworkResult<String>> = flow {
         try {
-            api.merchantVerification(businessIdList, List,pdfList, profileImage, userType).apply {
+            api.merchantVerification(businessIdList, list,pdfList, profileImage, userType).apply {
                 if (isSuccessful) {
                     body()?.let { resp ->
                         if (resp.has("success") && resp.get("success").asBoolean) {
 
                             val message = resp.get("message").asString
-                            emit(NetworkResult.Success<String>(message))
+                            emit(NetworkResult.Success(message))
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
@@ -370,6 +490,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             }
         }
         catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }

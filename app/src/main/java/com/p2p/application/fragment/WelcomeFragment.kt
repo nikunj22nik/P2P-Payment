@@ -58,6 +58,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private val readContactsPermission = 100
     private var openedSettings = false
     private var dataHome: Data? = null
+    private var originalBalance="0"
     private var transactionsList: MutableList<Transaction> = mutableListOf()
 
     @SuppressLint("SetTextI18n")
@@ -108,6 +109,23 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         binding.swipeRefresh.setOnRefreshListener {
             homeApi()
         }
+
+        binding.imgHide.setOnClickListener {
+            if (binding.tvBalance.text.toString().contains("*")){
+                binding.tvBalance.text = originalBalance
+                binding.imgHide.setImageResource(R.drawable.eye_off)
+            }else{
+                val originalText = binding.tvBalance.text.toString()
+                originalBalance=originalText
+                val masked = originalText.map { ch ->
+                    if (ch == ' ') ' ' else '*'
+                }.joinToString("")
+                binding.tvBalance.text = masked
+                binding.imgHide.setImageResource(R.drawable.eye_on)
+            }
+
+        }
+
     }
 
 
@@ -361,6 +379,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         }
         btnContinue?.setOnClickListener {
             dialogWeight.dismiss()
+            findNavController().navigate(R.id.enterSecretCodeFragment)
         }
         dialogWeight.show()
     }

@@ -1,8 +1,6 @@
 package com.p2p.application.remote
 
 import com.google.gson.JsonObject
-import com.p2p.application.di.NetworkResult
-import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -36,6 +34,26 @@ interface P2PApi {
 
     @POST("get_balance")
     suspend fun balanceRequest() :Response<JsonObject>
+
+    @POST("get_user_max_balance")
+    suspend fun accountLimitRequest() :Response<JsonObject>
+
+    @POST("logout")
+    suspend fun logOutApi() :Response<JsonObject>
+
+
+    @POST("switch_account")
+    @FormUrlEncoded
+    suspend fun switchUserApiRequest(@Field("user_id")userId :String,
+                                     @Field("user_type")userType :String?,
+                                     @Field("phone")phone :String ,
+                                     @Field("fcm_token") fcmToken :String,) :Response<JsonObject>
+
+    @POST("get_user_all_accounts")
+    suspend fun userAccountList() :Response<JsonObject>
+
+    @POST("logout")
+    suspend fun deleteApi() :Response<JsonObject>
 
 
     @POST("register")
@@ -107,7 +125,7 @@ interface P2PApi {
     @Multipart
     suspend fun merchantVerification(
         @Part businessIdList : ArrayList<MultipartBody.Part>?,
-        @Part List : ArrayList<MultipartBody.Part>?,
+        @Part list : ArrayList<MultipartBody.Part>?,
         @Part pdfList : ArrayList<MultipartBody.Part>?,
         @Part profileImage: MultipartBody.Part?,
         @Part("user_type") userType : RequestBody

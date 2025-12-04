@@ -59,13 +59,14 @@
                 android:text="Your Balance"/>
 
             <TextView
+                android:id="@+id/tvBalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#EEEEEE"
                 android:textSize="@dimen/_20sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
-                android:text="24 900 fcfa"/>
+                android:text="0"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/imgScan"

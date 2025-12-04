@@ -30,18 +30,20 @@ class SendMoneyFragment : Fragment() {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
 
-        val json = arguments?.getString("receiver_json")
+  /*      val json = arguments?.getString("receiver_json")
         val receiver = Gson().fromJson(json, Receiver::class.java)
-                Log.d("INSIDE_TESTING",receiver.name.toString())
-
+        Log.d("INSIDE_TESTING",receiver.name.toString())
+*/
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
+        
+        binding.imgBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.btnSend.setOnClickListener {
             findNavController().navigate(R.id.enterSecretCodeFragment)
         }

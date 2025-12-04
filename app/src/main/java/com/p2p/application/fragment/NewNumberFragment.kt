@@ -237,7 +237,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     }
 
     override fun onItemClick(data: String, type: String) {
-        TODO("Not yet implemented")
+        findNavController().navigate(R.id.sendMoneyFragment)
     }
 
     override fun onResume() {

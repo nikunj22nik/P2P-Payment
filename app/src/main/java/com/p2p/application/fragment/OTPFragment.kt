@@ -282,7 +282,7 @@ class OTPFragment : Fragment() {
         }
     }
 
-    private fun callingLoginApi() {
+    private fun  callingLoginApi() {
         if (!isOnline(requireContext())) {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             return
@@ -305,6 +305,7 @@ class OTPFragment : Fragment() {
                             when (selectedType) {
                                 AppConstant.USER -> handleUserLogin(response)
                                 AppConstant.MERCHANT -> {
+                                    sessionManager.setAuthToken(response.token?:"")
                                     if(response.user.verification_status ==1){
                                     SessionManager(requireContext()).apply {
                                         setAuthToken(response.token?:"")
@@ -317,6 +318,7 @@ class OTPFragment : Fragment() {
                                         }
                                      }
                                     }
+                                    // document not upload case
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
