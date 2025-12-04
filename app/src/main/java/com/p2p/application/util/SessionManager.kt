@@ -42,8 +42,17 @@ class SessionManager(var context: Context) {
         editor?.apply()
     }
 
+    fun setIsPin(value: Boolean) {
+        editor?.putBoolean(AppConstant.PINT_TYPE, value)
+        editor?.apply()
+    }
+
     fun getIsWelcome(): Boolean {
         return pref?.getBoolean("WELCOME", false) ?: false
+    }
+
+    fun getIsPin(): Boolean {
+        return pref?.getBoolean(AppConstant.PINT_TYPE, false) ?: false
     }
 
 
