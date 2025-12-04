@@ -5,6 +5,9 @@ import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.TransactionHistoryResponse
+import com.p2p.application.model.TransactionItem
+import com.p2p.application.model.UserInfo
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
@@ -371,5 +374,132 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
+    override suspend fun getTransactionHistory(
+        page: Int,
+        limit: Int
+    ): Flow<NetworkResult<TransactionHistoryResponse>>
+        = flow {
 
+            try {
+                api.getTransactionHistory(page, limit).apply {
+
+                    if (isSuccessful) {
+
+                        body()?.let { resp ->
+
+                            if (resp.has("success") && resp.get("success").asBoolean) {
+
+                                val dataObject = resp.get("data").asJsonObject
+
+                                val list = dataObject.getAsJsonArray("data").map { element ->
+                                    val obj = element.asJsonObject
+
+                                    TransactionItem(
+                                        id = obj.get("id").asInt,
+                                        amount = obj.get("amount").asString,
+                                        currency = obj.get("currency").asString,
+                                        status = obj.get("status").asString,
+                                        date = obj.get("date").asString,
+                                        time = obj.get("time").asString,
+                                        transaction_type = obj.get("transaction_type").asString,
+                                        user = obj.get("user").asJsonObject.let { u ->
+                                            UserInfo(
+                                                id = u.get("id").asInt,
+                                                first_name = u.get("first_name").asString,
+                                                last_name = u.get("last_name").asString,
+                                                phone = u.get("phone").asString,
+                                                business_logo = if (u.get("business_logo").isJsonNull) null else u.get(
+                                                    "business_logo"
+                                                ).asString
+                                            )
+                                        }
+                                    )
+                                }
+
+                                val finalData = TransactionHistoryResponse(
+                                    page = dataObject.get("page").asInt,
+                                    limit = dataObject.get("limit").asInt,
+                                    total = dataObject.get("total").asInt,
+                                    total_page = dataObject.get("total_page").asInt,
+                                    data = list
+                                )
+
+                                emit(NetworkResult.Success(finalData))
+
+                            } else {
+                                emit(NetworkResult.Error(resp.get("message").asString))
+                            }
+
+                        } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+
+                    } else {
+                        emit(NetworkResult.Error(AppConstant.serverError))
+                    }
+                }
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        }
+
+    override suspend fun genOneToOneTransactionHistory(userId: Int): Flow<NetworkResult<TransactionHistoryResponse>> =flow{
+        try {
+            api.genOneToOneTransactionHistory(userId).apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+                           // val dataObject = resp.get("data").asJsonObject
+                            val list = resp.getAsJsonArray("data").map { element ->
+                                val obj = element.asJsonObject
+                                TransactionItem(
+                                    id = obj.get("id").asInt,
+                                    amount = obj.get("amount").asString,
+                                    currency = obj.get("currency").asString,
+                                    status = obj.get("status").asString,
+                                    date = obj.get("date").asString,
+                                    time = obj.get("time").asString,
+                                    transaction_type = obj.get("transaction_type").asString,
+                                    user = obj.get("user").asJsonObject.let { u ->
+                                        UserInfo(
+                                            id = u.get("id").asInt,
+                                            first_name = u.get("first_name").asString,
+                                            last_name = u.get("last_name").asString,
+                                            phone = u.get("phone").asString,
+                                            business_logo = if (u.get("business_logo").isJsonNull) null else u.get(
+                                                "business_logo"
+                                            ).asString
+                                        )
+                                    }
+                                )
+                            }
+
+                            val finalData = TransactionHistoryResponse(
+                                page =1,
+                                limit = 20,
+                                total = 1,
+                                total_page = 1,
+                                data = list
+                            )
+
+                            emit(NetworkResult.Success(finalData))
+
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
 }
+
+

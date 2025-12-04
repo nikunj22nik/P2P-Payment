@@ -5,6 +5,7 @@ import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.LoginUserModel
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
@@ -79,5 +80,15 @@ interface P2PRepository {
         @Part profileImage: MultipartBody.Part?,
         @Part("user_type") userType : RequestBody
     ): Flow<NetworkResult<String>>
+
+    suspend fun getTransactionHistory(
+        @Field("page")page: Int,
+        @Field("limit")limit: Int
+    ): Flow<NetworkResult<TransactionHistoryResponse>>
+
+    suspend fun genOneToOneTransactionHistory(
+        @Field("user_id") userId :Int
+    ) :Flow<NetworkResult<TransactionHistoryResponse>>
+
 
 }

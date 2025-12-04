@@ -9,10 +9,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.p2p.application.R
 import com.p2p.application.model.HistoryItem
-import androidx.core.graphics.toColorInt
+import com.bumptech.glide.Glide
+import com.p2p.application.BuildConfig
+import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+
 
 class TransactionAdapter(
-    private val items: List<HistoryItem>
+    private var items: List<HistoryItem>,var type:String ="list",
+    private val onTransactionClick: (userId: Int,userName :String, userNumber:String,userProfile:String?) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_HEADER = 0
@@ -26,14 +34,13 @@ class TransactionAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return if (viewType == TYPE_HEADER) {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_header, parent, false)
+            val view = inflater.inflate(R.layout.item_header, parent, false)
             HeaderViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_transaction, parent, false)
-            TransactionViewHolder(view)
+            val view = inflater.inflate(R.layout.item_transaction, parent, false)
+            TransactionViewHolder(view, onTransactionClick,type)
         }
     }
 
@@ -48,25 +55,123 @@ class TransactionAdapter(
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val month: TextView = itemView.findViewById(R.id.tvMonth)
+
         fun bind(data: HistoryItem.Header) {
-            month.text = data.month
+            month.text = expandMonthYear(data.month)
+        }
+
+        private fun expandMonthYear(monthYear: String): String {
+            val parts = monthYear.split(" ")
+            if (parts.size >= 2) {
+                val monthAbbr = parts[0]
+                val year = parts[1]
+                val fullMonth = when (monthAbbr) {
+                    "Jan" -> "January"
+                    "Feb" -> "February"
+                    "Mar" -> "March"
+                    "Apr" -> "April"
+                    "May" -> "May"
+                    "Jun" -> "June"
+                    "Jul" -> "July"
+                    "Aug" -> "August"
+                    "Sep" -> "September"
+                    "Oct" -> "October"
+                    "Nov" -> "November"
+                    "Dec" -> "December"
+                    else -> monthAbbr
+                }
+                return "$fullMonth $year"
+            }
+            return ""
         }
     }
 
-    class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TransactionViewHolder(
+        itemView: View,
+        private val onTransactionClick: (userId: Int,userName :String, userNumber:String,userProfile:String?) -> Unit,val type:String
+    ) : RecyclerView.ViewHolder(itemView) {
+
         private val title: TextView = itemView.findViewById(R.id.tvName)
         private val date: TextView = itemView.findViewById(R.id.tvDate)
         private val amount: TextView = itemView.findViewById(R.id.price)
+        private val image: CircleImageView = itemView.findViewById(R.id.imageProfile)
+        private val lay: androidx.constraintlayout.widget.ConstraintLayout =
+            itemView.findViewById(R.id.trans_layout)
 
         @SuppressLint("SetTextI18n")
         fun bind(data: HistoryItem.Transaction) {
-            title.text = data.title
-            date.text = data.date
 
-            amount.text = "${data.amount} CFA"
+            // 1️⃣ Set Title and Amount
+            if (data.amount < 0) {
+                // Debit
+                title.setTextColor(Color.parseColor("#0F0D1C"))
+                amount.text = "${data.amount} CFA"
+                title.text = if (!data.phone.isNullOrEmpty()) "To ${data.title}" else data.title
+            } else {
+                // Credit
+                title.setTextColor(Color.parseColor("#03B961"))
+                amount.text = "+${data.amount} CFA"
+                title.text = if (!data.phone.isNullOrEmpty()) "From ${data.title}" else data.title
+            }
+
+            // 2️⃣ Set Date
+            date.text = if (!isToday(data.date)) data.date else "Today"
+
+            // 3️⃣ Set Amount Color
             amount.setTextColor(
-                if (data.amount > 0) "#2ecc71".toColorInt() else "#e74c3c".toColorInt()
+                if (data.amount > 0) Color.parseColor("#03B961")
+                else Color.parseColor("#E74C3C")
             )
+
+            // 4️⃣ Glide Image with placeholder/fallback
+            val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
+            if(type.equals("list")){
+                Glide.with(itemView.context)
+                    .load(if (url.isEmpty()) null else url)
+                    .placeholder(R.drawable.transfericon)
+                    .error(R.drawable.transfericon)
+                    .into(image)
+            }else{
+                if(data.amount < 0){
+                    Glide.with(itemView.context)
+                        .load(R.drawable.ic_outgoing)
+                        .placeholder(R.drawable.ic_outgoing)
+                        .error(R.drawable.ic_outgoing)
+                        .into(image)
+                }else{
+                    Glide.with(itemView.context)
+                        .load(R.drawable.ic_incoming)
+                        .placeholder(R.drawable.ic_incoming)
+                        .error(R.drawable.ic_incoming)
+                        .into(image)
+                }
+            }
+
+
+            // 5️⃣ Click listener passes userId
+            lay.setOnClickListener {
+                onTransactionClick(data.id.toInt(),data.title,data.phone,data.profile)
+            }
         }
+
+        private fun isToday(dateString: String): Boolean {
+            val format = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
+            return try {
+                val inputDate = format.parse(dateString) ?: return false
+                val today = Calendar.getInstance()
+                val cal = Calendar.getInstance()
+                cal.time = inputDate
+                cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                        && cal.get(Calendar.MONTH) == today.get(Calendar.MONTH)
+                        && cal.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    fun updateAdapter(newItems: List<HistoryItem>) {
+        this.items = newItems
+        notifyDataSetChanged()
     }
 }

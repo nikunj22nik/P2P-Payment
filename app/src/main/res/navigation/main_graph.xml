@@ -163,4 +163,10 @@
         android:name="com.p2p.application.fragment.UserIDUploadFragment"
         android:label="fragment_user_i_d_upload"
         tools:layout="@layout/fragment_user_i_d_upload" />
+
+    <fragment
+        android:id="@+id/individualTransactionFragment"
+        android:name="com.p2p.application.fragment.IndividualTransactionHistoryFragment"
+        android:label="fragment_individual_transaction"
+        tools:layout="@layout/fragment_individual_transaction_history" />
 </navigation>

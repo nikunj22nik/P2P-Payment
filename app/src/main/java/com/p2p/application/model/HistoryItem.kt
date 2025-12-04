@@ -6,6 +6,8 @@ sealed class HistoryItem {
         val title: String,
         val phone: String,
         val date: String,
-        val amount: Double
+        val amount: Double,
+        val profile:String?=null,
+        val id :String =""
     ) : HistoryItem()
 }
