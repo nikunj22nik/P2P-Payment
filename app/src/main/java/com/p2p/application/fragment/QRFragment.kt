@@ -10,9 +10,11 @@ import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
 import com.google.gson.Gson
@@ -20,16 +22,23 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentQRBinding
+import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Receiver
+import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.viewModel.QrCodeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class QRFragment : Fragment() {
 
 
+    private lateinit var viewModel : QrCodeViewModel
     private lateinit var scanQrBtn: TextView
     private lateinit var scannedValueTv: TextView
     private var isScannerInstalled = false
@@ -41,8 +50,10 @@ class QRFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentQRBinding.inflate(layoutInflater, container, false)
+        viewModel = ViewModelProvider(this)[QrCodeViewModel::class.java]
         installGoogleScanner()
         initVars()
+        binding.qrCodeImage.visibility =View.GONE
         registerUiListener()
         return binding.root
     }
@@ -59,6 +70,34 @@ class QRFragment : Fragment() {
         }.addOnFailureListener {
             isScannerInstalled = false
             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+        }
+        gettingMyQrCode()
+    }
+
+    private fun gettingMyQrCode(){
+        lifecycleScope.launch{
+            LoadingUtils.show(requireActivity())
+            viewModel.qrCodeScanner().collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                        LoadingUtils.hide(requireActivity())
+                        binding.qrCodeImage.visibility =View.VISIBLE
+                        val imgPath = if(it.data != null)BuildConfig.MEDIA_URL + it.data else null
+                        Glide.with(requireContext())
+                            .load(imgPath)
+                            .placeholder(R.drawable.ic_qr_new_img)
+                            .error(R.drawable.ic_qr_new_img)
+                            .into(binding.qrCodeImage)
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                    }
+                    else->{
+
+                    }
+                }
+            }
         }
     }
 
@@ -125,6 +164,7 @@ class QRFragment : Fragment() {
                             val json = Gson().toJson(receiver)
                             val bundle = Bundle()
                             bundle.putString("receiver_json", json)
+                            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                             findNavController().navigate(R.id.sendMoneyFragment, bundle)
                         }
                     }

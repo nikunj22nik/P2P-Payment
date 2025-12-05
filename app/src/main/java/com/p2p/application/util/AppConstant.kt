@@ -25,6 +25,8 @@ class AppConstant {
         const val BACK_TO_LOGIN ="Back to Login"
         const val BACK_TO_HOME ="Back to Home"
         const val TRY_AGAIN ="Try Again"
+        const val SCREEN_TYPE ="Screen Type"
+        const val QR ="qr"
         const val SESSION_ERROR:String="Your session has expired. Please log in again to continue."
         fun mapperType(value: String?): String {
             return when (value) {

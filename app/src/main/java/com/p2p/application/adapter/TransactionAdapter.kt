@@ -122,8 +122,6 @@ class TransactionAdapter(
                 if (data.amount > 0) Color.parseColor("#03B961")
                 else Color.parseColor("#E74C3C")
             )
-
-            // 4️⃣ Glide Image with placeholder/fallback
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
             if(type.equals("list")){
                 Glide.with(itemView.context)

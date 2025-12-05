@@ -621,6 +621,33 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
+
+    override suspend fun getQrCode(): Flow<NetworkResult<String>> =flow{
+        try {
+            val response = api.getQrCode()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                        val data = respBody.get("data").asJsonObject
+                        val qrCode= data.get("qr_code").asString
+                        emit(NetworkResult.Success(qrCode))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+
 }
 
 

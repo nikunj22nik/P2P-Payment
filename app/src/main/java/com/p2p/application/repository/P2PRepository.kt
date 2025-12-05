@@ -1,5 +1,6 @@
 package com.p2p.application.repository
 
+import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.RegisterResponse
@@ -14,6 +15,7 @@ import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.Part
 
@@ -95,5 +97,8 @@ interface P2PRepository {
         @Field("user_id") userId :Int
     ) :Flow<NetworkResult<TransactionHistoryResponse>>
 
+    suspend fun getQrCode() :Flow<NetworkResult<String>>
+
+    suspend fun userCurrentAccountLimit() : Flow<NetworkResult<String>>
 
 }

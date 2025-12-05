@@ -145,4 +145,17 @@ interface P2PApi {
         @Field("user_id") userId :Int
     ) : Response<JsonObject>
 
+    @POST("get_qr_code")
+    suspend fun getQrCode() : Response<JsonObject>
+    @POST("send_money")
+    @FormUrlEncoded
+    suspend fun sendMoney(
+        @Field("sender_type") senderType :String,
+        @Field("receiver_id")receiver_id :Int,
+        @Field("receiver_type") receiverType :String,
+        @Field("amount") amount :String
+    ) : Response<JsonObject>
+
+
+
   }

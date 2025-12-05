@@ -12,6 +12,7 @@ import com.p2p.application.R
 import com.p2p.application.databinding.FragmentSendMoneyBinding
 import com.p2p.application.databinding.FragmentSettingBinding
 import com.p2p.application.model.Receiver
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.SessionManager
 
 
@@ -19,6 +20,8 @@ class SendMoneyFragment : Fragment() {
 
     private lateinit var binding: FragmentSendMoneyBinding
     private lateinit var sessionManager: SessionManager
+    private var previousScreenType:String =""
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,11 +29,6 @@ class SendMoneyFragment : Fragment() {
     ): View {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
-
-  /*    val json = arguments?.getString("receiver_json")
-        val receiver = Gson().fromJson(json, Receiver::class.java)
-        Log.d("INSIDE_TESTING",receiver.name.toString())
-*/
         return binding.root
     }
 
@@ -45,6 +43,26 @@ class SendMoneyFragment : Fragment() {
             findNavController().navigate(R.id.enterSecretCodeFragment)
         }
 
+        if(requireArguments().containsKey(AppConstant.SCREEN_TYPE)){
+            previousScreenType = requireArguments().getString(AppConstant.SCREEN_TYPE,"")
+        }
+
+        val receiver = getReceiverArg()
+
+    }
+
+    fun Fragment.getReceiverArg(): Receiver? {
+        val json = arguments?.getString("receiver_json") ?: run {
+            Log.w("ARG_WARNING", "receiver_json missing")
+            return null
+        }
+
+        return try {
+            Gson().fromJson(json, Receiver::class.java)
+        } catch (e: Exception) {
+            Log.e("ARG_ERROR", "Failed to parse receiver_json", e)
+            null
+        }
     }
 
 }
