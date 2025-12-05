@@ -15,14 +15,18 @@ import com.p2p.application.model.accountlimit.AccountLimitModel
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.newnumber.NewNumberModel
+import com.p2p.application.model.receiptmodel.ReceiptModel
+import com.p2p.application.model.recentmerchant.RecentMerchantModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.model.switchmodel.SwitchUserModel
 import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.http.Field
 import javax.inject.Inject
 
@@ -191,6 +195,30 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         emit(NetworkResult.Success(countryResponse))
                     } else {
                         emit(NetworkResult.Error(countryResponse.message))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun homeMerchantRequest(): Flow<NetworkResult<RecentMerchantModel>> = flow {
+        try {
+            val response = api.homeMerchantRequest()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    val response = Gson().fromJson(respBody, RecentMerchantModel::class.java)
+                    if (response.success) {
+                        emit(NetworkResult.Success(response))
+                    } else {
+                        emit(NetworkResult.Error(response.message))
                     }
                 } else {
                     emit(NetworkResult.Error(AppConstant.unKnownError))
@@ -375,6 +403,30 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
+    override suspend fun receiptRequest(id: String): Flow<NetworkResult<ReceiptModel>> = flow {
+        try {
+            val response = api.receiptRequest(id)
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    val response = Gson().fromJson(respBody, ReceiptModel::class.java)
+                    if (response.success) {
+                        emit(NetworkResult.Success(response))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
     override suspend fun register(
         firstName: String,
         lastName: String,
@@ -480,6 +532,33 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                     body()?.let { resp ->
                         if (resp.has("success") && resp.get("success").asBoolean) {
 
+                            val message = resp.get("message").asString
+                            emit(NetworkResult.Success(message))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun userKyc(
+        front: MultipartBody.Part?,
+        back: MultipartBody.Part?
+    ): Flow<NetworkResult<String>> = flow {
+        try {
+            val type = "user".toRequestBody("text/plain".toMediaType())
+            api.userKycRequest(front, back,type).apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
                             val message = resp.get("message").asString
                             emit(NetworkResult.Success(message))
                         } else {

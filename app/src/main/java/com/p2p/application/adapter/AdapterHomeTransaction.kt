@@ -11,13 +11,14 @@ import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.databinding.ItemHomeTransactionBinding
 import com.p2p.application.listener.ItemClickListener
+import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.util.LoadingUtils.Companion.formatDateOnly
 
 
 class AdapterHomeTransaction(
     private var requireActivity: Context,
-    var itemClickListener: ItemClickListener,
+    var itemClickListener: ItemClickListenerType,
     var transactionsList: MutableList<Transaction>
 ) :
     RecyclerView.Adapter<AdapterHomeTransaction.ViewHolder>() {
@@ -69,7 +70,7 @@ class AdapterHomeTransaction(
             }
         }
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick("")
+            itemClickListener.onItemClick(data.id.toString(),"receiptFragment")
         }
     }
 

@@ -279,7 +279,6 @@ class MerchantVerificationFragment : Fragment() {
 
         binding.btnVerify.setOnClickListener {
             callingMerchantVerification()
-
         }
     }
 
@@ -306,8 +305,7 @@ class MerchantVerificationFragment : Fragment() {
                     "tax_identification_docs[]"
                 )
             }
-            val profileImage =
-                selectedImageUri?.let { MultipartUtil.uriToMultipart(requireContext(), it, "business_logo") }
+            val profileImage = selectedImageUri?.let { MultipartUtil.uriToMultipart(requireContext(), it, "business_logo") }
             val userType = MultipartUtil.stringToRequestBody("merchant")
             lifecycleScope.launch {
                 LoadingUtils.show(requireActivity())

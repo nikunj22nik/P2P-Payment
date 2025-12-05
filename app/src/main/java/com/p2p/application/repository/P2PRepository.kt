@@ -10,6 +10,8 @@ import com.p2p.application.model.accountlimit.AccountLimitModel
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.newnumber.NewNumberModel
+import com.p2p.application.model.receiptmodel.ReceiptModel
+import com.p2p.application.model.recentmerchant.RecentMerchantModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +47,8 @@ interface P2PRepository {
     suspend fun countryRequest() :Flow<NetworkResult<CountryModel>>
     suspend fun homeRequest() :Flow<NetworkResult<HomeModel>>
 
+    suspend fun homeMerchantRequest() :Flow<NetworkResult<RecentMerchantModel>>
+
     suspend fun recentPeopleRequest() :Flow<NetworkResult<RecentPeopleModel>>
 
     suspend fun balanceRequest() :Flow<NetworkResult<String>>
@@ -54,6 +58,7 @@ interface P2PRepository {
 
     suspend fun switchUserApiRequest(id: String,phone: String,loginType: String,fcmToken: String):Flow<NetworkResult<LoginModel>>
     suspend fun userAccountList():Flow<NetworkResult<SwitchUserModel>>
+    suspend fun receiptRequest(id: String):Flow<NetworkResult<ReceiptModel>>
 
 
     suspend fun register(
@@ -86,6 +91,8 @@ interface P2PRepository {
         @Part profileImage: MultipartBody.Part?,
         @Part("user_type") userType : RequestBody
     ): Flow<NetworkResult<String>>
+
+    suspend fun userKyc(@Part front: MultipartBody.Part?, @Part back: MultipartBody.Part?): Flow<NetworkResult<String>>
 
     suspend fun getTransactionHistory(
         @Field("page")page: Int,

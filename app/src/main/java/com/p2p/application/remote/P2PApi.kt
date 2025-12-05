@@ -29,6 +29,9 @@ interface P2PApi {
     @POST("home")
     suspend fun homeRequest() :Response<JsonObject>
 
+    @POST("get_recent_merchant")
+    suspend fun homeMerchantRequest() :Response<JsonObject>
+
     @POST("get_recent_people")
     suspend fun recentPeopleRequest() :Response<JsonObject>
 
@@ -51,6 +54,10 @@ interface P2PApi {
 
     @POST("get_user_all_accounts")
     suspend fun userAccountList() :Response<JsonObject>
+
+    @POST("get_single_transaction_detail")
+    @FormUrlEncoded
+    suspend fun receiptRequest(@Field("transaction_id")userId :String) :Response<JsonObject>
 
     @POST("logout")
     suspend fun deleteApi() :Response<JsonObject>
@@ -130,6 +137,11 @@ interface P2PApi {
         @Part profileImage: MultipartBody.Part?,
         @Part("user_type") userType : RequestBody
     ) : Response<JsonObject>
+
+    @POST("user_kyc")
+    @Multipart
+    suspend fun userKycRequest(@Part front: MultipartBody.Part?, @Part back: MultipartBody.Part?,
+                               @Part("user_type") userType : RequestBody) : Response<JsonObject>
 
     @POST("get_transaction_history")
     @FormUrlEncoded

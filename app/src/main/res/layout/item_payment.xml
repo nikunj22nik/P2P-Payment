@@ -7,20 +7,30 @@
     android:gravity="center"
     android:layout_height="wrap_content"
     tools:ignore="UseCompoundDrawables">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/frame_1000001121"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:id="@+id/layImg"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:background="@drawable/circle_bg">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="@dimen/_30sdp"
+            android:scaleType="centerCrop"
+            android:layout_height="@dimen/_30sdp" />
+    </LinearLayout>
     <TextView
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#0F0D1C"
         android:textSize="@dimen/_15sdp"
+        android:gravity="center"
         android:layout_marginTop="@dimen/_5sdp"
         android:fontFamily="@font/satoshi_bold"
         android:layout_gravity="center"
-        android:text="Canal +"
+        android:text=""
         tools:ignore="RelativeOverlap" />
 </LinearLayout>

@@ -135,7 +135,7 @@
                           android:id="@+id/imgHide"
                           android:layout_width="wrap_content"
                           android:contentDescription="@string/todo"
-                          android:src="@drawable/eye_off"
+                          android:src="@drawable/eye_on"
                           android:layout_marginStart="@dimen/_10sdp"
                           android:layout_gravity="center"
                           android:layout_height="wrap_content"

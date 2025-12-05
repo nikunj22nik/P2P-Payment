@@ -24,5 +24,7 @@ class MessageError {
         const val UPLOAD_BUSINESS_Register ="Please Upload Business Registration Document."
         val UPLOAD_TAX_ID ="Please Upload Your Tax Verification Document."
         val UPLOAD_BUSINESS_LOGO= "Please Upload Your Business logo."
+        val FRONT_SMS= "Please upload front image."
+        val BACK_SMS= "Please upload back image."
     }
 }

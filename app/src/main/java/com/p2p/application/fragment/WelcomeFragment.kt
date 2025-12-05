@@ -9,13 +9,18 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.graphics.drawable.toDrawable
@@ -25,16 +30,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterHomeTransaction
 import com.p2p.application.adapter.AdapterMerchant
 import com.p2p.application.databinding.FragmentUserWelcomeBinding
 import com.p2p.application.di.NetworkResult
-import com.p2p.application.listener.ItemClickListener
+import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.homemodel.Data
 import com.p2p.application.model.homemodel.Transaction
+import com.p2p.application.model.recentmerchant.Merchant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -43,10 +51,12 @@ import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 @AndroidEntryPoint
-class WelcomeFragment : Fragment(), ItemClickListener {
+class WelcomeFragment : Fragment(), ItemClickListenerType {
 
     private lateinit var binding: FragmentUserWelcomeBinding
     private lateinit var viewModel: HomeViewModel
@@ -54,13 +64,14 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private lateinit var adapterMerchant: AdapterMerchant
     private lateinit var sessionManager: SessionManager
     private lateinit var dialogSend : BottomSheetDialog
+    private lateinit var dialogPay : BottomSheetDialog
     private var selectedType: String=""
     private val readContactsPermission = 100
     private var openedSettings = false
     private var dataHome: Data? = null
     private var originalBalance="0"
     private var transactionsList: MutableList<Transaction> = mutableListOf()
-
+    private var merchantList: MutableList<Merchant> = mutableListOf()
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,8 +82,8 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         selectedType=sessionManager.getLoginType()?:""
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
         adapter=AdapterHomeTransaction(requireContext(),this,transactionsList)
-        adapterMerchant=AdapterMerchant(requireContext())
         binding.itemRcy.adapter=adapter
+        showStart()
         handleBackPress()
         homeApi()
         handleWelComeScreen()
@@ -88,7 +99,11 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             findNavController().navigate(R.id.notificationListFragment)
         }
         binding.imgPay.setOnClickListener {
-            showAlertPay()
+            if (isOnline(requireContext())) {
+                recentMerchant()
+            } else {
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
         }
         binding.imgscan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
@@ -115,19 +130,49 @@ class WelcomeFragment : Fragment(), ItemClickListener {
                 binding.tvBalance.text = originalBalance
                 binding.imgHide.setImageResource(R.drawable.eye_off)
             }else{
-                val originalText = binding.tvBalance.text.toString()
-                originalBalance=originalText
-                val masked = originalText.map { ch ->
-                    if (ch == ' ') ' ' else '*'
-                }.joinToString("")
-                binding.tvBalance.text = masked
-                binding.imgHide.setImageResource(R.drawable.eye_on)
+                showStart()
             }
 
         }
 
     }
 
+    private fun showStart(){
+        val originalText = binding.tvBalance.text.toString()
+        originalBalance=originalText
+        val masked = originalText.map { ch ->
+            if (ch == ' ') ' ' else '*'
+        }.joinToString("")
+        binding.tvBalance.text = masked
+        binding.imgHide.setImageResource(R.drawable.eye_on)
+    }
+
+
+    private fun recentMerchant(){
+        show(requireActivity())
+        lifecycleScope.launch {
+            viewModel.homeMerchantRequest().collect {
+                hide(requireActivity())
+                binding.swipeRefresh.isRefreshing = false
+                when(it){
+                    is NetworkResult.Success ->{
+                        merchantList.clear()
+                        it.data?.data?.let { list->
+                             merchantList.addAll(list)
+                         }
+                        showAlertPay()
+                    }
+                    is NetworkResult.Error ->{
+                        merchantList.clear()
+                        showAlertPay()
+                    }
+                    is NetworkResult.Loading -> {
+                        // optional: loading indicator dismayed
+                    }
+                }
+            }
+        }
+    }
 
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){
@@ -264,6 +309,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     private fun showUIData(){
         dataHome?.let { data ->
             binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")
+            showStart()
             transactionsList.clear()
             data.transactions?.let { list->
                 transactionsList.addAll(list)
@@ -299,15 +345,24 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     }
 
     fun showAlertPay(){
-        val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-        dialogWeight.setContentView(R.layout.choosemerchent_alert)
-        dialogWeight.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialogWeight.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        dialogWeight.window?.setGravity(Gravity.BOTTOM)
-        val bottomSheet = dialogWeight.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        val btnTransfer = dialogWeight.findViewById<LinearLayout>(R.id.btnTransfer)
-        val itemRcy = dialogWeight.findViewById<RecyclerView>(R.id.itemRcy)
-        itemRcy?.adapter=adapterMerchant
+        dialogPay = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
+        dialogPay.setContentView(R.layout.choosemerchent_alert)
+        dialogPay.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogPay.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogPay.window?.setGravity(Gravity.BOTTOM)
+        val bottomSheet = dialogPay.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val btnTransfer = dialogPay.findViewById<LinearLayout>(R.id.btnTransfer)
+        val itemRcy = dialogPay.findViewById<RecyclerView>(R.id.itemRcy)
+        val tvNoData = dialogPay.findViewById<TextView>(R.id.tvNoData)
+        if (merchantList.isNotEmpty()){
+            adapterMerchant=AdapterMerchant(requireContext(),merchantList,this)
+            itemRcy?.adapter=adapterMerchant
+            itemRcy?.visibility = View.VISIBLE
+            tvNoData?.visibility = View.GONE
+        }else{
+            itemRcy?.visibility = View.GONE
+            tvNoData?.visibility = View.VISIBLE
+        }
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true // Prevent swipe down to hide
@@ -315,10 +370,10 @@ class WelcomeFragment : Fragment(), ItemClickListener {
             behavior.skipCollapsed = true
         }
         btnTransfer?.setOnClickListener {
-            dialogWeight.dismiss()
-            showAlertPayMerchant()
+            dialogPay.dismiss()
+            findNavController().navigate(R.id.newNumberFragment)
         }
-        dialogWeight.show()
+        dialogPay.show()
     }
 
     fun showAlertSend(){
@@ -363,7 +418,7 @@ class WelcomeFragment : Fragment(), ItemClickListener {
     }
 
 
-    fun showAlertPayMerchant(){
+    fun showAlertPayMerchant(data: String) {
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogWeight.setContentView(R.layout.paymerchent_alert)
         dialogWeight.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
@@ -371,6 +426,31 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialogWeight.window?.setGravity(Gravity.BOTTOM)
         val bottomSheet = dialogWeight.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val btnContinue = dialogWeight.findViewById<LinearLayout>(R.id.btnContinue)
+        val tvName = dialogWeight.findViewById<TextView>(R.id.tvName)
+        val imageProfile: CircleImageView? = dialogWeight.findViewById(R.id.imageProfile)
+        val edUserAmount: EditText? = dialogWeight.findViewById(R.id.edUserAmount)
+        val edAmount: EditText? = dialogWeight.findViewById(R.id.edAmount)
+        edUserAmount?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val input = s.toString().trim()
+                val number = input.toDoubleOrNull()
+                if (number != null) {
+                    val result = number * 1.01
+                    edAmount?.setText(result.toString())
+                } else {
+                    edAmount?.setText("")
+                }
+            }
+        })
+        val merchantData=merchantList[data.toInt()]
+        imageProfile?.let {
+            Glide.with(requireContext())
+                .load(BuildConfig.MEDIA_URL+(merchantData.business_logo?:""))
+                .into(it)
+        }
+        tvName?.text = (merchantData.first_name?:"") + " " + (merchantData.last_name?:"")
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true // Prevent swipe down to hide
@@ -384,8 +464,16 @@ class WelcomeFragment : Fragment(), ItemClickListener {
         dialogWeight.show()
     }
 
-    override fun onItemClick(data: String) {
-        findNavController().navigate(R.id.receiptFragment)
+    override fun onItemClick(data: String,type: String) {
+        if (type.equals("receiptFragment",true)){
+            val bundle = Bundle()
+            bundle.putString("receiptId", data)
+            findNavController().navigate(R.id.receiptFragment,bundle)
+        }else{
+            dialogPay.dismiss()
+            showAlertPayMerchant(data)
+        }
+
     }
 
     @Deprecated("Deprecated in Java")
