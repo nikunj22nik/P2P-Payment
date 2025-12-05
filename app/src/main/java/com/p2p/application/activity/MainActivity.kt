@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
     private var isDialogShown = false
@@ -30,9 +31,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
         val navController = navHostFragment.navController
         checkDeveloperOption(navController)
-        // Start listening when session expire
         observeSessionExpiration(navController)
-
     }
 
     private fun checkDeveloperOption(navController: NavController) {
@@ -74,4 +73,6 @@ class MainActivity : AppCompatActivity() {
 
         navController.graph = navGraph
     }
+
+
 }

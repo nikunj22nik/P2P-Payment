@@ -2,9 +2,12 @@ package com.p2p.application.repository
 
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
+import com.p2p.application.model.ReceiverInfo
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.Transaction
 
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.TransactionItem
@@ -702,6 +705,109 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             emit(NetworkResult.Error(AppConstant.serverError))
         }
     }
+
+    override suspend fun getQrCode(): Flow<NetworkResult<String>> =flow{
+        try {
+            val response = api.getQrCode()
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                        val data = respBody.get("data").asJsonObject
+                        val qrCode= data.get("qr_code").asString
+                        emit(NetworkResult.Success(qrCode))
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun sendMoney(
+        senderType: String,
+        receiver_id: Int,
+        receiverType: String,
+        amount: String
+    ): Flow<NetworkResult<Transaction>> =flow{
+        try {
+            api.sendMoney(senderType,receiver_id,receiverType,amount).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                        val data = resp.get("data").asJsonObject
+                        val transactionResponse = Gson().fromJson(data, Transaction::class.java)
+                        emit(NetworkResult.Success(transactionResponse))
+                    } else {
+                        emit(NetworkResult.Error(resp.get("message").asString))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun receiverProfileImage(receiverId: Int): Flow<NetworkResult<ReceiverInfo>> =flow{
+        try {
+            api.receiverProfileImage(receiverId).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                        val data = resp.get("data").asJsonObject
+                        val receiverResponse = Gson().fromJson(data, ReceiverInfo::class.java)
+                        emit(NetworkResult.Success(receiverResponse))
+                    } else {
+                        emit(NetworkResult.Error(resp.get("message").asString))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun checkSecretCode(secretCode: String): Flow<NetworkResult<Boolean>> =flow{
+        try {
+            api.checkSecretCode(secretCode.trim()).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+
+                        emit(NetworkResult.Success(true))
+                    } else {
+                        emit(NetworkResult.Success(false))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+
 }
 
 

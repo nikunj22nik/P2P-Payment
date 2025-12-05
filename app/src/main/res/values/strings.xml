@@ -117,4 +117,6 @@
     <string name="recent_people">Recent People</string>
     <string name="choose_from_your_contacts">Choose from your contacts</string>
     <string name="we_couldn_t_find_a_user_with_this_number_try_searching_with_another_number">We couldn’t find a user with this number. Try searching with another number.</string>
+    <string name="mobile_fees">Many Mobile Money fee = 1%\n</string>
+    <string name="maximum_fees">Maximum monthly volume : </string>
 </resources>
