@@ -2,6 +2,7 @@ package com.p2p.application.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.HistoryItem
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.repository.P2PRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionViewModel @Inject constructor(private var repository: P2PRepository): ViewModel() {
 
+     var  list: MutableList<HistoryItem> = mutableListOf()
     var currentPage = 1
     var isLoading = false
     var isLastPage = false
