@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.p2p.application.R
@@ -95,37 +96,30 @@ class TransactionAdapter(
         private val date: TextView = itemView.findViewById(R.id.tvDate)
         private val amount: TextView = itemView.findViewById(R.id.price)
         private val image: CircleImageView = itemView.findViewById(R.id.imageProfile)
-        private val lay: androidx.constraintlayout.widget.ConstraintLayout =
-            itemView.findViewById(R.id.trans_layout)
+        private val lay: RelativeLayout = itemView.findViewById(R.id.trans_layout)
 
         @SuppressLint("SetTextI18n")
         fun bind(data: HistoryItem.Transaction) {
-
-            // 1️⃣ Set Title and Amount
             if (data.amount < 0) {
                 // Debit
                 title.setTextColor(Color.parseColor("#0F0D1C"))
                 amount.text = "${data.amount} CFA"
-                title.text = if (!data.phone.isNullOrEmpty()) "To ${data.title}" else data.title
+                title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
             } else {
                 // Credit
                 title.setTextColor(Color.parseColor("#03B961"))
                 amount.text = "+${data.amount} CFA"
-                title.text = if (!data.phone.isNullOrEmpty()) "From ${data.title}" else data.title
+                title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
             }
-
-            // 2️⃣ Set Date
             date.text = if (!isToday(data.date)) data.date else "Today"
-
-            // 3️⃣ Set Amount Color
             amount.setTextColor(
                 if (data.amount > 0) Color.parseColor("#03B961")
                 else Color.parseColor("#E74C3C")
             )
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
-            if(type.equals("list")){
+            if(type.equals("list",true)){
                 Glide.with(itemView.context)
-                    .load(if (url.isEmpty()) null else url)
+                    .load(url.ifEmpty { null })
                     .placeholder(R.drawable.transfericon)
                     .error(R.drawable.transfericon)
                     .into(image)
@@ -144,9 +138,6 @@ class TransactionAdapter(
                         .into(image)
                 }
             }
-
-
-            // 5️⃣ Click listener passes userId
             lay.setOnClickListener {
                 onTransactionClick(data.id.toInt(),data.title,data.phone,data.profile)
             }
