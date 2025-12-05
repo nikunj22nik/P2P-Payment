@@ -147,6 +147,7 @@ interface P2PApi {
 
     @POST("get_qr_code")
     suspend fun getQrCode() : Response<JsonObject>
+
     @POST("send_money")
     @FormUrlEncoded
     suspend fun sendMoney(
@@ -156,6 +157,15 @@ interface P2PApi {
         @Field("amount") amount :String
     ) : Response<JsonObject>
 
+    @POST("receiver_profile_image")
+    @FormUrlEncoded
+    suspend fun receiverProfileImage(
+        @Field("receiver_id") receiverId:Int
+    ) : Response<JsonObject>
+
+    @POST("check_secret_code")
+    @FormUrlEncoded
+    suspend fun checkSecretCode(@Field("secret_code")secret_code:String) : Response<JsonObject>
 
 
   }

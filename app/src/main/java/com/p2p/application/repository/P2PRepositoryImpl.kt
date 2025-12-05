@@ -2,9 +2,12 @@ package com.p2p.application.repository
 
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
+import com.p2p.application.model.ReceiverInfo
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.Transaction
 
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.TransactionItem
@@ -23,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Field
 import javax.inject.Inject
 
@@ -644,6 +648,82 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 emit(NetworkResult.Error(AppConstant.serverError))
             }
         } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun sendMoney(
+        senderType: String,
+        receiver_id: Int,
+        receiverType: String,
+        amount: String
+    ): Flow<NetworkResult<Transaction>> =flow{
+        try {
+            api.sendMoney(senderType,receiver_id,receiverType,amount).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                        val data = resp.get("data").asJsonObject
+                        val transactionResponse = Gson().fromJson(data, Transaction::class.java)
+                        emit(NetworkResult.Success(transactionResponse))
+                    } else {
+                        emit(NetworkResult.Error(resp.get("message").asString))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun receiverProfileImage(receiverId: Int): Flow<NetworkResult<ReceiverInfo>> =flow{
+        try {
+            api.receiverProfileImage(receiverId).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                        val data = resp.get("data").asJsonObject
+                        val receiverResponse = Gson().fromJson(data, ReceiverInfo::class.java)
+                        emit(NetworkResult.Success(receiverResponse))
+                    } else {
+                        emit(NetworkResult.Error(resp.get("message").asString))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun checkSecretCode(secretCode: String): Flow<NetworkResult<Boolean>> =flow{
+        try {
+            api.checkSecretCode(secretCode.trim()).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                            resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+
+                        emit(NetworkResult.Success(true))
+                    } else {
+                        emit(NetworkResult.Success(false))
+                    }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }
+        catch (e: Exception) {
             e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }

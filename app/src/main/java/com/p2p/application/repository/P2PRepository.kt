@@ -3,7 +3,9 @@ package com.p2p.application.repository
 import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
+import com.p2p.application.model.ReceiverInfo
 import com.p2p.application.model.RegisterResponse
+import com.p2p.application.model.Transaction
 
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.accountlimit.AccountLimitModel
@@ -100,6 +102,18 @@ interface P2PRepository {
 
     suspend fun getQrCode() :Flow<NetworkResult<String>>
 
-    suspend fun userCurrentAccountLimit() : Flow<NetworkResult<String>>
+    suspend fun sendMoney(
+        @Field("sender_type") senderType :String,
+        @Field("receiver_id")receiver_id :Int,
+        @Field("receiver_type") receiverType :String,
+        @Field("amount") amount :String
+    ) : Flow<NetworkResult<Transaction>>
+
+    suspend fun receiverProfileImage(
+        receiverId:Int
+    ) :Flow<NetworkResult<ReceiverInfo>>
+
+    suspend fun checkSecretCode(secret_code:String) : Flow<NetworkResult<Boolean>>
+
 
 }

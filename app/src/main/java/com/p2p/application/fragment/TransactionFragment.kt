@@ -25,6 +25,7 @@ import com.p2p.application.model.TransactionItem
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.TransactionViewModel
@@ -174,11 +175,17 @@ class TransactionFragment : Fragment() {
     }
 
    private fun callingTransactionHistoryApi(){
-        lifecycleScope.launch {
 
-            LoadingUtils.show(requireActivity())
+       if (!isOnline(requireContext())) {
+           LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+           return
+       }
 
-            viewModel.getTransactionHistory().collect { result ->
+
+       lifecycleScope.launch {
+           LoadingUtils.show(requireActivity())
+
+           viewModel.getTransactionHistory().collect { result ->
 
                 when (result) {
 
