@@ -32,6 +32,7 @@ class ReceiptFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentReceiptBinding.inflate(inflater, container, false)
+        requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
         return binding.root

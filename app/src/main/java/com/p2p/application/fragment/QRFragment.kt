@@ -21,6 +21,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.R
+import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.model.Receiver
 import kotlinx.coroutines.launch
@@ -74,6 +75,12 @@ class QRFragment : Fragment() {
         scanQrBtn.setTextColor("#ffffff".toColorInt())
         binding.myCard.setTextColor("#1B1B1B".toColorInt())
         binding.myCard.setBackgroundResource(R.drawable.active)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 
     private fun initializeGoogleScanner(): GmsBarcodeScannerOptions {
@@ -142,5 +149,7 @@ class QRFragment : Fragment() {
                 ).show()
             }
     }
+
+
 }
 

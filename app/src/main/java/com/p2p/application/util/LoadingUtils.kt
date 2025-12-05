@@ -2,7 +2,6 @@ package com.p2p.application.util
 
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,21 +11,21 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 
 class LoadingUtils {
     companion object {
+
         fun showErrorDialog(context: Context?, text: String) {
             if (context == null) return
             val dialog= Dialog(context, R.style.BottomSheetDialog)
@@ -46,6 +45,26 @@ class LoadingUtils {
             dialog.show()
         }
 
+        fun showSessionDialog(context: Context?, text: String, navController: NavController) {
+            if (context == null) return
+            val dialog= Dialog(context, R.style.BottomSheetDialog)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.error_alert)
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window!!.attributes)
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+            dialog.window!!.attributes = layoutParams
+            val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
+            val tvSubHeader: TextView =dialog.findViewById(R.id.tvSms)
+            tvSubHeader.text=ensurePeriod(text)
+            btnOk.setOnClickListener {
+                dialog.dismiss()
+                SessionManager(context).clearSession()
+                navController.navigate(R.id.accountTypeFragment)
+            }
+            dialog.show()
+        }
         private const val LOADER_TAG = "APP_GLOBAL_LOADER"
 
         fun show(activity: Activity, transparent: Boolean = true) {

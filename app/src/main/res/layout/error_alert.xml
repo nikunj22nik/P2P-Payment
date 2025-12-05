@@ -25,6 +25,7 @@
                     android:layout_width="@dimen/_60sdp"
                     android:layout_height="@dimen/_60sdp"
                     android:layout_marginTop="@dimen/_10sdp"
+                    android:contentDescription="@string/todo"
                     android:src="@drawable/erroricon" />
                 <TextView
                     android:id="@+id/tvSms"
