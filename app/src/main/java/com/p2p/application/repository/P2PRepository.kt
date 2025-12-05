@@ -10,6 +10,7 @@ import com.p2p.application.model.accountlimit.AccountLimitModel
 
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
+import com.p2p.application.model.newnumber.NewNumberModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +30,7 @@ interface P2PRepository {
     ) :Flow<NetworkResult<String>>
 
     suspend fun searchNewNumberRequest(@Field("phone")phone :String ,@Field("countryCode") countryCode :String,@Field("apiType") apiType :String
-    ) :Flow<NetworkResult<String>>
+    ) :Flow<NetworkResult<NewNumberModel>>
 
     suspend fun sendSecretCodeRequest(@Field("countryCode")countryCode :String ,
                                       @Field("phone") phone :String,

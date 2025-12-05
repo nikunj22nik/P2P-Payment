@@ -21,6 +21,7 @@ import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.adapter.AdapterRecentPeople
+import com.p2p.application.adapter.AdapterUserPeople
 import com.p2p.application.databinding.FragmentNewNumberBinding
 import com.p2p.application.databinding.FragmentUserWelcomeBinding
 import com.p2p.application.di.NetworkResult
@@ -54,8 +55,10 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     private var popupWindow: PopupWindow?=null
     private lateinit var adapter: AdapterCountry
     private lateinit var adapterPeople: AdapterRecentPeople
+    private lateinit var adapterUserPeople: AdapterUserPeople
     private var countryList: MutableList<Country> = mutableListOf()
     private var peopleList: MutableList<RecentPeople> = mutableListOf()
+    private var userList: MutableList<com.p2p.application.model.newnumber.Data> = mutableListOf()
     private lateinit var textListener: TextWatcher
     private var textChangedJob: Job? = null
     private var searchFor = ""
@@ -68,7 +71,9 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         viewModel = ViewModelProvider(this)[NumberViewModel::class.java]
         sessionManager = SessionManager(requireContext())
         adapterPeople = AdapterRecentPeople(requireContext(),peopleList,this)
-        binding.rcyPeople.adapter = adapterPeople
+        adapterUserPeople = AdapterUserPeople(requireContext(),userList,this)
+        binding.rcyRecentPeople.adapter = adapterPeople
+        binding.rcyPeople.adapter = adapterUserPeople
         selectedType = sessionManager.getLoginType().orEmpty()
         return binding.root
     }
@@ -109,26 +114,44 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s?.toString() ?: ""
-                if (searchText != searchFor) {
-                    searchFor = searchText
-                    textChangedJob?.cancel()
-                    // Only start debounce if text length >= 8
-                    if (searchText.length >= 8) {
-                        textChangedJob = lifecycleScope.launch {
-                            delay(1000) // Debounce
-                            if (searchText == searchFor) {
-                                if (isOnline(requireContext())) {
-                                    searchNumber()
-                                } else {
-                                    LoadingUtils.showErrorDialog(
-                                        requireContext(),
-                                        MessageError.NETWORK_ERROR
-                                    )
+                if (searchText.isNotEmpty()){
+                    if (searchText != searchFor) {
+                        binding.layRecentPeople.visibility = View.GONE
+                        binding.layPeople.visibility = View.GONE
+                        binding.layInfo.visibility = View.VISIBLE
+                        binding.layLoader.visibility = View.VISIBLE
+                        searchFor = searchText
+                        textChangedJob?.cancel()
+                        // Only start debounce if text length >= 8
+                        if (searchText.length >= 8) {
+                            textChangedJob = lifecycleScope.launch {
+                                delay(1000) // Debounce
+                                if (searchText == searchFor) {
+                                    if (isOnline(requireContext())) {
+                                        searchNumber()
+                                    } else {
+                                        binding.layLoader.visibility = View.GONE
+                                        LoadingUtils.showErrorDialog(
+                                            requireContext(),
+                                            MessageError.NETWORK_ERROR
+                                        )
+                                    }
                                 }
                             }
                         }
+                    }else{
+                        binding.layRecentPeople.visibility = View.VISIBLE
+                        binding.layPeople.visibility = View.GONE
+                        binding.layInfo.visibility = View.GONE
+                        binding.layLoader.visibility = View.GONE
                     }
+                }else{
+                    binding.layRecentPeople.visibility = View.VISIBLE
+                    binding.layPeople.visibility = View.GONE
+                    binding.layInfo.visibility = View.GONE
+                    binding.layLoader.visibility = View.GONE
                 }
+
             }
         }
     }
@@ -137,12 +160,30 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
         lifecycleScope.launch {
             viewModel.searchNewNumberRequest(binding.edUser.text.toString(),countryCode,type).collect {
+                binding.layLoader.visibility = View.GONE
                 when(it){
                     is NetworkResult.Success ->{
-
+                        userList.clear()
+                        val data = it.data?.data
+                        data?.let { list->
+                            userList.addAll(list)
+                        }
+                        if (userList.isNotEmpty()){
+                            adapterUserPeople.updateData(userList)
+                            binding.layRecentPeople.visibility = View.GONE
+                            binding.layInfo.visibility = View.GONE
+                            binding.layPeople.visibility = View.VISIBLE
+                        }else{
+                            binding.layInfo.visibility = View.VISIBLE
+                            binding.layRecentPeople.visibility = View.GONE
+                            binding.layPeople.visibility = View.GONE
+                        }
                     }
                     is NetworkResult.Error ->{
-                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
+                        userList.clear()
+                        binding.layInfo.visibility = View.VISIBLE
+                        binding.layRecentPeople.visibility = View.GONE
+                        binding.layPeople.visibility = View.GONE
                     }
                     is NetworkResult.Loading -> {
                         // optional: loading indicator dismayed
@@ -210,6 +251,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             }
         }
     }
+    @SuppressLint("InflateParams")
     fun showCountry() {
         val anchorView = binding.layCountry
         anchorView.post {
@@ -226,6 +268,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()
         val item = countryList[data.toInt()]
@@ -237,11 +280,17 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     }
 
     override fun onItemClick(data: String, type: String) {
+        if (type.equals("recentPeople",true)){
+            val recentPeople = peopleList[data.toInt()]
+        }else{
+            val userPeople = userList[data.toInt()]
+        }
         findNavController().navigate(R.id.sendMoneyFragment)
     }
 
     override fun onResume() {
         super.onResume()
+        binding.edUser.text.clear()
         binding.edUser.addTextChangedListener(textListener)
     }
 

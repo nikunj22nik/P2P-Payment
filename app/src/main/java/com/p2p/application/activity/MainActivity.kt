@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkDeveloperOption(navController: NavController) {
-        val adbEnabled = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0)
+//        val adbEnabled = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0)
+        val adbEnabled = 0
         startDestination(navController,adbEnabled)
     }
 
@@ -52,20 +53,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun startDestination(navController: NavController, adbEnabled: Int) {
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-//        if (adbEnabled ==1)
-        if (sessionManager.getIsLogin()?:false){
-            if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)) {
-                if (sessionManager.getIsPin()){
-                    navGraph.setStartDestination(R.id.userWelcomeFragment)
+        if (adbEnabled ==1){
+            navGraph.setStartDestination(R.id.developerFragment)
+        }else{
+            if (sessionManager.getIsLogin()?:false){
+                if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)) {
+                    if (sessionManager.getIsPin()){
+                        navGraph.setStartDestination(R.id.userWelcomeFragment)
+                    }else{
+                        navGraph.setStartDestination(R.id.secretCodeFragment)
+                    }
                 }else{
-                    navGraph.setStartDestination(R.id.secretCodeFragment)
+                    navGraph.setStartDestination(R.id.userWelcomeFragment)
                 }
             }else{
-                navGraph.setStartDestination(R.id.userWelcomeFragment)
+                navGraph.setStartDestination(R.id.accountTypeFragment)
             }
-        }else{
-            navGraph.setStartDestination(R.id.accountTypeFragment)
         }
+
         navController.graph = navGraph
     }
 

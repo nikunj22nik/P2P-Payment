@@ -35,7 +35,7 @@ interface P2PApi {
     @POST("get_balance")
     suspend fun balanceRequest() :Response<JsonObject>
 
-    @POST("get_user_max_balance")
+    @POST("get_user_account_limit")
     suspend fun accountLimitRequest() :Response<JsonObject>
 
     @POST("logout")
