@@ -106,4 +106,15 @@
     <string name="upload_business_logo">Upload your business logo</string>
     <string name="contact">Contact</string>
     <string name="new_number">New Number</string>
+    <string name="security_alert">Security Alert</string>
+    <string name="to_keep_your_account_safe_please_turn_off_developer_options_and_usb_debugging_in_your_device_settings">To keep your account safe, please turn OFF Developer Options and USB Debugging in your device settings.</string>
+    <string name="close">Close</string>
+    <string name="setting">Open Settings</string>
+    <string name="_0">0</string>
+    <string name="phone_numbers">Phone numbers</string>
+    <string name="people">People</string>
+    <string name="see_transaction_history">See transaction history</string>
+    <string name="recent_people">Recent People</string>
+    <string name="choose_from_your_contacts">Choose from your contacts</string>
+    <string name="we_couldn_t_find_a_user_with_this_number_try_searching_with_another_number">We couldn’t find a user with this number. Try searching with another number.</string>
 </resources>

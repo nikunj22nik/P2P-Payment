@@ -3,6 +3,7 @@ package com.p2p.application.viewModel
 import androidx.lifecycle.ViewModel
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.countrymodel.CountryModel
+import com.p2p.application.model.newnumber.NewNumberModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.repository.P2PRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,7 @@ class NumberViewModel @Inject constructor(private var repository: P2PRepository)
         phone: String,
         countryCode: String,
         apiType: String
-    ) : Flow<NetworkResult<String>>{
+    ) : Flow<NetworkResult<NewNumberModel>>{
         return repository.searchNewNumberRequest(phone,countryCode,apiType)
     }
 

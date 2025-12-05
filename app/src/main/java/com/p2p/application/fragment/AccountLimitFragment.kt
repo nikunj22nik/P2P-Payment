@@ -88,8 +88,8 @@ class AccountLimitFragment : Fragment() {
                         is NetworkResult.Success -> {
                             val dataUser=result.data?.data
                             dataUser?.let {
-                                binding.tvMaxBalance.text = it.max_balance?:"0"
-                                binding.tvMaxVolume.text = it.max_balance?:"0"
+                                binding.tvMaxBalance.text = (it.monthly_limit?:"0") +" "+ it.currency
+                                binding.tvMaxVolume.text = (it.wallet_limit?:"0") +" "+ it.currency
                                 if (it.user_kyc_status == 0){
                                     binding.layPassport.visibility = View.VISIBLE
                                 }

@@ -15,8 +15,8 @@ import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.recentpepole.RecentPeople
 import com.p2p.application.model.recentpepole.Data
 
-class AdapterRecentPeople(private var requireActivity: Context, var peopleList: MutableList<RecentPeople>, var itemClickListenerType: ItemClickListenerType) :
-    RecyclerView.Adapter<AdapterRecentPeople.ViewHolder>() {
+class AdapterUserPeople(private var requireActivity: Context, var peopleList: MutableList<com.p2p.application.model.newnumber.Data>, var itemClickListenerType: ItemClickListenerType) :
+    RecyclerView.Adapter<AdapterUserPeople.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -25,7 +25,7 @@ class AdapterRecentPeople(private var requireActivity: Context, var peopleList: 
         return ViewHolder(binding)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data= peopleList[position]
         holder.binding.tvName.text = data.first_name + "\n"+data.last_name
@@ -35,12 +35,12 @@ class AdapterRecentPeople(private var requireActivity: Context, var peopleList: 
             .error(R.drawable.usericon)
             .into(holder.binding.imageProfile)
         holder.itemView.setOnClickListener {
-            itemClickListenerType.onItemClick(data.id.toString(),"recentPeople")
+            itemClickListenerType.onItemClick(data.id.toString(),"people")
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(list: MutableList<RecentPeople>){
+    fun updateData(list: MutableList<com.p2p.application.model.newnumber.Data>){
         peopleList= list
         notifyDataSetChanged()
     }

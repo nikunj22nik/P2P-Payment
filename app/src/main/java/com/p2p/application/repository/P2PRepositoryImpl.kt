@@ -14,6 +14,7 @@ import com.p2p.application.model.accountlimit.AccountLimitModel
 
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
+import com.p2p.application.model.newnumber.NewNumberModel
 import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.model.switchmodel.SwitchUserModel
 import com.p2p.application.remote.P2PApi
@@ -80,15 +81,16 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         phone: String,
         countryCode: String,
         apiType: String
-    ) : Flow<NetworkResult<String>> = flow {
+    ) : Flow<NetworkResult<NewNumberModel>> = flow {
         try {
             api.searchNewNumberRequest(phone,countryCode, apiType).apply {
                 if (isSuccessful) {
                     body()?.let { resp ->
-                        if (resp.has("success") && resp.get("success").asBoolean) {
-                            emit(NetworkResult.Success(resp.toString()))
+                        val response = Gson().fromJson(resp, NewNumberModel::class.java)
+                        if (response.success) {
+                            emit(NetworkResult.Success(response))
                         } else {
-                            emit(NetworkResult.Error(resp.get("message").asString))
+                            emit(NetworkResult.Error(response.message))
                         }
                     } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
                 } else {

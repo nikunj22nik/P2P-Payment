@@ -109,14 +109,14 @@
             android:layout_height="wrap_content"
             android:textColor="#444444"
             android:textSize="@dimen/_12sdp"
-            android:drawableStart="@drawable/infoicon"
             android:drawablePadding="@dimen/_10sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:text="We couldn’t find a user with this number. Try searching with another number." />
+            android:text="@string/we_couldn_t_find_a_user_with_this_number_try_searching_with_another_number"
+            app:drawableStartCompat="@drawable/infoicon" />
         <LinearLayout
             android:id="@+id/layGift"
             android:layout_width="match_parent"
@@ -181,7 +181,7 @@
                 android:textSize="@dimen/_15sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
-                android:text="Choose from your contacts"/>
+                android:text="@string/choose_from_your_contacts"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/itemRcy"
                 android:layout_width="match_parent"
