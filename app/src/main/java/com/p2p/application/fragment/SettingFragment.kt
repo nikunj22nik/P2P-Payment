@@ -44,6 +44,7 @@ import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 
 @AndroidEntryPoint
@@ -66,6 +67,7 @@ class SettingFragment : Fragment(),ItemClickListener {
         return binding.root
     }
 
+    @SuppressLint("UseKtx")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvUserType.text = selectedType
@@ -101,7 +103,7 @@ class SettingFragment : Fragment(),ItemClickListener {
         }
         binding.btnService.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:${binding.tvNumbar.text}")
+            intent.data = "tel:${binding.tvNumbar.text}".toUri()
             startActivity(intent)
         }
         if (selectedType.equals(AppConstant.MERCHANT,true)){
@@ -109,7 +111,6 @@ class SettingFragment : Fragment(),ItemClickListener {
             binding.btnEditCode.visibility = View.GONE
         }
     }
-
 
     private fun switchUserListApi(){
         show(requireActivity())
@@ -152,6 +153,7 @@ class SettingFragment : Fragment(),ItemClickListener {
             }
         }
     }
+
     private fun setValueFromSession(){
         val name = sessionManager.getFirstName() +" "+ sessionManager.getLastName()
         binding.tvName.text = name

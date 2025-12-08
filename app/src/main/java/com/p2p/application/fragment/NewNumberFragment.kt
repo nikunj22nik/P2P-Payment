@@ -276,6 +276,17 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             .load(BuildConfig.MEDIA_URL+item.icon)
             .into(binding.imgIcon)
         binding.tvCountryCode.text = "("+item.country_code+")"
+        if (binding.edUser.text.toString().trim().length >= 8) {
+            if (isOnline(requireContext())) {
+                searchNumber()
+            } else {
+                binding.layLoader.visibility = View.GONE
+                LoadingUtils.showErrorDialog(
+                    requireContext(),
+                    MessageError.NETWORK_ERROR
+                )
+            }
+        }
 
     }
 
