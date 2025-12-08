@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -91,6 +92,7 @@ class SendMoneyFragment : Fragment() {
             bundle.putString("screenType", "loginCode")
             findNavController().navigate(R.id.forgotCodeFragment, bundle)
         }
+        handleBackPress()
 
     }
 
@@ -175,7 +177,6 @@ class SendMoneyFragment : Fragment() {
 
     private fun setupOtpFields(vararg fields: EditText) {
         fields.forEachIndexed { index, editText ->
-
             val next = fields.getOrNull(index + 1)
             val prev = fields.getOrNull(index - 1)
 
@@ -204,7 +205,6 @@ class SendMoneyFragment : Fragment() {
                     after: Int
                 ) {
                 }
-
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
         }
@@ -218,7 +218,8 @@ class SendMoneyFragment : Fragment() {
                     is NetworkResult.Success -> {
                         if(it.data == true) {
                             callingPaymentApi()
-                        }else{
+                        }
+                        else{
                             LoadingUtils.hide(requireActivity())
                             LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
                         }
@@ -227,14 +228,27 @@ class SendMoneyFragment : Fragment() {
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireContext(), it.message.toString())
                     }
-
-                    else -> {
-
-
-                    }
+                    else -> { }
                 }
             }
         }
+    }
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (binding.layoutSendMoney.visibility == View.VISIBLE) {
+                        findNavController().navigate(R.id.userWelcomeFragment)
+                    }
+                    else {
+                        binding.layoutSecretCode.visibility = View.GONE
+                        binding.layoutSendMoney.visibility = View.VISIBLE
+                    }
+                }
+            }
+        )
     }
 
     private fun callingPaymentApi() {
