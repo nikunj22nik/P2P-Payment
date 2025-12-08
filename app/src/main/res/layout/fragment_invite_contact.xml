@@ -50,25 +50,27 @@
         android:layout_below="@id/title"
         android:orientation="vertical"
         android:gravity="center|top"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_5sdp"
         android:background="@drawable/invitecontacticon"
         android:layout_marginTop="@dimen/_30sdp"
-        android:layout_height="@dimen/_230sdp">
+        android:layout_height="@dimen/_220sdp">
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_70sdp"/>
         <TextView
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Amadou Bio"
+            android:text=""
             android:textSize="@dimen/_16sdp"
             android:textColor="#0F0D1C"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_bold"/>
         <TextView
+            android:id="@+id/tvNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="92 33 45 67 89"
+            android:text=""
             android:textSize="@dimen/_12sdp"
             android:textColor="#444444"
             android:layout_marginTop="@dimen/_5sdp"

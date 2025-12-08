@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.telephony.PhoneNumberUtils.normalizeNumber
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -35,7 +36,6 @@ import com.p2p.application.model.Receiver
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
-import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -74,6 +74,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.edSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -87,18 +88,28 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                     val filtered = contactsList.filter {
                         it.phone?.contains(searchText, ignoreCase = true) == true
                     }.toMutableList()
-                    adapter.updateList(filtered)
-                    binding.itemRcy.visibility = View.VISIBLE
-                    binding.layGift.visibility = View.GONE
-                    binding.layInfo.visibility = View.GONE
+                    if (filtered.isNotEmpty()){
+                        adapter.updateList(filtered)
+                        binding.itemRcy.visibility = View.VISIBLE
+                        binding.layGift.visibility = View.GONE
+                        binding.layInfo.visibility = View.GONE
+                        binding.layTv.visibility = View.GONE
+                    }else{
+                        binding.itemRcy.visibility = View.GONE
+                        binding.layGift.visibility = View.VISIBLE
+                        binding.layTv.visibility = View.VISIBLE
+                        binding.layInfo.visibility = View.VISIBLE
+                    }
                 } else {
                     adapter.updateList(contactsList)
                     binding.itemRcy.visibility = View.VISIBLE
+                    binding.layTv.visibility = View.VISIBLE
                     binding.layGift.visibility = View.GONE
                     binding.layInfo.visibility = View.GONE
                 }
             }
         })
+
         binding.imgScan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
@@ -119,8 +130,8 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             }else{
                 showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             }
-
         }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -153,7 +164,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                         }
                     }
                     is NetworkResult.Error -> {
-                        LoadingUtils.showErrorDialog(requireContext(), result.message.toString())
+                        showErrorDialog(requireContext(), result.message.toString())
                     }
                     is NetworkResult.Loading -> {
                         // optional: loading indicator dismayed
@@ -279,6 +290,29 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                                 bundle.putString("receiver_json", json)
                                 bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                                 findNavController().navigate(R.id.sendMoneyFragment, bundle)
+                            }else{
+                                Log.d("contactsList","size"+contactsList.size)
+                                val inputNumber = normalizeNumber(binding.edSearch.text.toString())
+                                val userItem = contactsList.find { userNumber ->
+                                    removeCountryCode(userNumber.phone.toString()) == inputNumber
+                                }
+                                if (userItem != null) {
+                                    val bundle = Bundle()
+                                    bundle.putString("name", userItem.name)
+                                    bundle.putString("number", "$countryCode $inputNumber")
+                                    findNavController().navigate(R.id.inviteContactFragment, bundle)
+                                }
+                            }
+                        }?:run {
+                            val inputNumber = normalizeNumber(binding.edSearch.text.toString())
+                            val userItem = contactsList.find { userNumber ->
+                                removeCountryCode(userNumber.phone.toString()) == inputNumber
+                            }
+                            if (userItem != null) {
+                                val bundle = Bundle()
+                                bundle.putString("name", userItem.name)
+                                bundle.putString("number", "$countryCode $inputNumber")
+                                findNavController().navigate(R.id.inviteContactFragment, bundle)
                             }
                         }
                     }
@@ -292,6 +326,13 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             }
         }
     }
+    fun normalizeNumber(number: String): String {
+        return number.replace("+", "")
+            .replace(" ", "")
+            .takeLast(10)   // sirf last 10 digits
+    }
+
+
 
     fun removeCountryCode(number: String): String {
         // Remove spaces, hyphens, parentheses

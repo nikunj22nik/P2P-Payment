@@ -120,6 +120,8 @@
                android:textSize="@dimen/_13sdp"
                android:hint="Enter a new phone number"
                android:background="@null"
+               android:inputType="number"
+               android:singleLine="true"
                android:textColor="#696969"
                android:textColorHint="#696969"
                android:paddingHorizontal="@dimen/_5sdp"
@@ -204,6 +206,7 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/layTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#0F0D1C"
