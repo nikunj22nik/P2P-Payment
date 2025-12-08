@@ -84,6 +84,7 @@ class SendMoneyFragment : Fragment() {
             binding.layoutSecretCode.visibility = View.VISIBLE
             binding.amnt.setText(receiver?.amount)
             binding.confirmAmount.setText(receiver?.amount)
+            binding.confirmAmount.setText(receiver?.amount)
         }
         settingData(viewModel.receiver)
 

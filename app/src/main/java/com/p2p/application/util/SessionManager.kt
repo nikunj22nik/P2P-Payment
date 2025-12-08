@@ -13,7 +13,6 @@ class SessionManager(var context: Context) {
     init {
         pref = context.getSharedPreferences(AppConstant.LOGIN_SESSION, Context.MODE_PRIVATE)
         editor = pref?.edit()
-
     }
 
     fun setLoginType(data: String){
@@ -113,5 +112,7 @@ class SessionManager(var context: Context) {
             apply() // this is optional; the extension applies automatically
         }
     }
+
+
 
 }

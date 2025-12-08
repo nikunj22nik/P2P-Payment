@@ -103,12 +103,13 @@ class TransactionFragment : Fragment() {
         binding.itemRcy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
+
                 Log.d("TESTING_TRANSACTION","TRUE WHEN CALLED"+ lastVisible +" "+viewModel.isLastPage+" "+
                   viewModel.currentPage +" "+viewModel.isLoading
                 )
+
                 if (!viewModel.isLastPage) {
                     if (lastVisible == adapter.itemCount - 1) {
                         viewModel.nextPage()
@@ -125,6 +126,7 @@ class TransactionFragment : Fragment() {
                                                 buildHistoryList(data).toMutableList()
                                             } ?: mutableListOf()
                                         }
+
                                         viewModel.list.addAll(list)
 
                                         adapter.updateAdapter(viewModel.list)
@@ -203,10 +205,12 @@ class TransactionFragment : Fragment() {
                         val response = result.data
                         val list = withContext(Dispatchers.Default) {
                             response?.data?.let { data ->
+
                                 buildHistoryList(data).toMutableList()
                             } ?: mutableListOf()
                         }
                         viewModel.list = list
+
                         if (list.isNotEmpty()){
                             binding.itemRcy.visibility = View.VISIBLE
                             binding.imgNoData.visibility = View.GONE

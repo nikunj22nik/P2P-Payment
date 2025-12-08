@@ -319,7 +319,7 @@ class OTPFragment : Fragment() {
                                         }
                                      }
                                     }
-                                    // document not upload case
+
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
