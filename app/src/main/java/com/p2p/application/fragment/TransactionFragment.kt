@@ -184,7 +184,6 @@ class TransactionFragment : Fragment() {
 
        lifecycleScope.launch {
            LoadingUtils.show(requireActivity())
-
            viewModel.getTransactionHistory().collect { result ->
 
                 when (result) {
