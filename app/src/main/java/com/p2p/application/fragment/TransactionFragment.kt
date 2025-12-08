@@ -173,7 +173,7 @@ class TransactionFragment : Fragment() {
 
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "InflateParams")
     private fun alertView(){
         val anchorView = binding.layTransaction
         anchorView.post {
