@@ -10,16 +10,17 @@ import com.bumptech.glide.Glide
 import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.databinding.ItemHomeTransactionBinding
-import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.util.LoadingUtils.Companion.formatDateOnly
+import com.p2p.application.util.MessageError
 
 
 class AdapterHomeTransaction(
     private var requireActivity: Context,
     var itemClickListener: ItemClickListenerType,
-    var transactionsList: MutableList<Transaction>
+    var transactionsList: MutableList<Transaction>,
+    var selectedType: String
 ) :
     RecyclerView.Adapter<AdapterHomeTransaction.ViewHolder>() {
 
@@ -40,7 +41,11 @@ class AdapterHomeTransaction(
         holder.binding.tvDate.text = text
         data.transaction_type?.let { type->
             if (type.equals("debit",true)){
-                holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
+                if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                    holder.binding.tvName.setTextColor(Color.parseColor("#FFFFFF"))
+                }else{
+                    holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
+                }
                 holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
                 holder.binding.price.setTextColor(Color.parseColor("#F90B1B"))
                 data.user?.business_logo?.let { url->
@@ -55,6 +60,11 @@ class AdapterHomeTransaction(
                         .into(holder.binding.imageProfile)
                 }
             }else{
+                if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                    holder.binding.tvName.setTextColor(Color.parseColor("#FFFFFF"))
+                }else{
+                    holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
+                }
                 holder.binding.price.setTextColor(Color.parseColor("#03B961"))
                 holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
                 data.user?.business_logo?.let { url->

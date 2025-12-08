@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -56,7 +55,6 @@ import com.p2p.application.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 
 @AndroidEntryPoint
 class WelcomeFragment : Fragment(), ItemClickListenerType {
@@ -84,7 +82,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         sessionManager= SessionManager(requireContext())
         selectedType=sessionManager.getLoginType()?:""
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
-        adapter=AdapterHomeTransaction(requireContext(),this,transactionsList)
+        adapter=AdapterHomeTransaction(requireContext(),this,transactionsList,selectedType)
         binding.itemRcy.adapter=adapter
         showStart()
         handleBackPress()

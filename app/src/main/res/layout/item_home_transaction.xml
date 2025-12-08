@@ -35,7 +35,7 @@
             android:textSize="@dimen/_12sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="To Beryl Orou (01 33 23 43 44)" />
+            android:text="" />
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:textSize="@dimen/_10sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
-            android:text="Yesterday · 19:12" />
+            android:text="" />
     </LinearLayout>
     <TextView
         android:id="@+id/price"

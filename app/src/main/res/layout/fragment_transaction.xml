@@ -55,14 +55,15 @@
         android:id="@+id/imgNoData"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_200sdp"
-        android:layout_below="@id/title"
+        android:layout_below="@id/layItem"
         android:layout_marginTop="@dimen/_30sdp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:background="@drawable/transactionnodataimg"
         android:contentDescription="@string/todo" />
 
     <LinearLayout
+        android:id="@+id/layItem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title"

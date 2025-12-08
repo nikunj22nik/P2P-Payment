@@ -82,8 +82,8 @@ class SendMoneyFragment : Fragment() {
         if(receiver?.amount != null){
             binding.layoutSendMoney.visibility = View.GONE
             binding.layoutSecretCode.visibility = View.VISIBLE
-            binding.amnt.setText(receiver?.amount)
-            binding.confirmAmount.setText(receiver?.amount)
+            binding.amnt.setText(receiver.amount)
+            binding.confirmAmount.setText(receiver.amount)
         }
         settingData(viewModel.receiver)
 
@@ -135,7 +135,7 @@ class SendMoneyFragment : Fragment() {
                         binding.confirmAmount.setText(number.toString())
                     }
                 } else {
-                    binding.confirmAmount.setText("")
+                    binding.confirmAmount.hint = ""
                 }
             }
         })

@@ -145,15 +145,18 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:textSize="@dimen/_13sdp"
             android:hint="0"
-            android:clickable="false"
             android:background="@null"
-            android:editable="false"
-            android:inputType="number"
+            android:inputType="none"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:enabled="false"
             android:textColor="#696969"
             android:textColorHint="#696969"
             android:paddingHorizontal="@dimen/_5sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"/>
+        
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
