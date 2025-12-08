@@ -26,9 +26,13 @@ class SendMoneyViewModel @Inject constructor(private var repository: P2PReposito
         receiver_id: Int,
         receiverType: String,
         amount: String,
-        confirmAmount:String
+        confirmAmount: String,
+        currentTime: String,
+        currentDate: String
     ): Flow<NetworkResult<Transaction>>{
-        return repository.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount).onEach {
+        return repository.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount,
+            currentTime,currentDate
+            ).onEach {
 
         }
     }

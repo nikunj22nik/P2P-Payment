@@ -1,6 +1,5 @@
 package com.p2p.application.repository
 
-import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.ReceiverInfo
@@ -20,7 +19,6 @@ import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.Part
 
@@ -110,11 +108,13 @@ interface P2PRepository {
     suspend fun getQrCode() :Flow<NetworkResult<String>>
 
     suspend fun sendMoney(
-        @Field("sender_type") senderType :String,
-        @Field("receiver_id")receiver_id :Int,
-        @Field("receiver_type") receiverType :String,
-        @Field("amount") amount :String,
-        confirmAmount:String
+        @Field("sender_type") senderType: String,
+        @Field("receiver_id") receiver_id: Int,
+        @Field("receiver_type") receiverType: String,
+        @Field("amount") amount: String,
+        confirmAmount: String,
+        currentTime: String,
+        currentDate: String
     ) : Flow<NetworkResult<Transaction>>
 
     suspend fun receiverProfileImage(
