@@ -113,7 +113,7 @@ class EditSecretCodeFragment : Fragment() {
         }else if(getOtpRe().isEmpty()){
             LoadingUtils.showErrorDialog(requireContext(), MessageError.SECRET_CODE)
             return false
-        }else if(!getOtpRe().equals(getOtpRe(),true)){
+        }else if(!getOtp().equals(getOtpRe(),true)){
             LoadingUtils.showErrorDialog(requireContext(), MessageError.CODE_NOT_MATCH)
             return false
         }

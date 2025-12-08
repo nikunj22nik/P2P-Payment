@@ -145,7 +145,6 @@ class QRFragment : Fragment() {
             binding.myCard.setTextColor("#1B1B1B".toColorInt())
             binding.myCard.setBackgroundResource(R.drawable.active)
         }
-
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
