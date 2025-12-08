@@ -482,7 +482,7 @@ class SettingFragment : Fragment(),ItemClickListener {
         btnContinue.setOnClickListener {
             dialog.dismiss()
             if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
-                if (selectedType.equals(AppConstant.AGENT,true)){
+                if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
                     if (sessionManager.getIsPin()){
                         findNavController().navigate(R.id.userWelcomeFragment)
                     }else{

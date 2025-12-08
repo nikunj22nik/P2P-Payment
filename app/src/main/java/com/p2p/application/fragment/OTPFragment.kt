@@ -181,7 +181,7 @@ class OTPFragment : Fragment() {
             } else {
                 if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
                     Log.d("typeSelect","****"+sessionManager.getScreenType())
-                    if (selectedType.equals(AppConstant.AGENT,true)){
+                    if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
                         if (sessionManager.getIsPin()){
                             findNavController().navigate(R.id.userWelcomeFragment)
                         }else{
