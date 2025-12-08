@@ -8,5 +8,6 @@ data class Data(
     val `receiver`: Receiver?,
     val reference_no: String?,
     val status: String?,
-    val time: String?
+    val time: String?,
+    val transaction_fee:String?
 )

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.ui.platform.LocalAutofill
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -121,8 +122,9 @@ class SendMoneyFragment : Fragment() {
                 val number = input.toDoubleOrNull()
                 if (number != null) {
                     val result = number * 1.01
+                    val finalValue = String.format("%.2f", result).toDouble()
                     if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
-                        binding.confirmAmount.setText(result.toString())
+                        binding.confirmAmount.setText(finalValue.toString())
                     }else{
                         binding.confirmAmount.setText(number.toString())
                     }
@@ -269,16 +271,25 @@ class SendMoneyFragment : Fragment() {
                     confirmAccount?:""
                 ).collect { result ->
                     when (result) {
-                        is NetworkResult.Success -> {
+                        is NetworkResult.Success ->{
                             LoadingUtils.hide(requireActivity())
-                            LoadingUtils.showErrorDialog(requireContext(),"Payment Succesfull")
+                            val data = result.data
+                            val json = Gson().toJson(result.data)
+                            val bundle = Bundle()
+                            Log.d("TESTING_T_ID","Transaction id"+data?.transaction_id)
+                            data?.id?.let {
+                                bundle.putLong("transaction_id", data.id?.toLong()?:0)
+                            }
+                            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+                            findNavController().navigate(R.id.transferStatusFragment, bundle)
                         }
-
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
                             LoadingUtils.showErrorDialog(requireContext(),result.message.toString())
                         }
-                        else -> {}
+                        else -> {
+
+                        }
                     }
                 }
 

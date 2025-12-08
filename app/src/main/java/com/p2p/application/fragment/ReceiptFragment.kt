@@ -126,7 +126,7 @@ class ReceiptFragment : Fragment() {
             binding.tvDate.text = userData.data?.date?:""
             binding.tvTime.text = userData.data?.time?:""
             binding.tvReference.text = userData.data?.reference_no?:""
-            binding.tvFree.text = ""
+            binding.tvFree.text = userData.data?.transaction_fee?:""
         }
     }
 

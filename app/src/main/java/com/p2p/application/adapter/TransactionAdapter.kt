@@ -56,13 +56,9 @@ class TransactionAdapter(
 
     override fun getItemCount() = items.size
 
-    // -------------------------
-    //        FILTER LOGIC
-    // -------------------------
+
     fun filter(query: String) {
         val lower = query.lowercase()
-
-        // Step 1 — filter all items but keep headers for now
         val filteredList = fullList.filter { item ->
             when (item) {
                 is HistoryItem.Header -> true
@@ -80,7 +76,6 @@ class TransactionAdapter(
         for (item in filteredList) {
             when (item) {
                 is HistoryItem.Header -> {
-                    // If previous header had items, add it to final list
                     if (lastHeader != null && headerHasItems) {
                         cleanedList.add(lastHeader!!)
                     }
@@ -104,11 +99,6 @@ class TransactionAdapter(
         items = cleanedList
         notifyDataSetChanged()
     }
-
-
-    // -----------------------------------------
-    //   HEADERS + TRANSACTION VIEW HOLDERS
-    // -----------------------------------------
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val month: TextView = itemView.findViewById(R.id.tvMonth)
@@ -160,11 +150,14 @@ class TransactionAdapter(
 
             if (data.amount < 0) {
                 title.setTextColor(Color.parseColor("#0F0D1C"))
-                amount.text = "${data.amount} CFA"
+
+                val formatted = String.format("%.2f", data.amount)
+                amount.text = formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
             } else {
+                val formatted = String.format("%.2f", data.amount)
                 title.setTextColor(Color.parseColor("#03B961"))
-                amount.text = "+${data.amount} CFA"
+                amount.text = "+"+formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
             }
 

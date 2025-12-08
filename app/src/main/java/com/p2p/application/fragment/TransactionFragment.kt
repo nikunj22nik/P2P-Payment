@@ -288,7 +288,8 @@ class TransactionFragment : Fragment() {
                             )
                         ) -1 * item.amount.toDouble() else item.amount.toDouble(),
                         profile = item.user.business_logo,
-                        id = item.user.id.toString()
+                        id = item.user.id.toString(),
+                        item.currency
 
                     )
                 )
