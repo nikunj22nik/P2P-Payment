@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterHomeTransaction
@@ -40,9 +41,11 @@ import com.p2p.application.adapter.AdapterMerchant
 import com.p2p.application.databinding.FragmentUserWelcomeBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListenerType
+import com.p2p.application.model.Receiver
 import com.p2p.application.model.homemodel.Data
 import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.model.recentmerchant.Merchant
+import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -459,7 +462,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         btnContinue?.setOnClickListener {
             dialogWeight.dismiss()
-            findNavController().navigate(R.id.enterSecretCodeFragment)
+            val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
+                merchantData.id,merchantData.phone,merchantData.role,amount=edAmount?.text.toString())
+            val json = Gson().toJson(receiver)
+            val bundle = Bundle()
+            bundle.putString("receiver_json", json)
+            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+            findNavController().navigate(R.id.sendMoneyFragment, bundle)
+//          findNavController().navigate(R.id.enterSecretCodeFragment)
         }
         dialogWeight.show()
     }

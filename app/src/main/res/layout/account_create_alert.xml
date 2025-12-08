@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,15 +16,12 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_height="wrap_content">
-
-
             <ImageView
                 android:id="@+id/logo"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/icon_park_outline_check_one"
-                android:layout_height="wrap_content"/>
-
+                android:layout_height="@dimen/_50sdp"/>
             <TextView
                 android:id="@+id/tvHeader"
                 android:layout_width="wrap_content"
@@ -46,7 +42,6 @@
                 android:text="@string/account_created"
                 android:textColor="#444444"
                 android:textSize="@dimen/_15sdp" />
-
             <TextView
                 android:id="@+id/tvContent"
                 android:layout_width="match_parent"
@@ -59,8 +54,6 @@
                 android:text="@string/your_user_account_has_been_created_nsuccessfully"
                 android:textColor="#444444"
                 android:textSize="@dimen/_13sdp" />
-
-
             <LinearLayout
                 android:id="@+id/btnContinue"
                 android:layout_width="wrap_content"
@@ -82,7 +75,6 @@
                     android:fontFamily="@font/satoshi_bold"
                     android:layout_gravity="center"/>
             </LinearLayout>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

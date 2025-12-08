@@ -131,27 +131,22 @@ class ReceiptFragment : Fragment() {
     }
 
     fun shareCard(cardView: View, context: Context) {
+        binding.layDownloadShare.visibility = View.GONE
+        binding.btnHome.visibility = View.GONE
         val bitmap = getBitmapFromView(cardView)
-
+        binding.layDownloadShare.visibility = View.VISIBLE
+        binding.btnHome.visibility = View.VISIBLE
         val cachePath = File(context.cacheDir, "images")
         cachePath.mkdirs()
-
         val file = File(cachePath, "receipt.png")
         val fileOutputStream = FileOutputStream(file)
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
         fileOutputStream.close()
-
-        val uri = FileProvider.getUriForFile(
-            context,
-            context.packageName + ".provider",
-            file
-        )
-
+        val uri = FileProvider.getUriForFile(context, context.packageName + ".provider", file)
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
         requireActivity().startActivity(Intent.createChooser(shareIntent, "Share Receipt"))
     }
 

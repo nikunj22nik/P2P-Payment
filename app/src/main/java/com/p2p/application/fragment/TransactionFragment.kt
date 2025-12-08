@@ -164,21 +164,6 @@ class TransactionFragment : Fragment() {
             alertView()
         }
 
-        binding.edSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(value: Editable) {
-                val searchText = value.toString().trim()
-
-            }
-        })
-
     }
 
     @SuppressLint("SetTextI18n", "InflateParams")
@@ -206,19 +191,14 @@ class TransactionFragment : Fragment() {
     }
 
     private fun callingTransactionHistoryApi() {
-
         if (!isOnline(requireContext())) {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             return
         }
-
-
         lifecycleScope.launch {
             LoadingUtils.show(requireActivity())
             viewModel.getTransactionHistory().collect { result ->
-
                 when (result) {
-
                     is NetworkResult.Success -> {
                         val response = result.data
                         val list = withContext(Dispatchers.Default) {
@@ -227,21 +207,24 @@ class TransactionFragment : Fragment() {
                             } ?: mutableListOf()
                         }
                         viewModel.list = list
-
-
-                        adapter.updateAdapter(list)
-                        Choreographer.getInstance().postFrameCallback {
-                            LoadingUtils.hide(requireActivity())
+                        if (list.isNotEmpty()){
+                            binding.itemRcy.visibility = View.VISIBLE
+                            binding.imgNoData.visibility = View.GONE
+                            adapter.updateAdapter(list)
+                            Choreographer.getInstance().postFrameCallback {
+                                LoadingUtils.hide(requireActivity())
+                            }
+                            viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
+                        }else{
+                            binding.imgNoData.visibility = View.VISIBLE
+                            binding.itemRcy.visibility = View.GONE
                         }
-                        viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
                     }
-
                     is NetworkResult.Error -> {
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireActivity(), result.message.toString())
                         viewModel.isLoading = false
                     }
-
                     else -> Unit
                 }
             }
