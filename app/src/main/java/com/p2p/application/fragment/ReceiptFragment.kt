@@ -74,7 +74,7 @@ class ReceiptFragment : Fragment() {
         }
 
         binding.imgShare.setOnClickListener {
-            shareCard(binding.card,requireContext())
+            shareCard(binding.cardHide,requireContext())
         }
 
         binding.pullToRefresh.setOnRefreshListener {
@@ -114,10 +114,19 @@ class ReceiptFragment : Fragment() {
                 binding.tvStatus.text = "Transfer successful!"
                 binding.tvStatus.setTextColor("#03B961".toColorInt())
                 binding.tvText.text = "Your transaction has been completed successfully."
+
+                binding.tvStatus1.text = "Transfer successful!"
+                binding.tvStatus1.setTextColor("#03B961".toColorInt())
+                binding.tvText1.text = "Your transaction has been completed successfully."
             }else{
                 binding.tvStatus.text = "Transfer Failed!"
                 binding.tvStatus.setTextColor("#F90B1B".toColorInt())
                 binding.tvText.text = "Your transaction has been failed."
+
+                binding.tvStatus1.text = "Transfer Failed!"
+                binding.tvStatus1.setTextColor("#F90B1B".toColorInt())
+                binding.tvText1.text = "Your transaction has been failed."
+
             }
             binding.layPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
             binding.tvPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
@@ -127,15 +136,21 @@ class ReceiptFragment : Fragment() {
             binding.tvTime.text = userData.data?.time?:""
             binding.tvReference.text = userData.data?.reference_no?:""
             binding.tvFree.text = userData.data?.transaction_fee?:""
+
+            //  show Data share receipt
+            binding.layPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
+            binding.tvPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
+            binding.tvName1.text = (userData.data?.receiver?.first_name?:"") + " " + (userData.data?.receiver?.last_name?:"")
+            binding.tvPhone1.text = userData.data?.receiver?.phone?:""
+            binding.tvDate1.text = userData.data?.date?:""
+            binding.tvTime1.text = userData.data?.time?:""
+            binding.tvReference1.text = userData.data?.reference_no?:""
+            binding.tvFree1.text = userData.data?.transaction_fee?:""
         }
     }
 
     fun shareCard(cardView: View, context: Context) {
-        binding.layDownloadShare.visibility = View.GONE
-        binding.btnHome.visibility = View.GONE
         val bitmap = getBitmapFromView(cardView)
-        binding.layDownloadShare.visibility = View.VISIBLE
-        binding.btnHome.visibility = View.VISIBLE
         val cachePath = File(context.cacheDir, "images")
         cachePath.mkdirs()
         val file = File(cachePath, "receipt.png")

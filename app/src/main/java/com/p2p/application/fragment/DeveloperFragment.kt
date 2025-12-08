@@ -16,7 +16,6 @@ import com.p2p.application.util.SessionManager
 
 class DeveloperFragment : Fragment() {
     private lateinit var binding: FragmentDeveloperBinding
-
     private var checkStatus: Boolean = false
     private lateinit var sessionManager: SessionManager
     private var selectType: String = ""
