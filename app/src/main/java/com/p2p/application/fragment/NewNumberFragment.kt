@@ -5,31 +5,30 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.adapter.AdapterRecentPeople
 import com.p2p.application.adapter.AdapterUserPeople
 import com.p2p.application.databinding.FragmentNewNumberBinding
-import com.p2p.application.databinding.FragmentUserWelcomeBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.listener.ItemClickListenerType
+import com.p2p.application.model.Receiver
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.model.recentpepole.RecentPeople
-import com.p2p.application.model.recentpepole.Data
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
@@ -38,12 +37,10 @@ import com.p2p.application.util.LoadingUtils.Companion.show
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.NumberViewModel
-import com.p2p.application.viewModel.SecretCodeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.toString
 
 @AndroidEntryPoint
 class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
@@ -154,6 +151,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
             }
         }
+
     }
     private fun searchNumber(){
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
@@ -291,12 +289,18 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     }
 
     override fun onItemClick(data: String, type: String) {
-        if (type.equals("recentPeople",true)){
-            val recentPeople = peopleList[data.toInt()]
+        val receiver =  if (type.equals("recentPeople",true)){
+            val recentPeople = peopleList.find { it.id == data.toInt() }
+            Receiver(((recentPeople?.first_name?:"")+" " + (recentPeople?.last_name?:"")),recentPeople?.id?:0,recentPeople?.phone,recentPeople?.role)
         }else{
-            val userPeople = userList[data.toInt()]
+            val userPeople = userList.find { it.id == data.toInt() }
+            Receiver(((userPeople?.first_name?:"")+" " + (userPeople?.last_name?:"")),userPeople?.id?:0,userPeople?.phone,userPeople?.role)
         }
-        findNavController().navigate(R.id.sendMoneyFragment)
+        val json = Gson().toJson(receiver)
+        val bundle = Bundle()
+        bundle.putString("receiver_json", json)
+        bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+        findNavController().navigate(R.id.sendMoneyFragment, bundle)
     }
 
     override fun onResume() {

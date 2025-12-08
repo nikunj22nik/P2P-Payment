@@ -262,7 +262,6 @@ class SendMoneyFragment : Fragment() {
             val amount = binding.amnt.text?.toString()
             val confirmAccount = binding.confirmAmount.text?.toString()
             if (receiver != null && receiver.user_id != null && receiver.user_type != null && !amount.isNullOrBlank()) {
-
                 viewModel.sendMoney(
                     senderType = type,
                     receiver_id = receiver.user_id,

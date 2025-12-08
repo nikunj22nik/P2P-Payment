@@ -145,6 +145,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:textSize="@dimen/_13sdp"
             android:hint="0"
+            android:clickable="false"
             android:background="@null"
             android:editable="false"
             android:inputType="number"
