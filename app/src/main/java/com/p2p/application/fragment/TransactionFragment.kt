@@ -200,6 +200,7 @@ class TransactionFragment : Fragment() {
         lifecycleScope.launch {
             LoadingUtils.show(requireActivity())
             viewModel.getTransactionHistory().collect { result ->
+                LoadingUtils.hide(requireActivity())
                 when (result) {
                     is NetworkResult.Success -> {
                         val response = result.data
@@ -213,6 +214,7 @@ class TransactionFragment : Fragment() {
 
                         if (list.isNotEmpty()){
                             binding.itemRcy.visibility = View.VISIBLE
+                            binding.layItem.visibility = View.VISIBLE
                             binding.imgNoData.visibility = View.GONE
                             adapter.updateAdapter(list)
                             Choreographer.getInstance().postFrameCallback {
@@ -222,6 +224,7 @@ class TransactionFragment : Fragment() {
                         }else{
                             binding.imgNoData.visibility = View.VISIBLE
                             binding.itemRcy.visibility = View.GONE
+                            binding.layItem.visibility = View.GONE
                         }
                     }
                     is NetworkResult.Error -> {
