@@ -1,7 +1,10 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
@@ -82,6 +85,9 @@ class TransactionFragment : Fragment() {
             bundle.putString("userProfile", userProfile)
             findNavController().navigate(R.id.individualTransactionFragment,bundle)
         }
+
+
+
         binding.itemRcy.adapter = adapter
         callingRecyclerSetupPagination()
         callingTransactionHistoryApi()
@@ -114,10 +120,11 @@ class TransactionFragment : Fragment() {
                                                 buildHistoryList(data).toMutableList()
                                             } ?: mutableListOf()
                                         }
+                                        viewModel.list = list
 
 
 
-                                        adapter.updateAdapter(list)
+                                        adapter.updateAdapter(viewModel.list)
 
                                         viewModel.isLoading = false
                                         binding.itemRcy.post {
@@ -150,8 +157,23 @@ class TransactionFragment : Fragment() {
         binding.layTransaction.setOnClickListener {
             alertView()
         }
+
+        binding.edSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+            override fun afterTextChanged(value: Editable) {
+                val searchText = value.toString().trim()
+
+            }
+        })
+
     }
 
+    @SuppressLint("SetTextI18n", "InflateParams")
     private fun alertView(){
         val anchorView = binding.layTransaction
         anchorView.post {
@@ -189,23 +211,19 @@ class TransactionFragment : Fragment() {
                 when (result) {
 
                     is NetworkResult.Success -> {
-
                         val response = result.data
-
                         val list = withContext(Dispatchers.Default) {
                             response?.data?.let { data ->
                                 buildHistoryList(data).toMutableList()
                             } ?: mutableListOf()
                         }
+                        viewModel.list = list
 
 
                         adapter.updateAdapter(list)
-
-
                         Choreographer.getInstance().postFrameCallback{
                             LoadingUtils.hide(requireActivity())
                         }
-
                         viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
                     }
 

@@ -74,6 +74,7 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <EditText
+                android:id="@+id/edSearch"
                 android:layout_width="match_parent"
                 android:background="@null"
                 android:hint="Search"
