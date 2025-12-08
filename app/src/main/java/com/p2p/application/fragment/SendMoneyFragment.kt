@@ -1,8 +1,6 @@
 package com.p2p.application.fragment
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -12,17 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
-import androidx.compose.ui.platform.LocalAutofill
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentSendMoneyBinding
-import com.p2p.application.databinding.FragmentSettingBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Receiver
 import com.p2p.application.util.AppConstant
@@ -32,6 +27,9 @@ import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.SendMoneyViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
@@ -81,6 +79,12 @@ class SendMoneyFragment : Fragment() {
 
         val receiver = getReceiverArg()
         viewModel.receiver = receiver
+        if(receiver?.amount != null){
+            binding.layoutSendMoney.visibility = View.GONE
+            binding.layoutSecretCode.visibility = View.VISIBLE
+            binding.amnt.setText(receiver?.amount)
+            binding.confirmAmount.setText(receiver?.amount)
+        }
         settingData(viewModel.receiver)
 
             callingGetAmountApi(viewModel.receiver)
@@ -102,6 +106,8 @@ class SendMoneyFragment : Fragment() {
             Log.w("ARG_WARNING", "receiver_json missing")
             return null
         }
+
+
 
         return try {
             Gson().fromJson(json, Receiver::class.java)
@@ -261,15 +267,21 @@ class SendMoneyFragment : Fragment() {
             val receiver = viewModel.receiver
             val amount = binding.amnt.text?.toString()
             val confirmAccount = binding.confirmAmount.text?.toString()
-            if (receiver != null && receiver.user_id != null && receiver.user_type != null && !amount.isNullOrBlank()) {
+            if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
+                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                    .format(Date())
+                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                    .format(Date())
                 viewModel.sendMoney(
                     senderType = type,
                     receiver_id = receiver.user_id,
                     receiverType = receiver.user_type,
                     amount = amount,
-                    confirmAccount?:""
+                    confirmAccount?:"",
+                    currentTime,currentDate
                 ).collect { result ->
                     when (result) {
+
                         is NetworkResult.Success ->{
                             LoadingUtils.hide(requireActivity())
                             val data = result.data
@@ -293,7 +305,6 @@ class SendMoneyFragment : Fragment() {
                 }
 
                 } else {
-
                     binding.layoutSendMoney.visibility = View.VISIBLE
                     binding.layoutSecretCode.visibility = View.GONE
                     LoadingUtils.showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)

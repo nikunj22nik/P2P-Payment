@@ -2,7 +2,6 @@ package com.p2p.application.repository
 
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.ReceiverInfo
@@ -735,10 +734,10 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         senderType: String,
         receiver_id: Int,
         receiverType: String,
-        amount: String, confirmAmount:String
+        amount: String, confirmAmount: String, currentTime: String, currentDate: String
     ): Flow<NetworkResult<Transaction>> =flow{
         try {
-            api.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount).apply {
+            api.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount,currentTime,currentDate).apply {
                 if (isSuccessful) {
                     body()?.let {
                             resp -> if (resp.has("success") && resp.get("success").asBoolean) {

@@ -167,7 +167,9 @@ interface P2PApi {
         @Field("receiver_id")receiver_id :Int,
         @Field("receiver_type") receiverType :String,
         @Field("amount") amount :String,
-        @Field(" confirm_amount")cmf:String
+        @Field(" confirm_amount")cmf:String,
+        @Field("time") time :String,
+        @Field("date") date :String
     ) : Response<JsonObject>
 
     @POST("receiver_profile_image")
