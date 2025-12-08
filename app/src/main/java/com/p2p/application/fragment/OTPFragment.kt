@@ -173,14 +173,15 @@ class OTPFragment : Fragment() {
             dialog.dismiss()
             if (viewModel.screenType.equals("Registration", true)) {
                 if (selectedType.equals(AppConstant.USER,true)) {
-                    sessionManager.setIsLogin(true)
+                        sessionManager.setIsLogin(true)
                         findNavController().navigate(R.id.secretCodeFragment)
                 } else {
                         findNavController().navigate(R.id.loginFragment)
                 }
             } else {
                 if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
-                    if (sessionManager.getScreenType().equals(AppConstant.AGENT,true)){
+                    Log.d("typeSelect","****"+sessionManager.getScreenType())
+                    if (selectedType.equals(AppConstant.AGENT,true)){
                         if (sessionManager.getIsPin()){
                             findNavController().navigate(R.id.userWelcomeFragment)
                         }else{

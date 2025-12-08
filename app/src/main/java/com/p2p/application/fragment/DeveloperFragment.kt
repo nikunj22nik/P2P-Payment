@@ -3,14 +3,13 @@ package com.p2p.application.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentDeveloperBinding
-import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.SessionManager
 

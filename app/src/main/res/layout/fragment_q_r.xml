@@ -76,11 +76,11 @@
             <!-- Logo at bottom -->
             <ImageView
                 android:id="@+id/logoContainer"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_160sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="bottom|center"
                 android:layout_marginBottom="30dp"
-                android:src="@drawable/ic_qr_logo"/>
+                android:src="@drawable/bbs_logo"/>
         </FrameLayout>
     </com.google.android.material.card.MaterialCardView>
 

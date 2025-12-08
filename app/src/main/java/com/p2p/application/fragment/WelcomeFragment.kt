@@ -258,10 +258,15 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.imgText.visibility = View.VISIBLE
             }
             if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
+
                 binding.layTitle.visibility = View.GONE
                 binding.layBalance.visibility = View.VISIBLE
                 binding.noData.visibility = View.GONE
                 binding.layTransaction.visibility = View.VISIBLE
+
+                binding.viewPayOr.visibility = View.GONE
+                binding.viewPay.visibility = View.VISIBLE
+
                 binding.main.setBackgroundResource(R.drawable.circletopcurve)
                 binding.view.setBackgroundResource(R.drawable.circletopcurveblack)
                 binding.btnSetting.setColorFilter("#000000".toColorInt())
@@ -276,7 +281,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.tvRebalancing.setTextColor("#FFFFFF".toColorInt())
                 adapter.updateColor("#FFFFFF")
                 binding.btnRebalancing.setBackgroundResource(R.drawable.user_select_inactive)
-                binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
+                binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
             }
         }
     }
