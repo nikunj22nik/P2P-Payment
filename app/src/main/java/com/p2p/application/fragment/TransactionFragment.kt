@@ -1,5 +1,6 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -172,6 +173,7 @@ class TransactionFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun alertView(){
         val anchorView = binding.layTransaction
         anchorView.post {
