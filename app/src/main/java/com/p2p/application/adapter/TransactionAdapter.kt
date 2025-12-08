@@ -18,11 +18,13 @@ import java.util.Calendar
 import java.util.Locale
 
 
-
 class TransactionAdapter(
-    private var items: List<HistoryItem>,var type:String ="list",
-    private val onTransactionClick: (userId: Int,userName :String, userNumber:String,userProfile:String?) -> Unit
+    private var items: List<HistoryItem>,
+    var type: String = "list",
+    private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var fullList: List<HistoryItem> = items   // store original list
 
     private val TYPE_HEADER = 0
     private val TYPE_ITEM = 1
@@ -41,7 +43,7 @@ class TransactionAdapter(
             HeaderViewHolder(view)
         } else {
             val view = inflater.inflate(R.layout.item_transaction, parent, false)
-            TransactionViewHolder(view, onTransactionClick,type)
+            TransactionViewHolder(view, onTransactionClick, type)
         }
     }
 
@@ -53,6 +55,60 @@ class TransactionAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    // -------------------------
+    //        FILTER LOGIC
+    // -------------------------
+    fun filter(query: String) {
+        val lower = query.lowercase()
+
+        // Step 1 — filter all items but keep headers for now
+        val filteredList = fullList.filter { item ->
+            when (item) {
+                is HistoryItem.Header -> true
+                is HistoryItem.Transaction ->
+                    item.title.lowercase().contains(lower) ||
+                            item.phone.lowercase().contains(lower)
+            }
+        }
+
+        // Step 2 — remove headers with no items under them
+        val cleanedList = mutableListOf<HistoryItem>()
+        var lastHeader: HistoryItem.Header? = null
+        var headerHasItems = false
+
+        for (item in filteredList) {
+            when (item) {
+                is HistoryItem.Header -> {
+                    // If previous header had items, add it to final list
+                    if (lastHeader != null && headerHasItems) {
+                        cleanedList.add(lastHeader!!)
+                    }
+                    lastHeader = item
+                    headerHasItems = false
+                }
+
+                is HistoryItem.Transaction -> {
+                    headerHasItems = true
+                    cleanedList.add(item)
+                }
+            }
+        }
+
+        // Add last header if it has items
+        if (lastHeader != null && headerHasItems) {
+            cleanedList.add(0, lastHeader!!)
+        }
+
+        // update adapter
+        items = cleanedList
+        notifyDataSetChanged()
+    }
+
+
+    // -----------------------------------------
+    //   HEADERS + TRANSACTION VIEW HOLDERS
+    // -----------------------------------------
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val month: TextView = itemView.findViewById(R.id.tvMonth)
@@ -89,7 +145,8 @@ class TransactionAdapter(
 
     class TransactionViewHolder(
         itemView: View,
-        private val onTransactionClick: (userId: Int,userName :String, userNumber:String,userProfile:String?) -> Unit,val type:String
+        private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?) -> Unit,
+        private val type: String
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val title: TextView = itemView.findViewById(R.id.tvName)
@@ -100,59 +157,57 @@ class TransactionAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(data: HistoryItem.Transaction) {
+
             if (data.amount < 0) {
-                // Debit
                 title.setTextColor(Color.parseColor("#0F0D1C"))
                 amount.text = "${data.amount} CFA"
                 title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
             } else {
-                // Credit
                 title.setTextColor(Color.parseColor("#03B961"))
                 amount.text = "+${data.amount} CFA"
                 title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
             }
+
             date.text = if (!isToday(data.date)) data.date else "Today"
+
             amount.setTextColor(
                 if (data.amount > 0) Color.parseColor("#03B961")
                 else Color.parseColor("#E74C3C")
             )
+
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
-            if(type.equals("list",true)){
+            if (type.equals("list", true)) {
                 Glide.with(itemView.context)
                     .load(url.ifEmpty { null })
                     .placeholder(R.drawable.transfericon)
                     .error(R.drawable.transfericon)
                     .into(image)
-            }else{
-                if(data.amount < 0){
-                    Glide.with(itemView.context)
-                        .load(R.drawable.ic_outgoing)
-                        .placeholder(R.drawable.ic_outgoing)
-                        .error(R.drawable.ic_outgoing)
-                        .into(image)
-                }else{
-                    Glide.with(itemView.context)
-                        .load(R.drawable.ic_incoming)
-                        .placeholder(R.drawable.ic_incoming)
-                        .error(R.drawable.ic_incoming)
-                        .into(image)
+            } else {
+                if (data.amount < 0) {
+                    Glide.with(itemView.context).load(R.drawable.ic_outgoing).into(image)
+                } else {
+                    Glide.with(itemView.context).load(R.drawable.ic_incoming).into(image)
                 }
             }
+
             lay.setOnClickListener {
-                onTransactionClick(data.id.toInt(),data.title,data.phone,data.profile)
+                onTransactionClick(data.id.toInt(), data.title, data.phone, data.profile)
             }
         }
 
         private fun isToday(dateString: String): Boolean {
-            val format = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
             return try {
-                val inputDate = format.parse(dateString) ?: return false
+                val format = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
+                val input = format.parse(dateString) ?: return false
                 val today = Calendar.getInstance()
+
                 val cal = Calendar.getInstance()
-                cal.time = inputDate
-                cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)
-                        && cal.get(Calendar.MONTH) == today.get(Calendar.MONTH)
-                        && cal.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
+                cal.time = input
+
+                today.get(Calendar.YEAR) == cal.get(Calendar.YEAR) &&
+                        today.get(Calendar.MONTH) == cal.get(Calendar.MONTH) &&
+                        today.get(Calendar.DAY_OF_MONTH) == cal.get(Calendar.DAY_OF_MONTH)
+
             } catch (e: Exception) {
                 false
             }
@@ -161,6 +216,7 @@ class TransactionAdapter(
 
     fun updateAdapter(newItems: List<HistoryItem>) {
         this.items = newItems
+        this.fullList = newItems
         notifyDataSetChanged()
     }
 }

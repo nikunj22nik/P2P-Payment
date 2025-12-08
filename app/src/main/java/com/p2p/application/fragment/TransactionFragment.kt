@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -45,31 +47,29 @@ class TransactionFragment : Fragment() {
     private lateinit var adapter: TransactionAdapter
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
-    private var popupWindow: PopupWindow?=null
-    private lateinit var viewModel : TransactionViewModel
+    private var popupWindow: PopupWindow? = null
+    private lateinit var viewModel: TransactionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
-        sessionManager= SessionManager(requireContext())
+        sessionManager = SessionManager(requireContext())
 
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
 
         selectedType = sessionManager.getLoginType().orEmpty()
 
         lifecycleScope.launch {
-             binding.itemRcy.visibility = View.VISIBLE
+            binding.itemRcy.visibility = View.VISIBLE
         }
 
-        if (selectedType.equals(AppConstant.MASTER_AGENT,true)){
+        if (selectedType.equals(AppConstant.MASTER_AGENT, true)) {
             binding.layShow.visibility = View.GONE
             binding.imgQuestion.visibility = View.VISIBLE
             binding.layHide.visibility = View.VISIBLE
-        }
-
-        else{
+        } else {
             binding.layShow.visibility = View.VISIBLE
             binding.imgQuestion.visibility = View.GONE
             binding.layHide.visibility = View.GONE
@@ -77,13 +77,13 @@ class TransactionFragment : Fragment() {
 
         val items = mutableListOf<HistoryItem>()
 
-        adapter = TransactionAdapter(items){  userId, userName, userNumber, userProfile->
+        adapter = TransactionAdapter(items) { userId, userName, userNumber, userProfile ->
             val bundle = Bundle()
             bundle.putInt("userId", userId)
             bundle.putString("userName", userName)
             bundle.putString("userNumber", userNumber)
             bundle.putString("userProfile", userProfile)
-            findNavController().navigate(R.id.individualTransactionFragment,bundle)
+            findNavController().navigate(R.id.individualTransactionFragment, bundle)
         }
 
 
@@ -91,6 +91,11 @@ class TransactionFragment : Fragment() {
         binding.itemRcy.adapter = adapter
         callingRecyclerSetupPagination()
         callingTransactionHistoryApi()
+
+        binding.edSearch.addTextChangedListener { text ->
+            adapter.filter(text.toString())
+        }
+
         return binding.root
     }
 
@@ -101,41 +106,42 @@ class TransactionFragment : Fragment() {
 
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
-
-                if (!viewModel.isLoading && !viewModel.isLastPage) {
+                Log.d("TESTING_TRANSACTION","TRUE WHEN CALLED"+ lastVisible +" "+viewModel.isLastPage+" "+
+                  viewModel.currentPage +" "+viewModel.isLoading
+                )
+                if (!viewModel.isLastPage) {
                     if (lastVisible == adapter.itemCount - 1) {
                         viewModel.nextPage()
-
+                        LoadingUtils.show(requireActivity())
                         lifecycleScope.launch {
                             viewModel.getTransactionHistory().collect { result ->
                                 when (result) {
-
                                     is NetworkResult.Success -> {
-
-
+                                        LoadingUtils.hide(requireActivity())
+                                        Log.d("TESTING_TRANSACTION","TRUE WHEN CALLED")
                                         val response = result.data
-
                                         val list = withContext(Dispatchers.Default) {
                                             response?.data?.let { data ->
                                                 buildHistoryList(data).toMutableList()
                                             } ?: mutableListOf()
                                         }
-                                        viewModel.list = list
-
-
+                                        viewModel.list.addAll(list)
 
                                         adapter.updateAdapter(viewModel.list)
-
                                         viewModel.isLoading = false
                                         binding.itemRcy.post {
-                                          //  LoadingUtils.hide(requireActivity())
+                                            //  LoadingUtils.hide(requireActivity())
                                         }
-                                        viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
+                                        viewModel.isLastPage =
+                                            viewModel.currentPage >= (response?.total_page ?: 1)
                                     }
 
                                     is NetworkResult.Error -> {
                                         LoadingUtils.hide(requireActivity())
-                                        LoadingUtils.showErrorDialog(requireActivity(), result.message.toString())
+                                        LoadingUtils.showErrorDialog(
+                                            requireActivity(),
+                                            result.message.toString()
+                                        )
                                         viewModel.isLoading = false
                                     }
 
@@ -162,9 +168,11 @@ class TransactionFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
             }
+
             override fun afterTextChanged(value: Editable) {
                 val searchText = value.toString().trim()
 
@@ -174,20 +182,21 @@ class TransactionFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n", "InflateParams")
-    private fun alertView(){
+    private fun alertView() {
         val anchorView = binding.layTransaction
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
             val popupView = inflater.inflate(R.layout.alert_transation, null)
-            popupWindow = PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+            popupWindow =
+                PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
             val tvAll = popupView.findViewById<TextView>(R.id.tvAll)
             val tvFrom = popupView.findViewById<TextView>(R.id.tvFrom)
             tvAll.setOnClickListener {
-                binding.tvName.text="All Transactions"
+                binding.tvName.text = "All Transactions"
                 popupWindow?.dismiss()
             }
             tvFrom.setOnClickListener {
-                binding.tvName.text="From BBS"
+                binding.tvName.text = "From BBS"
                 popupWindow?.dismiss()
             }
             popupWindow?.setBackgroundDrawable(null)
@@ -196,17 +205,17 @@ class TransactionFragment : Fragment() {
         }
     }
 
-   private fun callingTransactionHistoryApi(){
+    private fun callingTransactionHistoryApi() {
 
-       if (!isOnline(requireContext())) {
-           LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
-           return
-       }
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
 
 
-       lifecycleScope.launch {
-           LoadingUtils.show(requireActivity())
-           viewModel.getTransactionHistory().collect { result ->
+        lifecycleScope.launch {
+            LoadingUtils.show(requireActivity())
+            viewModel.getTransactionHistory().collect { result ->
 
                 when (result) {
 
@@ -221,7 +230,7 @@ class TransactionFragment : Fragment() {
 
 
                         adapter.updateAdapter(list)
-                        Choreographer.getInstance().postFrameCallback{
+                        Choreographer.getInstance().postFrameCallback {
                             LoadingUtils.hide(requireActivity())
                         }
                         viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
@@ -242,11 +251,11 @@ class TransactionFragment : Fragment() {
 
     fun buildHistoryList(transactions: List<TransactionItem>): List<HistoryItem> {
 
-            val historyList = mutableListOf<HistoryItem>()
-            val grouped = transactions.groupBy { item ->
-                val dateStr = item.date ?: "Unknown"  // Handle null
-                val parts = dateStr.split(" ")
-                if (parts.size >= 3) {
+        val historyList = mutableListOf<HistoryItem>()
+        val grouped = transactions.groupBy { item ->
+            val dateStr = item.date ?: "Unknown"  // Handle null
+            val parts = dateStr.split(" ")
+            if (parts.size >= 3) {
                 val month = parts[1]
                 val year = parts[2]
                 "$month $year"
@@ -254,11 +263,11 @@ class TransactionFragment : Fragment() {
                 "Unknown"
             }
         }
-            val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
+        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
             val (month, year) = monthYear.split(" ")
             val monthNum = monthToNumber(month)
             year.toInt() * 100 + monthNum     // For proper sorting
-           })
+        })
 
         // Convert each group into header + transactions
         sortedGroups.forEach { (monthYear, list) ->
@@ -273,8 +282,12 @@ class TransactionFragment : Fragment() {
                         title = "${item.user.first_name} ${item.user.last_name}",
                         phone = item.user.phone,
                         date = "${item.date} ${item.time}",
-                        amount = if(item.transaction_type.equals("debit",true)) -1*item.amount.toDouble() else item.amount.toDouble()
-                        , profile = item.user.business_logo,
+                        amount = if (item.transaction_type.equals(
+                                "debit",
+                                true
+                            )
+                        ) -1 * item.amount.toDouble() else item.amount.toDouble(),
+                        profile = item.user.business_logo,
                         id = item.user.id.toString()
 
                     )
@@ -308,11 +321,12 @@ class TransactionFragment : Fragment() {
             }
 
             return "$fullMonth $year"
-        }else{
+        } else {
             return ""
         }
 
     }
+
     fun monthToNumber(mon: String): Int {
         return when (mon) {
             "Jan" -> 1
@@ -330,7 +344,6 @@ class TransactionFragment : Fragment() {
             else -> 0
         }
     }
-
 
 
 }
