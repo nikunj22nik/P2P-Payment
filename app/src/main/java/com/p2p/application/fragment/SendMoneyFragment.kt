@@ -80,7 +80,9 @@ class SendMoneyFragment : Fragment() {
         val receiver = getReceiverArg()
         viewModel.receiver = receiver
         settingData(viewModel.receiver)
-        callingGetAmountApi(viewModel.receiver)
+
+            callingGetAmountApi(viewModel.receiver)
+
         callingTextWatcher()
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
 
@@ -117,7 +119,11 @@ class SendMoneyFragment : Fragment() {
                 val number = input.toDoubleOrNull()
                 if (number != null) {
                     val result = number * 1.01
-                    binding.confirmAmount.setText(result.toString())
+                    if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
+                        binding.confirmAmount.setText(result.toString())
+                    }else{
+                        binding.confirmAmount.setText(number.toString())
+                    }
                 } else {
                     binding.confirmAmount.setText("")
                 }
@@ -146,7 +152,11 @@ class SendMoneyFragment : Fragment() {
                                     Glide.with(requireContext()).load(BuildConfig.MEDIA_URL + img)
                                         .into(binding.imageProfile)
                                 }
-                                binding.fee.text = it.monthly_limit
+                                if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
+                                   binding.tv1.visibility =View.VISIBLE
+                                    binding.l2.visibility =View.VISIBLE
+                                    binding.fee.text = it.monthly_limit
+                                }
                             }
                         }
 
@@ -213,7 +223,6 @@ class SendMoneyFragment : Fragment() {
                             LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
                         }
                     }
-
                     is NetworkResult.Error -> {
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireContext(), it.message.toString())
@@ -234,14 +243,16 @@ class SendMoneyFragment : Fragment() {
             val type = AppConstant.mapperType(loginType)
 
             val receiver = viewModel.receiver
-            val amount = binding.confirmAmount.text?.toString()
+            val amount = binding.amnt.text?.toString()
+            val confirmAccount = binding.confirmAmount.text?.toString()
             if (receiver != null && receiver.user_id != null && receiver.user_type != null && !amount.isNullOrBlank()) {
 
                 viewModel.sendMoney(
                     senderType = type,
                     receiver_id = receiver.user_id,
                     receiverType = receiver.user_type,
-                    amount = amount
+                    amount = amount,
+                    confirmAccount?:""
                 ).collect { result ->
                     when (result) {
                         is NetworkResult.Success -> {

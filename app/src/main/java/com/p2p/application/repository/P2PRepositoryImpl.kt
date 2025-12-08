@@ -735,10 +735,10 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         senderType: String,
         receiver_id: Int,
         receiverType: String,
-        amount: String
+        amount: String, confirmAmount:String
     ): Flow<NetworkResult<Transaction>> =flow{
         try {
-            api.sendMoney(senderType,receiver_id,receiverType,amount).apply {
+            api.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount).apply {
                 if (isSuccessful) {
                     body()?.let {
                             resp -> if (resp.has("success") && resp.get("success").asBoolean) {

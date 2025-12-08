@@ -160,6 +160,7 @@
             android:layout_marginHorizontal="@dimen/_15sdp"/>
 
         <TextView
+            android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mobile_fees"
@@ -168,13 +169,16 @@
             android:fontFamily="@font/satoshi_medium"
             android:textSize="@dimen/_12sdp"
             android:textColor="#E2692B"
+            android:visibility="gone"
             />
 
         <LinearLayout
+            android:id="@+id/l2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="gone">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

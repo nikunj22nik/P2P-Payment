@@ -113,7 +113,8 @@ interface P2PRepository {
         @Field("sender_type") senderType :String,
         @Field("receiver_id")receiver_id :Int,
         @Field("receiver_type") receiverType :String,
-        @Field("amount") amount :String
+        @Field("amount") amount :String,
+        confirmAmount:String
     ) : Flow<NetworkResult<Transaction>>
 
     suspend fun receiverProfileImage(
