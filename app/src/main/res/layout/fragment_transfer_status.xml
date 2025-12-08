@@ -25,6 +25,7 @@ tools:context=".fragment.TransferStatusFragment">
             android:layout_marginTop="@dimen/_25sdp"
             android:orientation="vertical"
             android:gravity="center|top"
+            android:visibility="invisible"
             android:background="@drawable/status">
             <View
                 android:layout_width="match_parent"
@@ -55,15 +56,17 @@ tools:context=".fragment.TransferStatusFragment">
                 android:textSize="38sp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"/>
+
             <TextView
+                android:id="@+id/name_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#444444"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
-                android:text="Bery Orou  92 33 45 67 89"/>
+                android:text="Bery Orou  92 33 45 67 89"
+                android:textColor="#444444"
+                android:textSize="@dimen/_12sdp" />
 
             <View
                 android:layout_width="match_parent"
@@ -103,6 +106,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_centerInParent="true"
                         android:text="Amount"/>
                     <TextView
+                        android:id="@+id/amnt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"
@@ -130,6 +134,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_centerInParent="true"
                         android:text="Date"/>
                     <TextView
+                        android:id="@+id/date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"
@@ -157,6 +162,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_centerInParent="true"
                         android:text="Time"/>
                     <TextView
+                        android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"
@@ -184,6 +190,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_centerInParent="true"
                         android:text="Reference"/>
                     <TextView
+                        android:id="@+id/tvReference"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"
@@ -211,6 +218,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_centerInParent="true"
                         android:text="Fees"/>
                     <TextView
+                        android:id="@+id/tv_fees"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#0F0D1C"

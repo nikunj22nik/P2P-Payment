@@ -223,7 +223,8 @@ class IndividualTransactionHistoryFragment : Fragment() {
                         date = "${item.date} ${item.time}",
                         amount = if(item.transaction_type.equals("debit",true)) -1*item.amount.toDouble() else item.amount.toDouble()
                         , profile = item.user.business_logo,
-                        id = item.id.toString()
+                        id = item.id.toString(),
+                        currency = item.currency
 
                     )
                 )

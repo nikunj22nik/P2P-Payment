@@ -8,6 +8,7 @@ sealed class HistoryItem {
         val date: String,
         val amount: Double,
         val profile:String?=null,
-        val id :String =""
+        val id :String ="",
+        var currency :String ="FCFA"
     ) : HistoryItem()
 }
