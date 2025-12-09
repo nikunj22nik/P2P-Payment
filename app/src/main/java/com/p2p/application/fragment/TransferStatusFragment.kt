@@ -19,6 +19,7 @@ import com.p2p.application.R
 import com.p2p.application.databinding.FragmentTransferStatusBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Transaction
+import com.p2p.application.util.DownloadWorker
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.getBitmapFromView
 import com.p2p.application.util.SessionManager
@@ -28,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+
 
 @AndroidEntryPoint
 class TransferStatusFragment : Fragment() {
@@ -81,6 +83,7 @@ class TransferStatusFragment : Fragment() {
            callingGetTransactionDetailApi(transactionId = transaction)
         }
     }
+
 
 
     private fun callingGetTransactionDetailApi(transactionId: Long?) {

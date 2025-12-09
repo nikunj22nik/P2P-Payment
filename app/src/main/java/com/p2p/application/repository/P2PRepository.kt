@@ -123,5 +123,6 @@ interface P2PRepository {
 
     suspend fun checkSecretCode(secret_code:String) : Flow<NetworkResult<Boolean>>
 
+    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) :Flow<NetworkResult<String>>
 
 }

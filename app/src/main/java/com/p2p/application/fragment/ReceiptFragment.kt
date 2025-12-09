@@ -19,6 +19,7 @@ import com.p2p.application.databinding.FragmentReceiptBinding
 import com.p2p.application.databinding.FragmentTransferStatusBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.receiptmodel.ReceiptModel
+import com.p2p.application.util.DownloadWorker
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.getBitmapFromView
 import com.p2p.application.util.LoadingUtils.Companion.hide
@@ -81,6 +82,9 @@ class ReceiptFragment : Fragment() {
         binding.pullToRefresh.setOnRefreshListener {
             loadApi()
         }
+        binding.llDownload.setOnClickListener {
+            callingReceiptDownload()
+        }
 
     }
 
@@ -108,6 +112,33 @@ class ReceiptFragment : Fragment() {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+    private fun callingReceiptDownload(){
+        lifecycleScope.launch {
+            LoadingUtils.show(requireActivity())
+            viewModel.generateTransactionPdf(transactionId = receiptId).collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                        LoadingUtils.hide(requireActivity())
+                        it.data?.let {
+
+                            DownloadWorker().downloadPdfWithNotification(
+                                binding.root.context,
+                                it,
+                                "Transaction_" + "file_${(10000..99999).random()}.pdf"
+                            )
+                        }
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                    }
+                    else ->{
+
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun showUiData(data: ReceiptModel?) {
         data?.let { userData->

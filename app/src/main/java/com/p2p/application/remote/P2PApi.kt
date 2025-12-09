@@ -182,5 +182,8 @@ interface P2PApi {
     @FormUrlEncoded
     suspend fun checkSecretCode(@Field("secret_code")secret_code:String) : Response<JsonObject>
 
+    @POST("generate_transaction_detail_pdf")
+    @FormUrlEncoded
+    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) : Response<JsonObject>
 
   }
