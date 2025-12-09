@@ -176,6 +176,7 @@ class MerchantVerificationFragment : Fragment() {
                     AppConstant.PROFILE -> {
                         selectedImageUri = uri
                         binding.mainImage.setImageURI(uri)
+                        binding.businessLogo.visibility =View.VISIBLE
                     }
                 }
             }
@@ -347,10 +348,10 @@ class MerchantVerificationFragment : Fragment() {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_TAX_ID)
             return false
         }
-        else if(selectedImageUri == null){
-            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_BUSINESS_LOGO)
-            return false
-        }
+//        else if(selectedImageUri == null){
+//            LoadingUtils.showErrorDialog(requireContext(), MessageError.UPLOAD_BUSINESS_LOGO)
+//            return false
+//        }
 
         return true;
     }
@@ -410,6 +411,16 @@ class MerchantVerificationFragment : Fragment() {
                 LoadingUtils.showErrorDialog(requireContext(),"A maximum of 5 images can be uploaded.")
             }
         }
+
+        binding.cutImg.setOnClickListener {
+            binding.businessLogo.visibility =View.GONE
+            selectedImageUri= null
+
+        }
+
+
+
+
     }
 
     private fun handleBackPress() {

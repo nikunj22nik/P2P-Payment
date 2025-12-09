@@ -582,9 +582,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         page: Int,
         limit: Int
     ): Flow<NetworkResult<TransactionHistoryResponse>>
-        = flow {
-
-            try {
+        = flow { try {
                 api.getTransactionHistory(page, limit).apply {
 
                     if (isSuccessful) {
