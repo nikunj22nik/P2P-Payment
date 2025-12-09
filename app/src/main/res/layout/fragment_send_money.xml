@@ -156,7 +156,7 @@
             android:paddingHorizontal="@dimen/_5sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"/>
-        
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"

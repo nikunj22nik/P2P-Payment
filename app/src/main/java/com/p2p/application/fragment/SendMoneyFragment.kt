@@ -1,5 +1,6 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,13 +31,14 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.core.view.isVisible
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
-
     private lateinit var binding: FragmentSendMoneyBinding
     private lateinit var sessionManager: SessionManager
     private var previousScreenType: String = ""
+    private var backType: String = "Qr"
     private lateinit var viewModel: SendMoneyViewModel
 
     override fun onCreateView(
@@ -46,24 +48,26 @@ class SendMoneyFragment : Fragment() {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
         sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
+        backType= arguments?.getString("backType","Qr")?:"Qr"
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.imgBack.setOnClickListener {
-            if (binding.layoutSendMoney.visibility == View.VISIBLE) {
-                findNavController().navigate(R.id.userWelcomeFragment)
-            }
-            else {
+            if (binding.layoutSendMoney.isVisible) {
+                if (backType.equals("Qr",true)){
+                    findNavController().navigate(R.id.userWelcomeFragment)
+                }else{
+                    findNavController().navigateUp()
+                }
+            } else {
                 binding.layoutSecretCode.visibility = View.GONE
                 binding.layoutSendMoney.visibility = View.VISIBLE
             }
         }
         binding.btnSend.setOnClickListener {
-            // findNavController().navigate(R.id.enterSecretCodeFragment)
             if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
@@ -71,12 +75,9 @@ class SendMoneyFragment : Fragment() {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
         }
-
-
         if (requireArguments().containsKey(AppConstant.SCREEN_TYPE)) {
             previousScreenType = requireArguments().getString(AppConstant.SCREEN_TYPE, "")
         }
-
         val receiver = getReceiverArg()
         viewModel.receiver = receiver
         if(receiver?.amount != null){
@@ -86,19 +87,15 @@ class SendMoneyFragment : Fragment() {
             binding.confirmAmount.setText(receiver.amount)
         }
         settingData(viewModel.receiver)
-
-            callingGetAmountApi(viewModel.receiver)
-
+        callingGetAmountApi(viewModel.receiver)
         callingTextWatcher()
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
-
         binding.btnForgot.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("screenType", "loginCode")
             findNavController().navigate(R.id.forgotCodeFragment, bundle)
         }
         handleBackPress()
-
     }
 
     fun Fragment.getReceiverArg(): Receiver? {
@@ -106,9 +103,6 @@ class SendMoneyFragment : Fragment() {
             Log.w("ARG_WARNING", "receiver_json missing")
             return null
         }
-
-
-
         return try {
             Gson().fromJson(json, Receiver::class.java)
         } catch (e: Exception) {
@@ -123,6 +117,7 @@ class SendMoneyFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
+            @SuppressLint("DefaultLocale")
             override fun afterTextChanged(s: Editable?) {
                 val input = s.toString().trim()
                 val number = input.toDoubleOrNull()
@@ -140,14 +135,12 @@ class SendMoneyFragment : Fragment() {
             }
         })
     }
-
     private fun settingData(receive: Receiver?) {
         receive?.let {
             binding.tvName.text = receive.name
             binding.tvNumber.text = receive.phone
         }
     }
-
     private fun callingGetAmountApi(receive: Receiver?) {
         receive?.let {
             lifecycleScope.launch {
@@ -169,11 +162,9 @@ class SendMoneyFragment : Fragment() {
                                 }
                             }
                         }
-
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
                         }
-
                         else -> {
                         }
                     }
@@ -182,7 +173,6 @@ class SendMoneyFragment : Fragment() {
         }
     }
 
-
     private fun setupOtpFields(vararg fields: EditText) {
         fields.forEachIndexed { index, editText ->
             val next = fields.getOrNull(index + 1)
@@ -190,7 +180,6 @@ class SendMoneyFragment : Fragment() {
 
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-
                     when {
                         s?.length == 1 -> {
                             next?.requestFocus()
@@ -201,17 +190,10 @@ class SendMoneyFragment : Fragment() {
                                 }
                             }
                         }
-
                         s?.isEmpty() == true -> prev?.requestFocus()
                     }
                 }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
@@ -226,8 +208,7 @@ class SendMoneyFragment : Fragment() {
                     is NetworkResult.Success -> {
                         if(it.data == true) {
                             callingPaymentApi()
-                        }
-                        else{
+                        } else{
                             LoadingUtils.hide(requireActivity())
                             LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
                         }
@@ -247,10 +228,13 @@ class SendMoneyFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (binding.layoutSendMoney.visibility == View.VISIBLE) {
-                        findNavController().navigate(R.id.userWelcomeFragment)
-                    }
-                    else {
+                    if (binding.layoutSendMoney.isVisible) {
+                        if (backType.equals("Qr",true)){
+                            findNavController().navigate(R.id.userWelcomeFragment)
+                        }else{
+                            findNavController().navigateUp()
+                        }
+                    } else {
                         binding.layoutSecretCode.visibility = View.GONE
                         binding.layoutSendMoney.visibility = View.VISIBLE
                     }
@@ -263,7 +247,6 @@ class SendMoneyFragment : Fragment() {
         lifecycleScope.launch {
             val loginType = SessionManager(requireContext()).getLoginType()
             val type = AppConstant.mapperType(loginType)
-
             val receiver = viewModel.receiver
             val amount = binding.amnt.text?.toString()
             val confirmAccount = binding.confirmAmount.text?.toString()
@@ -281,7 +264,6 @@ class SendMoneyFragment : Fragment() {
                     currentTime,currentDate
                 ).collect { result ->
                     when (result) {
-
                         is NetworkResult.Success ->{
                             LoadingUtils.hide(requireActivity())
                             val data = result.data
@@ -289,7 +271,7 @@ class SendMoneyFragment : Fragment() {
                             val bundle = Bundle()
                             Log.d("TESTING_T_ID","Transaction id"+data?.transaction_id)
                             data?.id?.let {
-                                bundle.putLong("transaction_id", data.id?.toLong()?:0)
+                                bundle.putLong("transaction_id", data.id.toLong())
                             }
                             bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                             findNavController().navigate(R.id.transferStatusFragment, bundle)
@@ -303,16 +285,13 @@ class SendMoneyFragment : Fragment() {
                         }
                     }
                 }
-
-                } else {
+            } else {
                     binding.layoutSendMoney.visibility = View.VISIBLE
                     binding.layoutSecretCode.visibility = View.GONE
                     LoadingUtils.showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
                 }
             }
         }
-
-
     private fun getOtp(): String {
         return binding.etOtp1.text.toString() +
                 binding.etOtp2.text.toString() +

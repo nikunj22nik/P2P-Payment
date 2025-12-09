@@ -137,7 +137,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
 
     }
-
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
         originalBalance=originalText
@@ -147,8 +146,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
-
-
     private fun recentMerchant(){
         show(requireActivity())
         lifecycleScope.launch {
@@ -174,7 +171,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){
             if (selectedType.equals(MessageError.USER,true)){
@@ -256,12 +252,10 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.imgText.visibility = View.VISIBLE
             }
             if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
-
                 binding.layTitle.visibility = View.GONE
                 binding.layBalance.visibility = View.VISIBLE
                 binding.noData.visibility = View.GONE
                 binding.layTransaction.visibility = View.VISIBLE
-
                 binding.viewPayOr.visibility = View.GONE
                 binding.viewPay.visibility = View.VISIBLE
 
@@ -277,13 +271,11 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.recentTitle.setTextColor("#FFFFFF".toColorInt())
                 binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize_white, 0, 0, 0)
                 binding.tvRebalancing.setTextColor("#FFFFFF".toColorInt())
-                adapter.updateColor("#FFFFFF")
                 binding.btnRebalancing.setBackgroundResource(R.drawable.user_select_inactive)
                 binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
             }
         }
     }
-
     private fun homeApi(){
         if (isOnline(requireContext())) {
             show(requireActivity())
@@ -311,7 +303,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
-
     private fun showUIData(){
         dataHome?.let { data ->
             binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")
@@ -329,7 +320,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     private fun showNoData(){
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
             binding.noData.setBackgroundResource(R.drawable.rafikiicon)
@@ -349,7 +339,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         )
     }
-
     fun showAlertPay(){
         dialogPay = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogPay.setContentView(R.layout.choosemerchent_alert)
@@ -381,7 +370,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogPay.show()
     }
-
     fun showAlertSend(){
         dialogSend = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogSend.setContentView(R.layout.send_alert)
@@ -406,7 +394,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogSend.show()
     }
-
     private fun askContactPermission() {
         if (checkSelfPermission(
                 requireContext(),
@@ -422,8 +409,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             findNavController().navigate(R.id.toContactFragment)
         }
     }
-
-
+    @SuppressLint("SetTextI18n")
     fun showAlertPayMerchant(data: String) {
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogWeight.setContentView(R.layout.paymerchent_alert)
@@ -472,7 +458,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             bundle.putString("receiver_json", json)
             bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
             findNavController().navigate(R.id.sendMoneyFragment, bundle)
-//          findNavController().navigate(R.id.enterSecretCodeFragment)
         }
         dialogWeight.show()
     }

@@ -61,6 +61,7 @@ class SettingFragment : Fragment(),ItemClickListener {
         sessionManager= SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[SettingViewModel::class.java]
         selectedType = sessionManager.getLoginType().orEmpty()
+        Log.d("selectedType", "*****$selectedType")
         handleBackPress()
         setValueFromSession()
         return binding.root
@@ -108,6 +109,9 @@ class SettingFragment : Fragment(),ItemClickListener {
         if (selectedType.equals(AppConstant.MERCHANT,true)){
             binding.btnAccountLimit.visibility = View.GONE
             binding.btnEditCode.visibility = View.GONE
+        }
+        if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
+            binding.btnAccountLimit.visibility = View.GONE
         }
     }
 

@@ -299,6 +299,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         val json = Gson().toJson(receiver)
         val bundle = Bundle()
         bundle.putString("receiver_json", json)
+        bundle.putString("backType", "Number")
         bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
         findNavController().navigate(R.id.sendMoneyFragment, bundle)
     }

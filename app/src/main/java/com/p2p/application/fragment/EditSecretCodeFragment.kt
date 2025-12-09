@@ -135,16 +135,21 @@ class EditSecretCodeFragment : Fragment() {
         val tvbBn: TextView =dialog.findViewById(R.id.tvbBn)
         val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
         tvTitle.text="Updated Successfully"
-        tvbBn.text="Back to Settings"
         if (screenType.equals("settingCode",true)) {
             btnOk.visibility = View.VISIBLE
+            tvbBn.text="Back to Settings"
         }else{
             tvText.text="Your secret code has been changed. Keep it safe and don’t share it \nwith anyone."
-            btnOk.visibility = View.GONE
+            btnOk.visibility = View.VISIBLE
+            tvbBn.text="Back to Home"
         }
         btnOk.setOnClickListener {
             dialog.dismiss()
-            findNavController().navigate(R.id.settingFragment)
+            if (screenType.equals("settingCode",true)) {
+                findNavController().navigate(R.id.settingFragment)
+            }else{
+                findNavController().navigate(R.id.userWelcomeFragment)
+            }
         }
         dialog.show()
     }
@@ -162,7 +167,6 @@ class EditSecretCodeFragment : Fragment() {
                         s?.isEmpty() == true -> prev?.requestFocus()        // move back
                     }
                 }
-
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })

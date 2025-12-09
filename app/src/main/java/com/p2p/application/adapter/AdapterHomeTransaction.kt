@@ -31,7 +31,6 @@ class AdapterHomeTransaction(
             ItemHomeTransactionBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = transactionsList[position]
@@ -84,11 +83,6 @@ class AdapterHomeTransaction(
             itemClickListener.onItemClick(data.id.toString(),"receiptFragment")
         }
     }
-
-    fun updateColor(colorType: String){
-        color=colorType
-        notifyDataSetChanged()
-    }
     override fun getItemCount(): Int {
         return transactionsList.size
     }
@@ -98,5 +92,4 @@ class AdapterHomeTransaction(
     }
     class ViewHolder(var binding: ItemHomeTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
     }
-
 }
