@@ -72,12 +72,12 @@ class TransactionFragment : Fragment() {
         } else {
             binding.layShow.visibility = View.VISIBLE
             binding.imgQuestion.visibility = View.GONE
-            binding.layHide.visibility = View.GONE
+            binding.layHide.visibility = View.VISIBLE
         }
 
         val items = mutableListOf<HistoryItem>()
 
-        adapter = TransactionAdapter(items) { userId, userName, userNumber, userProfile ->
+        adapter = TransactionAdapter(items) { userId, userName, userNumber, userProfile,paymentId ->
             val bundle = Bundle()
             bundle.putInt("userId", userId)
             bundle.putString("userName", userName)
@@ -159,9 +159,11 @@ class TransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
         binding.layTransaction.setOnClickListener {
             alertView()
         }
@@ -170,25 +172,33 @@ class TransactionFragment : Fragment() {
 
     @SuppressLint("SetTextI18n", "InflateParams")
     private fun alertView() {
+
         val anchorView = binding.layTransaction
+
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
             val popupView = inflater.inflate(R.layout.alert_transation, null)
-            popupWindow =
-                PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+            popupWindow = PopupWindow(popupView, anchorView.width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+
             val tvAll = popupView.findViewById<TextView>(R.id.tvAll)
+
             val tvFrom = popupView.findViewById<TextView>(R.id.tvFrom)
+
             tvAll.setOnClickListener {
                 binding.tvName.text = "All Transactions"
+                adapter.updateAdapter(viewModel.list)
                 popupWindow?.dismiss()
             }
+
             tvFrom.setOnClickListener {
                 binding.tvName.text = "From BBS"
+                adapter.filterReceived()
                 popupWindow?.dismiss()
             }
+
             popupWindow?.setBackgroundDrawable(null)
             popupWindow?.isOutsideTouchable = true
-            popupWindow?.showAsDropDown(anchorView, 0, 20) // 20px margin from top
+            popupWindow?.showAsDropDown(anchorView, 0, 20)
         }
     }
 
@@ -280,7 +290,6 @@ class TransactionFragment : Fragment() {
                         profile = item.user.business_logo,
                         id = item.user.id.toString(),
                         item.currency
-
                     )
                 )
             }

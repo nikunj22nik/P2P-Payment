@@ -11,6 +11,7 @@ class MessageError {
         const val INVALID_SECRET:String ="The secret code you entered is invalid."
         const val AMOUNT_NULL ="Receiver info or amount is null"
         const val INVALID_AMOUNT="Please Enter Valid Amount"
+        const val showQRError ="Oops! We couldn’t locate a merchant account with that ID."
         // Show Error sms
         const val SELECT_TYPE:String="Please select the type"
         const val NETWORK_ERROR:String="Please check your internet connection."
