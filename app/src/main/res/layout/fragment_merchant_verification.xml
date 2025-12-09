@@ -17,12 +17,12 @@
         android:layout_marginTop="@dimen/_50sdp"
         android:orientation="vertical">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
             android:contentDescription="@string/todo"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:src="@drawable/bbs_logo"/>
+            android:src="@drawable/agentlogo"/>
         <TextView
             android:id="@+id/tvText"
             android:layout_width="wrap_content"
@@ -142,11 +142,10 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:contentDescription="Upload Icon"/>
+                            android:contentDescription="@string/upload_icon"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    <RelativeLayout
                         android:layout_width="@dimen/_90sdp"
                         android:padding="@dimen/_5sdp"
                         android:layout_height="@dimen/_90sdp">

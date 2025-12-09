@@ -144,6 +144,7 @@ class SettingFragment : Fragment(),ItemClickListener {
                         }?:run {
                             switchUserList.add(User("", "", 0, "", "", "", AppConstant.MASTER_AGENT, "Want to lead and manage at scale with a", userActive = false, accountActive = false))
                         }
+                        switchUserList = switchUserList.sortedByDescending { it.accountActive }.toMutableList()
                         showAlertSwitch()
                     }
                     is NetworkResult.Error -> {

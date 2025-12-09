@@ -121,4 +121,5 @@
     <string name="maximum_fees">Maximum monthly volume : </string>
     <string name="star">**** ****</string>
     <string name="your_transaction_has_been_completed_successfully">Your transaction has been completed successfully.</string>
+    <string name="upload_icon">Upload Icon</string>
 </resources>

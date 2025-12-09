@@ -95,11 +95,11 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                         binding.itemRcy.visibility = View.VISIBLE
                         binding.layGift.visibility = View.GONE
                         binding.layInfo.visibility = View.GONE
-                        binding.layTv.visibility = View.GONE
+                        binding.layTv.visibility = View.VISIBLE
                     }else{
                         binding.itemRcy.visibility = View.GONE
                         binding.layGift.visibility = View.VISIBLE
-                        binding.layTv.visibility = View.VISIBLE
+                        binding.layTv.visibility = View.GONE
                         binding.layInfo.visibility = View.VISIBLE
                     }
                 } else {

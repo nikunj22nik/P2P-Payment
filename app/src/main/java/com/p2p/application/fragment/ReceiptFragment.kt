@@ -53,7 +53,7 @@ class ReceiptFragment : Fragment() {
     ): View {
         binding = FragmentReceiptBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[ReceiptViewModel::class.java]
-        requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
+//        requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
         receiptId=arguments?.getString("receiptId","")?:""
@@ -63,6 +63,7 @@ class ReceiptFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -88,7 +89,6 @@ class ReceiptFragment : Fragment() {
         binding.llDownload.setOnClickListener {
             callingReceiptDownload()
         }
-
     }
 
     private fun loadApi(){
@@ -103,6 +103,7 @@ class ReceiptFragment : Fragment() {
                             showUiData(it.data)
                         }
                         is NetworkResult.Error ->{
+                            binding.layDownload.visibility = View.GONE
                             LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
                         }
                         is NetworkResult.Loading -> {
@@ -146,6 +147,7 @@ class ReceiptFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun showUiData(data: ReceiptModel?) {
         data?.let { userData->
+            binding.layDownload.visibility = View.VISIBLE
             if (userData.data?.status.toString().equals("success",true)){
                 binding.tvStatus.text = "Transfer successful!"
                 binding.tvStatus.setTextColor("#03B961".toColorInt())
@@ -182,6 +184,8 @@ class ReceiptFragment : Fragment() {
             binding.tvTime1.text = userData.data?.time?:""
             binding.tvReference1.text = userData.data?.reference_no?:""
             binding.tvFree1.text = userData.data?.transaction_fee?:""
+        }?:run {
+            binding.layDownload.visibility = View.GONE
         }
     }
 
