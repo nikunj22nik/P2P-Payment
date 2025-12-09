@@ -210,6 +210,8 @@ class SettingFragment : Fragment(),ItemClickListener {
         }
         btnOk.setOnClickListener {
             if (isOnline(requireContext())){
+                dialog.dismiss()
+                show(requireActivity())
                 apiCall(viewType,dialog)
             }else{
                 showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
@@ -221,7 +223,6 @@ class SettingFragment : Fragment(),ItemClickListener {
         dialog.show()
     }
     private fun apiCall(viewType: String, dialog: Dialog) {
-        show(requireActivity())
         lifecycleScope.launch {
             viewModel.apiCallLogOutAndDelete(viewType).collect { result ->
                 hide(requireActivity())

@@ -1,5 +1,6 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -138,6 +139,7 @@ class UserIDUploadFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     fun showAlertDialog(){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)

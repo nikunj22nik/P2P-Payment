@@ -144,18 +144,20 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             .load(BuildConfig.MEDIA_URL+item.icon)
             .into(binding.imgIcon)
         binding.tvCountryCode.text = "("+item.country_code+")"
-        if (userInputNumber.trim().length >= 8) {
-            val amountText = binding.tvBalance.text.toString()
-            val cleanAmount = amountText.replace(Regex("[^0-9.]"), "")
-            val amount = cleanAmount.toDoubleOrNull() ?: 0.0
-            if (amount == 0.0) {
-                showErrorDialog(requireContext(), MessageError.AMOUNT_ERROR)
-                return
-            }
-            if (isOnline(requireContext())) {
-                searchNumber()
-            } else {
-                showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+        if (binding.edSearch.text.toString().trim().isNotEmpty()){
+            if (userInputNumber.trim().length >= 8) {
+                val amountText = binding.tvBalance.text.toString()
+                val cleanAmount = amountText.replace(Regex("[^0-9.]"), "")
+                val amount = cleanAmount.toDoubleOrNull() ?: 0.0
+                if (amount == 0.0) {
+                    showErrorDialog(requireContext(), MessageError.AMOUNT_ERROR)
+                    return
+                }
+                if (isOnline(requireContext())) {
+                    searchNumber()
+                } else {
+                    showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+                }
             }
         }
     }

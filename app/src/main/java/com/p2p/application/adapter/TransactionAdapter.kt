@@ -16,6 +16,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 
 class TransactionAdapter(
@@ -145,18 +146,18 @@ class TransactionAdapter(
         private val image: CircleImageView = itemView.findViewById(R.id.imageProfile)
         private val lay: RelativeLayout = itemView.findViewById(R.id.trans_layout)
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(data: HistoryItem.Transaction) {
 
             if (data.amount < 0) {
-                title.setTextColor(Color.parseColor("#0F0D1C"))
+                title.setTextColor("#0F0D1C".toColorInt())
 
                 val formatted = String.format("%.2f", data.amount)
                 amount.text = formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
             } else {
                 val formatted = String.format("%.2f", data.amount)
-                title.setTextColor(Color.parseColor("#03B961"))
+                title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
             }
@@ -164,8 +165,8 @@ class TransactionAdapter(
             date.text = if (!isToday(data.date)) data.date else "Today"
 
             amount.setTextColor(
-                if (data.amount > 0) Color.parseColor("#03B961")
-                else Color.parseColor("#E74C3C")
+                if (data.amount > 0) "#03B961".toColorInt()
+                else "#E74C3C".toColorInt()
             )
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
@@ -177,9 +178,17 @@ class TransactionAdapter(
                     .into(image)
             } else {
                 if (data.amount < 0) {
-                    Glide.with(itemView.context).load(R.drawable.ic_outgoing).into(image)
+                    Glide.with(itemView.context)
+                        .load(R.drawable.ic_outgoingg)
+                        .placeholder(R.drawable.ic_outgoingg)
+                        .error(R.drawable.ic_outgoingg)
+                        .into(image)
                 } else {
-                    Glide.with(itemView.context).load(R.drawable.ic_incoming).into(image)
+                    Glide.with(itemView.context)
+                        .load(R.drawable.ic_incoming)
+                        .placeholder(R.drawable.ic_incoming)
+                        .error(R.drawable.ic_incoming)
+                        .into(image)
                 }
             }
 

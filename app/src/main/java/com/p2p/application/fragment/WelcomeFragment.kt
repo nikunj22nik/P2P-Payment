@@ -303,6 +303,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+    @SuppressLint("SetTextI18n")
     private fun showUIData(){
         dataHome?.let { data ->
             binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")

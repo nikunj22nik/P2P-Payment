@@ -53,7 +53,7 @@ tools:context=".fragment.TransferStatusFragment">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5 500 FCFA"
-                android:textSize="38sp"
+                android:textSize="@dimen/_25ssp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"/>
 

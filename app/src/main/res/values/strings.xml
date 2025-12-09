@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ID Money</string>
+    <string name="app_name">ID Many</string>
     <string name="todo">TODO</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_account_type">Choose Account Type</string>
@@ -119,4 +119,6 @@
     <string name="we_couldn_t_find_a_user_with_this_number_try_searching_with_another_number">We couldn’t find a user with this number. Try searching with another number.</string>
     <string name="mobile_fees">Many Mobile Money fee = 1%\n</string>
     <string name="maximum_fees">Maximum monthly volume : </string>
+    <string name="star">**** ****</string>
+    <string name="your_transaction_has_been_completed_successfully">Your transaction has been completed successfully.</string>
 </resources>

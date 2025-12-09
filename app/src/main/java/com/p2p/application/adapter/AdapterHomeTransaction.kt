@@ -2,9 +2,9 @@ package com.p2p.application.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.p2p.application.BuildConfig
@@ -31,7 +31,7 @@ class AdapterHomeTransaction(
             ItemHomeTransactionBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "DefaultLocale", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = transactionsList[position]
         val date = formatDateOnly(data.date ?: "")
@@ -41,12 +41,12 @@ class AdapterHomeTransaction(
         data.transaction_type?.let { type->
             if (type.equals("debit",true)){
                 if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
-                    holder.binding.tvName.setTextColor(Color.parseColor("#FFFFFF"))
+                    holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
                 }else{
-                    holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
+                    holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                 }
                 holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
-                holder.binding.price.setTextColor(Color.parseColor("#F90B1B"))
+                holder.binding.price.setTextColor("#F90B1B".toColorInt())
                 data.user?.business_logo?.let { url->
                     holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
                     Glide.with(requireActivity)
@@ -60,11 +60,11 @@ class AdapterHomeTransaction(
                 }
             }else{
                 if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
-                    holder.binding.tvName.setTextColor(Color.parseColor("#FFFFFF"))
+                    holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
                 }else{
-                    holder.binding.tvName.setTextColor(Color.parseColor("#0F0D1C"))
+                    holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                 }
-                holder.binding.price.setTextColor(Color.parseColor("#03B961"))
+                holder.binding.price.setTextColor("#03B961".toColorInt())
                 holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
                 data.user?.business_logo?.let { url->
                     holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
@@ -86,6 +86,7 @@ class AdapterHomeTransaction(
     override fun getItemCount(): Int {
         return transactionsList.size
     }
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: MutableList<Transaction>) {
         transactionsList = list
         notifyDataSetChanged()

@@ -64,6 +64,7 @@ class ReceiptFragment : Fragment() {
 
 
         binding.layPrice.applyExactGradient()
+        binding.layPrice1.applyExactGradient()
 
         binding.btnHome.setOnClickListener {
             findNavController().navigate(R.id.userWelcomeFragment)
