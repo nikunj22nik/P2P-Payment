@@ -252,6 +252,7 @@ class TransactionFragment : Fragment() {
     fun buildHistoryList(transactions: List<TransactionItem>): List<HistoryItem> {
 
         val historyList = mutableListOf<HistoryItem>()
+
         val grouped = transactions.groupBy { item ->
             val dateStr = item.date ?: "Unknown"  // Handle null
             val parts = dateStr.split(" ")
@@ -272,10 +273,8 @@ class TransactionFragment : Fragment() {
         // Convert each group into header + transactions
         sortedGroups.forEach { (monthYear, list) ->
 
-            // Add Header
             historyList.add(HistoryItem.Header(monthYear))
 
-            // Add item rows
             list.forEach { item ->
                 historyList.add(
                     HistoryItem.Transaction(

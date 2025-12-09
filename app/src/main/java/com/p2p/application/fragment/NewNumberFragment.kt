@@ -136,6 +136,10 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                                 }
                             }
                         }
+                        else{
+                            binding.layLoader.visibility = View.GONE
+                           // LoadingUtils.hide(requireActivity())
+                        }
                     }else{
                         binding.layRecentPeople.visibility = View.VISIBLE
                         binding.layPeople.visibility = View.GONE
@@ -143,7 +147,8 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                         binding.layLoader.visibility = View.GONE
                     }
                 }else{
-                    binding.layRecentPeople.visibility = View.VISIBLE
+
+                    if(peopleList.size >0 )binding.layRecentPeople.visibility = View.VISIBLE else binding.layRecentPeople.visibility =View.GONE
                     binding.layPeople.visibility = View.GONE
                     binding.layInfo.visibility = View.GONE
                     binding.layLoader.visibility = View.GONE

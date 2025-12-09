@@ -146,14 +146,18 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <RelativeLayout
+                        android:id="@+id/business_logo"
                         android:layout_width="@dimen/_90sdp"
                         android:padding="@dimen/_5sdp"
+                        android:visibility="gone"
                         android:layout_height="@dimen/_90sdp">
 
 
                         <com.google.android.material.imageview.ShapeableImageView
+
                             android:layout_width="@dimen/_90sdp"
                             android:src="@drawable/imagecorner"
+
                             android:layout_marginVertical="@dimen/_5sdp"
                             android:layout_height="@dimen/_90sdp"/>
                         <ImageView

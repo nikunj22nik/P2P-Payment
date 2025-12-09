@@ -146,30 +146,31 @@ class TransactionAdapter(
         private val image: CircleImageView = itemView.findViewById(R.id.imageProfile)
         private val lay: RelativeLayout = itemView.findViewById(R.id.trans_layout)
 
+        fun extractTime(str: String): String {
+            val parts = str.trim().split(" ")
+            return parts.last()   // returns the last part (time)
+        }
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(data: HistoryItem.Transaction) {
-
             if (data.amount < 0) {
                 title.setTextColor("#0F0D1C".toColorInt())
-
                 val formatted = String.format("%.2f", data.amount)
                 amount.text = formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
-            } else {
+            }
+            else {
                 val formatted = String.format("%.2f", data.amount)
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
                 title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
             }
 
-            date.text = if (!isToday(data.date)) data.date else "Today"
+            date.text = if (!isToday(data.date)) data.date else "Today" +" "+extractTime(data.date)
 
-            amount.setTextColor(
-                if (data.amount > 0) "#03B961".toColorInt()
-                else "#E74C3C".toColorInt()
-            )
+            amount.setTextColor(if (data.amount > 0) "#03B961".toColorInt() else "#E74C3C".toColorInt())
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
+
             if (type.equals("list", true)) {
                 Glide.with(itemView.context)
                     .load(url.ifEmpty { null })
@@ -257,6 +258,7 @@ class TransactionAdapter(
         items = cleanedList
         notifyDataSetChanged()
     }
+
 
     fun updateAdapter(newItems: List<HistoryItem>) {
         this.items = newItems
