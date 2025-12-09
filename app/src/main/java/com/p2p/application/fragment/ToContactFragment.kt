@@ -36,6 +36,7 @@ import com.p2p.application.model.Receiver
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -57,6 +58,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
     private var countryList: MutableList<Country> = mutableListOf()
     private var popupWindow: PopupWindow?=null
     private lateinit var adapterCountry: AdapterCountry
+    private var userInputNumber=""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentToContactBinding.inflate(layoutInflater, container, false)
@@ -142,10 +144,19 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             .load(BuildConfig.MEDIA_URL+item.icon)
             .into(binding.imgIcon)
         binding.tvCountryCode.text = "("+item.country_code+")"
-        if (isOnline(requireContext())) {
-            searchNumber()
-        } else {
-            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+        if (userInputNumber.trim().length >= 8) {
+            val amountText = binding.tvBalance.text.toString()
+            val cleanAmount = amountText.replace(Regex("[^0-9.]"), "")
+            val amount = cleanAmount.toDoubleOrNull() ?: 0.0
+            if (amount == 0.0) {
+                showErrorDialog(requireContext(), MessageError.AMOUNT_ERROR)
+                return
+            }
+            if (isOnline(requireContext())) {
+                searchNumber()
+            } else {
+                showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            }
         }
     }
 
@@ -188,7 +199,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             popupWindow?.showAsDropDown(anchorView)
         }
     }
-
     private fun loadBalance(){
         if (isOnline(requireContext())){
             show(requireActivity())
@@ -212,7 +222,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
-
     private fun askContactPermission() {
         if (checkSelfPermission(requireContext(),android.Manifest.permission.READ_CONTACTS) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(android.Manifest.permission.READ_CONTACTS), readContactsPermission)
@@ -231,7 +240,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             Toast.makeText(requireContext(), "Permission required to load contacts", Toast.LENGTH_SHORT).show()
         }
     }
-
     private fun loadContacts() {
         val cursor = requireContext().contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -256,26 +264,32 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         if (contactsList.isNotEmpty()){
             adapter.updateList(contactsList)
         }
-
     }
 
     override fun onItemClick(data: String, type: String) {
         val number = removeCountryCode(data)
-        binding.edSearch.setText(number)
+//        binding.edSearch.setText(number)
         Log.d("numberUser", "*******$number")
+        val amountText = binding.tvBalance.text.toString()
+        userInputNumber = number
+        val cleanAmount = amountText.replace(Regex("[^0-9.]"), "")
+        val amount = cleanAmount.toDoubleOrNull() ?: 0.0
+        if (amount == 0.0) {
+            showErrorDialog(requireContext(), MessageError.AMOUNT_ERROR)
+            return
+        }
         if (isOnline(requireContext())) {
             searchNumber()
         } else {
             showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
-
     private fun searchNumber() {
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
         val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
         show(requireActivity())
         lifecycleScope.launch {
-            viewModel.searchNewNumberRequest(binding.edSearch.text.toString(),countryCode,type).collect {
+            viewModel.searchNewNumberRequest(userInputNumber,countryCode,type).collect {
                 hide(requireActivity())
                 when(it){
                     is NetworkResult.Success ->{
@@ -288,11 +302,12 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                                 val json = Gson().toJson(receiver)
                                 val bundle = Bundle()
                                 bundle.putString("receiver_json", json)
+                                bundle.putString("backType", "Number")
                                 bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                                 findNavController().navigate(R.id.sendMoneyFragment, bundle)
                             }else{
                                 Log.d("contactsList","size"+contactsList.size)
-                                val inputNumber = normalizeNumber(binding.edSearch.text.toString())
+                                val inputNumber = normalizeNumber(userInputNumber)
                                 val userItem = contactsList.find { userNumber ->
                                     removeCountryCode(userNumber.phone.toString()) == inputNumber
                                 }
@@ -304,7 +319,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                                 }
                             }
                         }?:run {
-                            val inputNumber = normalizeNumber(binding.edSearch.text.toString())
+                            val inputNumber = normalizeNumber(userInputNumber)
                             val userItem = contactsList.find { userNumber ->
                                 removeCountryCode(userNumber.phone.toString()) == inputNumber
                             }
@@ -329,11 +344,8 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
     fun normalizeNumber(number: String): String {
         return number.replace("+", "")
             .replace(" ", "")
-            .takeLast(10)   // sirf last 10 digits
+            .takeLast(10)
     }
-
-
-
     fun removeCountryCode(number: String): String {
         // Remove spaces, hyphens, parentheses
         var cleaned = number.replace("[^0-9+]".toRegex(), "")
@@ -343,5 +355,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         val match = Regex("(\\d{10})$").find(cleaned)
         return match?.value ?: cleaned
     }
+
 
 }

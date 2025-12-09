@@ -14,6 +14,7 @@ class MessageError {
         // Show Error sms
         const val SELECT_TYPE:String="Please select the type"
         const val NETWORK_ERROR:String="Please check your internet connection."
+        const val AMOUNT_ERROR:String="Insufficient amount"
         const val PHONE_NUMBER:String="Phone Can't be empty"
         const val NAME_ERROR:String="The name must be at least 3 characters long."
         const val NUMBER_VALIDATION:String="Please Enter a Valid Phone Number"

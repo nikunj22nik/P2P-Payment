@@ -1,5 +1,4 @@
 package com.p2p.application.fragment
-
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,26 +23,26 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.p2p.application.BuildConfig
 import com.p2p.application.R
-import com.p2p.application.activity.MainActivity
 import com.p2p.application.databinding.FragmentQRBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Receiver
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.QrCodeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class QRFragment : Fragment() {
-
-
     private lateinit var viewModel : QrCodeViewModel
     private lateinit var scanQrBtn: TextView
     private lateinit var scannedValueTv: TextView
     private var isScannerInstalled = false
     private lateinit var scanner: GmsBarcodeScanner
     private lateinit var binding: FragmentQRBinding
+    private var selectedType: String=""
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,14 +50,17 @@ class QRFragment : Fragment() {
     ): View {
         binding = FragmentQRBinding.inflate(layoutInflater, container, false)
         viewModel = ViewModelProvider(this)[QrCodeViewModel::class.java]
+        sessionManager= SessionManager(requireContext())
+        selectedType = sessionManager.getLoginType().orEmpty()
         installGoogleScanner()
         initVars()
-        binding.qrCodeImage.visibility =View.GONE
+        binding.qrCodeImage.visibility =View.INVISIBLE
+        if (selectedType.equals(AppConstant.MERCHANT,true)){
+            binding.tvScanner.visibility  = View.GONE
+        }
         registerUiListener()
         return binding.root
     }
-
-
     private fun installGoogleScanner() {
         val moduleInstall = ModuleInstall.getClient(requireContext())
         val moduleInstallRequest = ModuleInstallRequest.newBuilder()
@@ -73,7 +75,6 @@ class QRFragment : Fragment() {
         }
         gettingMyQrCode()
     }
-
     private fun gettingMyQrCode(){
         lifecycleScope.launch{
             LoadingUtils.show(requireActivity())
@@ -100,7 +101,6 @@ class QRFragment : Fragment() {
             }
         }
     }
-
     private fun initVars() {
         scanQrBtn = binding.tvScanner
         scannedValueTv = binding.tvScanVal
@@ -116,17 +116,10 @@ class QRFragment : Fragment() {
         binding.myCard.setBackgroundResource(R.drawable.active)
 
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-    }
-
     private fun initializeGoogleScanner(): GmsBarcodeScannerOptions {
         return GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .enableAutoZoom().build()
     }
-
     private fun registerUiListener() {
         scanQrBtn.setOnClickListener {
             scanQrBtn.setBackgroundResource(R.drawable.active)
@@ -148,11 +141,8 @@ class QRFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
     }
-
     private fun startScanning() {
-
         scanner.startScan()
             .addOnSuccessListener { barcode ->
                 val result = barcode.rawValue
@@ -188,7 +178,6 @@ class QRFragment : Fragment() {
                 ).show()
             }
     }
-
 
 }
 
