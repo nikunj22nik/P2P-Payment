@@ -1,14 +1,17 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModelProvider
@@ -112,15 +115,15 @@ class ReceiptFragment : Fragment() {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun callingReceiptDownload(){
         lifecycleScope.launch {
-            LoadingUtils.show(requireActivity())
+            show(requireActivity())
             viewModel.generateTransactionPdf(transactionId = receiptId).collect {
                 when(it){
                     is NetworkResult.Success ->{
-                        LoadingUtils.hide(requireActivity())
+                        hide(requireActivity())
                         it.data?.let {
-
                             DownloadWorker().downloadPdfWithNotification(
                                 binding.root.context,
                                 it,
@@ -140,6 +143,7 @@ class ReceiptFragment : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun showUiData(data: ReceiptModel?) {
         data?.let { userData->
             if (userData.data?.status.toString().equals("success",true)){
