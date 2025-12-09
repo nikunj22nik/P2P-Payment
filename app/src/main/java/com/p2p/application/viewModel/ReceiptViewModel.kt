@@ -18,4 +18,8 @@ class ReceiptViewModel @Inject constructor(private var repository: P2PRepository
         return repository.receiptRequest(id)
     }
 
+    suspend fun generateTransactionPdf(transactionId: String): Flow<NetworkResult<String>>{
+        return repository.generateTransactionPdf(transactionId)
+    }
+
 }

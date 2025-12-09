@@ -332,6 +332,7 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal">
                     <LinearLayout
+                        android:id="@+id/ll_download"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
