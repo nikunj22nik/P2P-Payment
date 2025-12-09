@@ -21,7 +21,7 @@ import java.util.Locale
 class TransactionAdapter(
     private var items: List<HistoryItem>,
     var type: String = "list",
-    private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?) -> Unit
+    private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var fullList: List<HistoryItem> = items   // store original list
@@ -135,7 +135,7 @@ class TransactionAdapter(
 
     class TransactionViewHolder(
         itemView: View,
-        private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?) -> Unit,
+        private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?) -> Unit,
         private val type: String
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -184,7 +184,7 @@ class TransactionAdapter(
             }
 
             lay.setOnClickListener {
-                onTransactionClick(data.id.toInt(), data.title, data.phone, data.profile)
+                onTransactionClick(data.id.toInt(), data.title, data.phone, data.profile,data.id)
             }
         }
 
@@ -205,6 +205,48 @@ class TransactionAdapter(
                 false
             }
         }
+    }
+
+    fun filterReceived() {
+        val filteredList = fullList.filter { item ->
+            when (item) {
+                is HistoryItem.Header -> true  // keep headers for now
+                is HistoryItem.Transaction -> item.amount > 0
+            }
+        }
+
+        // Step 2 — remove empty headers
+        val cleanedList = mutableListOf<HistoryItem>()
+        var lastHeader: HistoryItem.Header? = null
+        var headerHasItems = false
+
+        for (item in filteredList) {
+            when (item) {
+                is HistoryItem.Header -> {
+                    if (lastHeader != null && headerHasItems) {
+                        cleanedList.add(lastHeader!!)
+                    }
+                    lastHeader = item
+                    headerHasItems = false
+                }
+
+                is HistoryItem.Transaction -> {
+                    if (item.amount > 0) {
+                        headerHasItems = true
+                        cleanedList.add(item)
+                    }
+                }
+            }
+        }
+
+        // Add final valid header
+        if (lastHeader != null && headerHasItems) {
+            cleanedList.add(0, lastHeader!!)
+        }
+
+        // Update adapter
+        items = cleanedList
+        notifyDataSetChanged()
     }
 
     fun updateAdapter(newItems: List<HistoryItem>) {

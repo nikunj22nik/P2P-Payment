@@ -29,6 +29,7 @@ import com.p2p.application.model.Receiver
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.SessionManager
+import com.p2p.application.util.MessageError
 import com.p2p.application.viewModel.QrCodeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -159,11 +160,8 @@ class QRFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     Log.d("Error","*******"+e.message)
-                    Toast.makeText(
-                        requireContext(),
-                        "Oops! We couldn’t locate a merchant account with that ID.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    LoadingUtils.showErrorDialog(requireContext(), MessageError.showQRError)
+
                 }
 
             }

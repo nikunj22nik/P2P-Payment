@@ -71,8 +71,10 @@ class IndividualTransactionHistoryFragment : Fragment() {
         }
 
         val items = mutableListOf<HistoryItem>()
-        adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile ->
-
+        adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile, paymentId ->
+            val bundle = Bundle()
+            bundle.putString("receiptId", paymentId)
+            findNavController().navigate(R.id.receiptFragment,bundle)
         }
 
         binding.itemRcy.adapter = adapter

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.HistoryItem
 import com.p2p.application.model.TransactionHistoryResponse
+import com.p2p.application.model.TransactionItem
 import com.p2p.application.repository.P2PRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,7 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
     var isLoading = false
     var isLastPage = false
     val limit = 10
+    var mainList : MutableList<TransactionItem> = mutableListOf()
 
     suspend fun getTransactionHistory(): Flow<NetworkResult<TransactionHistoryResponse>> {
         isLoading = true
