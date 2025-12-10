@@ -11,21 +11,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.datatransport.runtime.scheduling.persistence.EventStoreModule_PackageNameFactory.packageName
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterNotification
 import com.p2p.application.databinding.FragmentNotificationListBinding
-import com.p2p.application.databinding.FragmentSendMoneyBinding
-import com.p2p.application.util.MessageError
+import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.TransactionNotification
+import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.SessionManager
+import com.p2p.application.viewModel.NotificationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-
+@AndroidEntryPoint
 class NotificationListFragment : Fragment() {
 
     private lateinit var binding: FragmentNotificationListBinding
     private lateinit var adapter: AdapterNotification
     private lateinit var sessionManager: SessionManager
+    private lateinit var viewModel : NotificationViewModel
 
     private var statusClick = true
 
@@ -37,6 +47,7 @@ class NotificationListFragment : Fragment() {
         sessionManager= SessionManager(requireContext())
         adapter= AdapterNotification(requireContext())
         binding.itemRcy.adapter=adapter
+        viewModel = ViewModelProvider(this)[NotificationViewModel::class.java]
         return binding.root
     }
 
@@ -56,8 +67,51 @@ class NotificationListFragment : Fragment() {
             }
         }
 
+        callingNotificationApi()
     }
 
+    private fun callingNotificationApi(){
+        lifecycleScope.launch {
+            LoadingUtils.show(requireActivity())
+            viewModel.getAllNotification().collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                        val list = it.data
+                        val updated = updateListInBackground(list)
+
+                        LoadingUtils.hide(requireActivity())
+                        adapter.updateAdapter(updated)
+
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                        LoadingUtils.showErrorDialog(requireActivity(),it.message.toString())
+                    }
+                    else ->{
+
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun updateListInBackground(
+        list: MutableList<TransactionNotification>?
+    ): MutableList<TransactionNotification> {
+
+        return withContext(Dispatchers.IO) {
+            list?.map { item ->
+                item.copy(
+                    created_at = formatDate(item.created_at ?: "")
+                )
+            }?.toMutableList()?:mutableListOf()
+        }
+    }
+    fun formatDate(input: String): String {
+        val zonedDateTime = ZonedDateTime.parse(input)
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return zonedDateTime.format(outputFormatter)
+    }
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -73,6 +127,7 @@ class NotificationListFragment : Fragment() {
             }
         }
     }
+
     fun openNotificationSettings() {
         val intent = Intent().apply {
             action = "android.settings.APP_NOTIFICATION_SETTINGS"

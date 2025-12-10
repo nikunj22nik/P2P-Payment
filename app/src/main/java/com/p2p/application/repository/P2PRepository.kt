@@ -7,6 +7,7 @@ import com.p2p.application.model.RegisterResponse
 import com.p2p.application.model.Transaction
 
 import com.p2p.application.model.TransactionHistoryResponse
+import com.p2p.application.model.TransactionNotification
 import com.p2p.application.model.accountlimit.AccountLimitModel
 
 import com.p2p.application.model.countrymodel.CountryModel
@@ -122,7 +123,7 @@ interface P2PRepository {
     ) :Flow<NetworkResult<ReceiverInfo>>
 
     suspend fun checkSecretCode(secret_code:String) : Flow<NetworkResult<Boolean>>
-
     suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) :Flow<NetworkResult<String>>
+    suspend fun getAllNotification() :Flow<NetworkResult<MutableList<TransactionNotification>>>
 
 }

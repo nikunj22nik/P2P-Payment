@@ -186,4 +186,8 @@ interface P2PApi {
     @FormUrlEncoded
     suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) : Response<JsonObject>
 
+    @POST("get_all_notifications")
+    suspend fun getAllNotification() :Response<JsonObject>
+
+
   }
