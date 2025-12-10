@@ -24,6 +24,7 @@ import com.p2p.application.databinding.FragmentEditSecretCodeBinding
 import com.p2p.application.databinding.FragmentForgotCodeOtpVerifyBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -54,11 +55,17 @@ class EditSecretCodeFragment : Fragment() {
         screenType=arguments?.getString("screenType","")?:""
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
         setupOtpFieldsRe(binding.etOtp11, binding.etOtp22, binding.etOtp33, binding.etOtp44)
-
+          makeAstrict()
 
         return binding.root
     }
 
+    fun makeAstrict(){
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
