@@ -62,9 +62,14 @@ class SendMoneyFragment : Fragment() {
                 }else{
                     findNavController().navigateUp()
                 }
-            } else {
+            }
+            else {
                 binding.layoutSecretCode.visibility = View.GONE
                 binding.layoutSendMoney.visibility = View.VISIBLE
+                binding.etOtp1.setText("")
+                binding.etOtp2.setText("")
+                binding.etOtp3.setText("")
+                binding.etOtp4.setText("")
             }
         }
         binding.btnSend.setOnClickListener {
@@ -237,6 +242,10 @@ class SendMoneyFragment : Fragment() {
                     } else {
                         binding.layoutSecretCode.visibility = View.GONE
                         binding.layoutSendMoney.visibility = View.VISIBLE
+                        binding.etOtp1.setText("")
+                        binding.etOtp2.setText("")
+                        binding.etOtp3.setText("")
+                        binding.etOtp4.setText("")
                     }
                 }
             }

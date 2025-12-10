@@ -268,6 +268,8 @@
                 android:id="@+id/etOtp1"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
+                android:inputType="numberPassword"
+
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
 
@@ -275,18 +277,24 @@
                 android:id="@+id/etOtp2"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
+                android:inputType="numberPassword"
+
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
             <EditText
                 android:id="@+id/etOtp3"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
+                android:inputType="numberPassword"
+
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
             <EditText
                 android:id="@+id/etOtp4"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
+                android:inputType="numberPassword"
+
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
         </LinearLayout>
