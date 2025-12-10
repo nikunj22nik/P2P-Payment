@@ -44,24 +44,28 @@ tools:context=".fragment.OTPFragment">
             android:id="@+id/etOtp1"
             style="@style/OtpDigitStyle"
             android:hint="*"
+            android:inputType="numberPassword"
             android:textColorHint="#333333"/>
         <View style="@style/OtpDividerStyle" />
         <EditText
             android:id="@+id/etOtp2"
             style="@style/OtpDigitStyle"
             android:hint="*"
+            android:inputType="numberPassword"
             android:textColorHint="#333333"/>
         <View style="@style/OtpDividerStyle" />
         <EditText
             android:id="@+id/etOtp3"
             style="@style/OtpDigitStyle"
             android:hint="*"
+            android:inputType="numberPassword"
             android:textColorHint="#333333" />
         <View style="@style/OtpDividerStyle" />
         <EditText
             android:id="@+id/etOtp4"
             style="@style/OtpDigitStyle"
             android:hint="*"
+            android:inputType="numberPassword"
             android:textColorHint="#333333"/>
     </LinearLayout>
 
