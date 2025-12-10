@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.MerchantVerificationFragment">
-
     <LinearLayout
         android:id="@+id/lay"
         android:layout_width="match_parent"
@@ -43,7 +42,6 @@
             android:layout_gravity="center"
             android:text="@string/please_upload_the_following_documents_to_verify_nyour_merchant_account"/>
     </LinearLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@id/lay"
@@ -55,8 +53,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginHorizontal="@dimen/_15sdp">
-
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 app:cardCornerRadius="@dimen/_15sdp"
@@ -151,13 +147,9 @@
                         android:padding="@dimen/_5sdp"
                         android:visibility="gone"
                         android:layout_height="@dimen/_90sdp">
-
-
                         <com.google.android.material.imageview.ShapeableImageView
-
                             android:layout_width="@dimen/_90sdp"
                             android:src="@drawable/imagecorner"
-
                             android:layout_marginVertical="@dimen/_5sdp"
                             android:layout_height="@dimen/_90sdp"/>
                         <ImageView
@@ -171,15 +163,14 @@
                         <ImageView
                             android:id="@+id/main_image"
                             android:layout_width="@dimen/_64sdp"
+                            android:contentDescription="@string/todo"
                             android:src="@drawable/material_symbols_imagesmode"
                             android:layout_centerInParent="true"
                             android:layout_height="@dimen/_64sdp"
                             android:scaleType="fitXY"/>
-
                     </RelativeLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 app:cardCornerRadius="@dimen/_15sdp"
@@ -321,7 +312,6 @@
                         android:orientation="horizontal"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <LinearLayout
                 android:id="@+id/btnVerify"
                 android:layout_width="match_parent"
@@ -342,5 +332,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>
