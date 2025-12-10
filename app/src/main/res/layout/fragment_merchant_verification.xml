@@ -209,7 +209,6 @@
                         android:layout_gravity="center|start"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="@string/upload_your_business_registration_document"/>
-
                     <ImageView
                         android:id="@+id/business_id"
                         android:layout_width="match_parent"
@@ -217,7 +216,6 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:background="@drawable/frameupload"
                         android:contentDescription="@string/todo" />
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rcyID"
                         android:layout_marginTop="@dimen/_10sdp"
@@ -229,7 +227,6 @@
                         android:orientation="horizontal"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 app:cardCornerRadius="@dimen/_15sdp"
@@ -277,7 +274,6 @@
                         android:orientation="horizontal"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 app:cardCornerRadius="@dimen/_15sdp"
