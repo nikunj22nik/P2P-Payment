@@ -1,14 +1,14 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
-import com.p2p.application.databinding.FragmentInviteFriendBinding
 import com.p2p.application.databinding.FragmentRebalancingBinding
 
 
@@ -21,11 +21,10 @@ class RebalancingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRebalancingBinding.inflate(layoutInflater, container, false)
-
-
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,7 +56,6 @@ class RebalancingFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
 
 
     }

@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.telephony.PhoneNumberUtils.normalizeNumber
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -36,7 +35,6 @@ import com.p2p.application.model.Receiver
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
-import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -69,7 +67,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         binding.itemRcy.adapter=adapter
         askContactPermission()
         loadBalance()
-
         return binding.root
     }
 
@@ -111,7 +108,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                 }
             }
         })
-
         binding.imgScan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
@@ -121,7 +117,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
         binding.layCountry.setOnClickListener {
             if (isOnline(requireContext())){
                 if (countryList.isNotEmpty()){
@@ -286,6 +281,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+
     private fun searchNumber() {
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
         val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
