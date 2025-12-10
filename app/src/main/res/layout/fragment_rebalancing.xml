@@ -21,6 +21,7 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_width="wrap_content"
+                android:contentDescription="@string/todo"
                 android:src="@drawable/backicon"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

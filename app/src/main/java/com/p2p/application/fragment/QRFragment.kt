@@ -87,8 +87,6 @@ class QRFragment : Fragment() {
                         val imgPath = if(it.data != null)BuildConfig.MEDIA_URL + it.data else null
                         Glide.with(requireContext())
                             .load(imgPath)
-                            .placeholder(R.drawable.ic_qr_new_img)
-                            .error(R.drawable.ic_qr_new_img)
                             .into(binding.qrCodeImage)
                     }
                     is NetworkResult.Error ->{
@@ -176,6 +174,8 @@ class QRFragment : Fragment() {
                 ).show()
             }
     }
+
+
 
 }
 
