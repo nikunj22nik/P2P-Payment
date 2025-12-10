@@ -257,7 +257,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             while (it.moveToNext()) {
                 val id = it.getString(idIdx)
                 val name = it.getString(nameIdx)
-                val phone = it.getString(phoneIdx)
+                val phone = normalizeNumber(it.getString(phoneIdx))
                 contactsList.add(ContactModel(id = id, name = name, phone = phone))
             }
         }
