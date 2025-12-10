@@ -17,6 +17,7 @@ import com.p2p.application.R
 import com.p2p.application.databinding.FragmentForgotCodeOtpVerifyBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -50,7 +51,7 @@ class ForgotCodeOtpVerifyFragment : Fragment() {
         sessionManager= SessionManager(requireContext())
         viewModel = ViewModelProvider(requireActivity())[SendOtpForgotSecretViewModel::class.java]
         extractingParameter()
-
+        makeAstrict()
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
 
         startTime()
@@ -65,6 +66,13 @@ class ForgotCodeOtpVerifyFragment : Fragment() {
 
         binding.tvNumber.text = "+($countryCode) $phoneNumber"
 
+    }
+
+    fun makeAstrict(){
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
     }
 
     @SuppressLint("SetTextI18n")

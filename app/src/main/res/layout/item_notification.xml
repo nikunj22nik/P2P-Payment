@@ -13,8 +13,10 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
             android:gravity="center"
+            android:visibility="gone"
             android:background="@drawable/button_custom">
             <TextView
+                android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:text="@string/sd"
                 android:textSize="@dimen/_15sdp"
@@ -29,6 +31,7 @@
             android:orientation="vertical"
             android:layout_toEndOf="@id/lay">
             <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#0F0D1C"
@@ -37,6 +40,7 @@
                 android:layout_gravity="center"
                 android:text="@string/lorem_ipsum_is_simply_dummy_text" />
             <TextView
+                android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#949494"

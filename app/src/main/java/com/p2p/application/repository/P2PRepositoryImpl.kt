@@ -10,6 +10,7 @@ import com.p2p.application.model.Transaction
 
 import com.p2p.application.model.TransactionHistoryResponse
 import com.p2p.application.model.TransactionItem
+import com.p2p.application.model.TransactionNotification
 import com.p2p.application.model.UserInfo
 
 import com.p2p.application.model.accountlimit.AccountLimitModel
@@ -812,6 +813,38 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         if (resp.has("success") && resp.get("success").asBoolean) {
                                val url = resp.get("data").asString
                             emit(NetworkResult.Success(url))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
+    override suspend fun getAllNotification(): Flow<NetworkResult<MutableList<TransactionNotification>>> = flow {
+        try {
+            api.getAllNotification().apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+                          //  val url = resp.get("data").asString
+                          //  emit(NetworkResult.Success(url))
+
+                            var list = mutableListOf<TransactionNotification>()
+                            var jsonArr = resp.get("data").asJsonArray
+                            jsonArr.forEach {
+                                val receiverResponse = Gson().fromJson(it, TransactionNotification::class.java)
+                                list.add(receiverResponse)
+                            }
+
+                            emit(NetworkResult.Success(list))
+
                         } else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }

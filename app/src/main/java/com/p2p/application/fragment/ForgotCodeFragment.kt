@@ -24,6 +24,7 @@ import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -62,6 +63,8 @@ class ForgotCodeFragment : Fragment() ,ItemClickListener{
 
         return binding.root
     }
+
+
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

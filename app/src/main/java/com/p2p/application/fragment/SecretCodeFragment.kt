@@ -24,6 +24,7 @@ import com.p2p.application.databinding.FragmentOTPBinding
 import com.p2p.application.databinding.FragmentSecretCodeBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -53,7 +54,14 @@ class  SecretCodeFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
+        makeAstrict()
         return binding.root
+    }
+    fun makeAstrict(){
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 import com.p2p.application.databinding.FragmentEnterSecretCodeBinding
 import com.p2p.application.databinding.FragmentOTPBinding
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.SessionManager
 
 
@@ -48,6 +49,14 @@ class EnterSecretCodeFragment : Fragment() {
             bundle.putString("screenType", "loginCode")
             findNavController().navigate(R.id.forgotCodeFragment,bundle)
         }
+        makeAstrict()
+    }
+
+    fun makeAstrict(){
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
     }
 
     private fun handleBackPress() {

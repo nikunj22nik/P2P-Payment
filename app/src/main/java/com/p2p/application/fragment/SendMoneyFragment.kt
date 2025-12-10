@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.core.view.isVisible
+import com.p2p.application.util.EditTextUtils
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
@@ -49,9 +50,16 @@ class SendMoneyFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
         backType= arguments?.getString("backType","Qr")?:"Qr"
+       makeAstrict()
         return binding.root
     }
 
+    fun makeAstrict(){
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
