@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="@string/my_qr_code"
             android:textColor="#000000"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16ssp"
             android:layout_centerInParent="true"
             android:fontFamily="@font/satoshi_bold"/>
     </RelativeLayout>
@@ -107,7 +107,6 @@
             android:layout_margin="10dp"
             android:gravity="center"
             android:text="@string/scanner"
-
             android:textColor="#ffffff"
             android:fontFamily="@font/satoshi_bold"/>
     </LinearLayout>
