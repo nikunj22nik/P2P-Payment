@@ -123,13 +123,13 @@ class TransactionFragment : Fragment() {
                                         val response = result.data
                                         val list = withContext(Dispatchers.Default) {
                                             response?.data?.let { data ->
-                                                buildHistoryList(data).toMutableList()
+                                                mergeHistoryList(viewModel.mainList,data).toMutableList()
                                             } ?: mutableListOf()
+
                                         }
-
-                                        viewModel.list.addAll(list)
-
-                                        adapter.updateAdapter(viewModel.list)
+                                        viewModel.mainList.clear()
+                                        viewModel.mainList.addAll(list)
+                                        adapter.updateAdapter(viewModel.mainList)
                                         viewModel.isLoading = false
                                         binding.itemRcy.post {
                                             //  LoadingUtils.hide(requireActivity())
@@ -186,7 +186,7 @@ class TransactionFragment : Fragment() {
 
             tvAll.setOnClickListener {
                 binding.tvName.text = "All Transactions"
-                adapter.updateAdapter(viewModel.list)
+                adapter.updateAdapter(viewModel.mainList)
                 popupWindow?.dismiss()
             }
 
@@ -220,7 +220,8 @@ class TransactionFragment : Fragment() {
                                 buildHistoryList(data).toMutableList()
                             } ?: mutableListOf()
                         }
-                        viewModel.list = list
+                        viewModel.mainList.clear()
+                        viewModel.mainList = list
 
                         if (list.isNotEmpty()){
                             binding.itemRcy.visibility = View.VISIBLE
@@ -343,6 +344,75 @@ class TransactionFragment : Fragment() {
             else -> 0
         }
     }
+
+    fun mergeHistoryList(
+        existingHistory: MutableList<HistoryItem>,
+        newTransactions: List<TransactionItem>
+    ): MutableList<HistoryItem> {
+
+        // Group new transactions by month + year
+        val grouped = newTransactions.groupBy { item ->
+            val dateStr = item.date ?: "Unknown"
+            val parts = dateStr.split(" ")
+            if (parts.size >= 3) {
+                val month = parts[1]
+                val year = parts[2]
+                "$month $year" // this is your monthYear string
+            } else {
+                "Unknown"
+            }
+        }
+
+        // Sort months descending
+        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
+            val (month, year) = monthYear.split(" ")
+            val monthNum = monthToNumber(month)
+            year.toInt() * 100 + monthNum
+        })
+
+        sortedGroups.forEach { (monthYear, list) ->
+
+            // Check if header already exists
+            val headerIndex = existingHistory.indexOfFirst { it is HistoryItem.Header && it.month == monthYear }
+
+            if (headerIndex != -1) {
+                // Header exists → insert transactions after header
+                var insertIndex = headerIndex + 1
+                list.forEach { item ->
+                    existingHistory.add(insertIndex, HistoryItem.Transaction(
+                        title = "${item.user.first_name} ${item.user.last_name}",
+                        phone = item.user.phone,
+                        date = "${item.date} ${item.time}",
+                        amount = if (item.transaction_type.equals("debit", true))
+                            -1 * item.amount.toDouble() else item.amount.toDouble(),
+                        profile = item.user.business_logo,
+                        id = item.user.id.toString(),
+                        currency = item.currency
+                    ))
+                    insertIndex++
+                }
+            } else {
+                // Header does not exist → add header + transactions
+                existingHistory.add(HistoryItem.Header(monthYear))
+                list.forEach { item ->
+                    existingHistory.add(HistoryItem.Transaction(
+                        title = "${item.user.first_name} ${item.user.last_name}",
+                        phone = item.user.phone,
+                        date = "${item.date} ${item.time}",
+                        amount = if (item.transaction_type.equals("debit", true))
+                            -1 * item.amount.toDouble() else item.amount.toDouble(),
+                        profile = item.user.business_logo,
+                        id = item.user.id.toString(),
+                        currency = item.currency
+                    ))
+                }
+            }
+        }
+
+        return existingHistory
+    }
+
+
 
 
 }

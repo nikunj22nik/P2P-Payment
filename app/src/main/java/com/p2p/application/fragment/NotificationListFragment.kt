@@ -79,11 +79,14 @@ class NotificationListFragment : Fragment() {
                         val list = it.data
                         val updated = updateListInBackground(list)
 
+                        if(list?.size ==0){
+                            binding.noDataView.visibility =View.VISIBLE
+                        }
                         LoadingUtils.hide(requireActivity())
                         adapter.updateAdapter(updated)
-
                     }
                     is NetworkResult.Error ->{
+                        binding.noDataView.visibility =View.VISIBLE
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireActivity(),it.message.toString())
                     }

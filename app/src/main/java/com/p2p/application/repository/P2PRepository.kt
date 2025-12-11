@@ -1,5 +1,6 @@
 package com.p2p.application.repository
 
+import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.ReceiverInfo
@@ -20,6 +21,7 @@ import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.Part
 
@@ -125,5 +127,8 @@ interface P2PRepository {
     suspend fun checkSecretCode(secret_code:String) : Flow<NetworkResult<Boolean>>
     suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) :Flow<NetworkResult<String>>
     suspend fun getAllNotification() :Flow<NetworkResult<MutableList<TransactionNotification>>>
+
+    suspend fun getBalance() : Flow<NetworkResult<Pair<String,String>>>
+
 
 }

@@ -65,6 +65,10 @@ class EditSecretCodeFragment : Fragment() {
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp11)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp22)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp33)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp44)
     }
 
     @SuppressLint("SetTextI18n")

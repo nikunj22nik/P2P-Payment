@@ -25,7 +25,6 @@ import com.p2p.application.R
 
 class LoadingUtils {
     companion object {
-
         fun showErrorDialog(context: Context?, text: String) {
             if (context == null) return
             val dialog= Dialog(context, R.style.BottomSheetDialog)

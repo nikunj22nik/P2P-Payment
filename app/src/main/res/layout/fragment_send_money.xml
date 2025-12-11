@@ -206,6 +206,20 @@
                 />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/insufficient_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/less_balance"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/satoshi_medium"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:textStyle="bold"
+
+            />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/btnSend"
@@ -278,23 +292,22 @@
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
                 android:inputType="numberPassword"
-
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
+
             <EditText
                 android:id="@+id/etOtp3"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
                 android:inputType="numberPassword"
-
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
+
             <EditText
                 android:id="@+id/etOtp4"
                 style="@style/OtpDigitStyleSecret"
                 android:hint="-"
                 android:inputType="numberPassword"
-
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:textColorHint="#FFFFFF"/>
         </LinearLayout>
