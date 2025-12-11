@@ -22,8 +22,8 @@
                 android:gravity="center"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/erroricon" />
@@ -35,9 +35,9 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/urbanist_semibold"
                     android:gravity="center"
-                    android:text=""
-                    android:textColor="#444444"
-                    android:textSize="@dimen/_15sdp" />
+                    android:text="This is an error page "
+                    android:textColor="#FF0000"
+                    android:textSize="@dimen/_17sdp" />
                 <LinearLayout
                     android:id="@+id/btnOk"
                     android:layout_width="@dimen/_80sdp"
@@ -49,10 +49,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/_13sdp"
-                        android:text="okay"
+                        android:text="@string/okay"
                         android:textColor="#FFFFFF"
+                        android:gravity="center_vertical"
                         android:fontFamily="@font/satoshi_bold"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

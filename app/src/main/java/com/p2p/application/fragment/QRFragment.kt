@@ -56,10 +56,13 @@ class QRFragment : Fragment() {
         installGoogleScanner()
         initVars()
         binding.qrCodeImage.visibility =View.INVISIBLE
+
         if (selectedType.equals(AppConstant.MERCHANT,true)){
             binding.tvScanner.visibility  = View.GONE
         }
+
         registerUiListener()
+
         return binding.root
     }
     private fun installGoogleScanner() {

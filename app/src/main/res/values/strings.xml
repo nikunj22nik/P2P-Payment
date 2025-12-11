@@ -123,4 +123,8 @@
     <string name="your_transaction_has_been_completed_successfully">Your transaction has been completed successfully.</string>
     <string name="upload_icon">Upload Icon</string>
     <string name="enter_a_new_phone_number">Enter a new phone number</string>
+    <string name="no_notiifactiobn">No Notifications Available</string>
+    <string name="less_balance">Oops! Insufficient Balance.\n</string>
+    <string name="okay">Okay</string>
+    <string name="total_payment">Total Payment\n</string>
 </resources>

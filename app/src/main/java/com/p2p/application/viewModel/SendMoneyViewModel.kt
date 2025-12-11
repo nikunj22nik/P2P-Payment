@@ -37,6 +37,12 @@ class SendMoneyViewModel @Inject constructor(private var repository: P2PReposito
         }
     }
 
+    suspend fun getBalance(): Flow<NetworkResult<Pair<String,String>>>{
+        return repository.getBalance().onEach {
+
+        }
+    }
+
 
     suspend fun receiverProfileImage(receiverId: Int): Flow<NetworkResult<ReceiverInfo>>{
         return repository.receiverProfileImage(receiverId).onEach {

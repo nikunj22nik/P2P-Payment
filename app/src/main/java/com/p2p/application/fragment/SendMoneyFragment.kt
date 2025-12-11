@@ -36,25 +36,29 @@ import com.p2p.application.util.EditTextUtils
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
+
     private lateinit var binding: FragmentSendMoneyBinding
     private lateinit var sessionManager: SessionManager
     private var previousScreenType: String = ""
     private var backType: String = "Qr"
     private lateinit var viewModel: SendMoneyViewModel
+    private var availableBalance: String = ""
+    private var currency :String =""
+    private var monthlyLimit :String =""
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
         sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
-        backType= arguments?.getString("backType","Qr")?:"Qr"
-       makeAstrict()
+        backType = arguments?.getString("backType", "Qr") ?: "Qr"
+        makeAstrict()
+        callingBalanceApi()
         return binding.root
     }
 
-    fun makeAstrict(){
+    fun makeAstrict() {
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
         EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
@@ -65,13 +69,12 @@ class SendMoneyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.imgBack.setOnClickListener {
             if (binding.layoutSendMoney.isVisible) {
-                if (backType.equals("Qr",true)){
+                if (backType.equals("Qr", true)) {
                     findNavController().navigate(R.id.userWelcomeFragment)
-                }else{
+                } else {
                     findNavController().navigateUp()
                 }
-            }
-            else {
+            } else {
                 binding.layoutSecretCode.visibility = View.GONE
                 binding.layoutSendMoney.visibility = View.VISIBLE
                 binding.etOtp1.setText("")
@@ -81,34 +84,83 @@ class SendMoneyFragment : Fragment() {
             }
         }
         binding.btnSend.setOnClickListener {
-            if (binding.confirmAmount.length() > 0) {
+            if(availableBalance != null && !availableBalance.isEmpty() && binding.confirmAmount.length() > 0){
+                val balance: Double = availableBalance.toDouble()
+                val enteredAmount : Double = binding.confirmAmount.text.toString().toDouble()
+                if(balance >= enteredAmount){
+                    binding.layoutSecretCode.visibility = View.VISIBLE
+                    binding.layoutSendMoney.visibility = View.GONE
+                }
+                else{
+                    binding.insufficientTv.visibility = View.VISIBLE
+                }
+            }
+            else if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
-            } else {
+            }
+            else {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
+
         }
         if (requireArguments().containsKey(AppConstant.SCREEN_TYPE)) {
             previousScreenType = requireArguments().getString(AppConstant.SCREEN_TYPE, "")
         }
         val receiver = getReceiverArg()
         viewModel.receiver = receiver
-        if(receiver?.amount != null){
+
+        if (receiver?.amount != null) {
             binding.layoutSendMoney.visibility = View.GONE
             binding.layoutSecretCode.visibility = View.VISIBLE
             binding.amnt.setText(receiver.amount)
-            binding.confirmAmount.setText(receiver.amount)
+
+            val number = receiver.amount.toDoubleOrNull()
+            if (number != null) {
+                val result = number * 1.01
+                val finalValue = String.format("%.2f", result).toDouble()
+                binding.confirmAmount.setText(finalValue.toString())
+            }else{
+                binding.confirmAmount.setText(receiver.amount)
+            }
         }
+
         settingData(viewModel.receiver)
+
         callingGetAmountApi(viewModel.receiver)
+
         callingTextWatcher()
+
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
+
         binding.btnForgot.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("screenType", "loginCode")
             findNavController().navigate(R.id.forgotCodeFragment, bundle)
         }
+
         handleBackPress()
+    }
+
+    fun callingBalanceApi() {
+        lifecycleScope.launch {
+            viewModel.getBalance().collect {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        availableBalance = it.data?.first.toString()
+                        currency = it.data?.second.toString()
+                        binding.fee.text = monthlyLimit+" "+currency
+                    }
+                    is NetworkResult.Error -> {
+
+                    }
+
+                    else -> {
+                    }
+                }
+            }
+
+        }
     }
 
     fun Fragment.getReceiverArg(): Receiver? {
@@ -137,9 +189,9 @@ class SendMoneyFragment : Fragment() {
                 if (number != null) {
                     val result = number * 1.01
                     val finalValue = String.format("%.2f", result).toDouble()
-                    if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
+                    if (SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
                         binding.confirmAmount.setText(finalValue.toString())
-                    }else{
+                    } else {
                         binding.confirmAmount.setText(number.toString())
                     }
                 } else {
@@ -148,12 +200,14 @@ class SendMoneyFragment : Fragment() {
             }
         })
     }
+
     private fun settingData(receive: Receiver?) {
         receive?.let {
             binding.tvName.text = receive.name
             binding.tvNumber.text = receive.phone
         }
     }
+
     private fun callingGetAmountApi(receive: Receiver?) {
         receive?.let {
             lifecycleScope.launch {
@@ -168,16 +222,23 @@ class SendMoneyFragment : Fragment() {
                                     Glide.with(requireContext()).load(BuildConfig.MEDIA_URL + img)
                                         .into(binding.imageProfile)
                                 }
-                                if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
-                                   binding.tv1.visibility =View.VISIBLE
-                                    binding.l2.visibility =View.VISIBLE
-                                    binding.fee.text = it.monthly_limit
+                                if (SessionManager(requireContext()).getLoginType()
+                                        .equals(AppConstant.USER)
+                                ) {
+                                    binding.tv1.visibility = View.VISIBLE
+                                    binding.l2.visibility = View.VISIBLE
+                                    monthlyLimit= it.monthly_limit.toString()
+                                    binding.fee.text = it.monthly_limit +" "+currency
                                 }
+
                             }
+
                         }
+
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
                         }
+
                         else -> {
                         }
                     }
@@ -203,11 +264,19 @@ class SendMoneyFragment : Fragment() {
                                 }
                             }
                         }
+
                         s?.isEmpty() == true -> prev?.requestFocus()
                     }
                 }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
         }
@@ -219,32 +288,38 @@ class SendMoneyFragment : Fragment() {
             viewModel.checkSecretCode(code).collect {
                 when (it) {
                     is NetworkResult.Success -> {
-                        if(it.data == true) {
+                        if (it.data == true) {
                             callingPaymentApi()
-                        } else{
+                        } else {
                             LoadingUtils.hide(requireActivity())
-                            LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
+                            LoadingUtils.showErrorDialog(
+                                requireContext(),
+                                MessageError.INVALID_SECRET
+                            )
                         }
                     }
+
                     is NetworkResult.Error -> {
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireContext(), it.message.toString())
                     }
-                    else -> { }
+
+                    else -> {}
                 }
             }
         }
     }
 
     private fun handleBackPress() {
+
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (binding.layoutSendMoney.isVisible) {
-                        if (backType.equals("Qr",true)){
+                        if (backType.equals("Qr", true)) {
                             findNavController().navigate(R.id.userWelcomeFragment)
-                        }else{
+                        } else {
                             findNavController().navigateUp()
                         }
                     } else {
@@ -268,47 +343,52 @@ class SendMoneyFragment : Fragment() {
             val amount = binding.amnt.text?.toString()
             val confirmAccount = binding.confirmAmount.text?.toString()
             if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
-                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                    .format(Date())
-                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    .format(Date())
+                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
+                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
                 viewModel.sendMoney(
                     senderType = type,
                     receiver_id = receiver.user_id,
                     receiverType = receiver.user_type,
                     amount = amount,
-                    confirmAccount?:"",
-                    currentTime,currentDate
+                    confirmAccount ?: "",
+                    currentTime,
+                    currentDate
                 ).collect { result ->
                     when (result) {
-                        is NetworkResult.Success ->{
+                        is NetworkResult.Success -> {
                             LoadingUtils.hide(requireActivity())
                             val data = result.data
                             val json = Gson().toJson(result.data)
                             val bundle = Bundle()
-                            Log.d("TESTING_T_ID","Transaction id"+data?.transaction_id)
+                            Log.d("TESTING_T_ID", "Transaction id" + data?.transaction_id)
                             data?.id?.let {
                                 bundle.putLong("transaction_id", data.id.toLong())
                             }
                             bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                             findNavController().navigate(R.id.transferStatusFragment, bundle)
                         }
+
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
-                            LoadingUtils.showErrorDialog(requireContext(),result.message.toString())
+                            LoadingUtils.showErrorDialog(
+                                requireContext(),
+                                result.message.toString()
+                            )
                         }
+
                         else -> {
 
                         }
                     }
                 }
             } else {
-                    binding.layoutSendMoney.visibility = View.VISIBLE
-                    binding.layoutSecretCode.visibility = View.GONE
-                    LoadingUtils.showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
-                }
+                binding.layoutSendMoney.visibility = View.VISIBLE
+                binding.layoutSecretCode.visibility = View.GONE
+                LoadingUtils.showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
             }
         }
+    }
+
     private fun getOtp(): String {
         return binding.etOtp1.text.toString() +
                 binding.etOtp2.text.toString() +

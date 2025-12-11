@@ -2,6 +2,7 @@ package com.p2p.application.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -147,8 +148,9 @@ class TransactionAdapter(
         private val lay: RelativeLayout = itemView.findViewById(R.id.trans_layout)
 
         fun extractTime(str: String): String {
+
             val parts = str.trim().split(" ")
-            return parts.last()   // returns the last part (time)
+            return parts.takeLast(2).joinToString(" ")
         }
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(data: HistoryItem.Transaction) {

@@ -20,7 +20,7 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
     var isLoading = false
     var isLastPage = false
     val limit = 10
-    var mainList : MutableList<TransactionItem> = mutableListOf()
+    var mainList : MutableList<HistoryItem> = mutableListOf()
 
     suspend fun getTransactionHistory(): Flow<NetworkResult<TransactionHistoryResponse>> {
         isLoading = true
@@ -34,6 +34,9 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
     ) :Flow<NetworkResult<TransactionHistoryResponse>>{
         return repository.genOneToOneTransactionHistory(userId).onEach {  }
     }
+
+
+
 
     fun nextPage() {
         if (!isLastPage) {

@@ -189,5 +189,7 @@ interface P2PApi {
     @POST("get_all_notifications")
     suspend fun getAllNotification() :Response<JsonObject>
 
+    @POST("get_balance")
+    suspend fun getBalance() : Response<JsonObject>
 
   }

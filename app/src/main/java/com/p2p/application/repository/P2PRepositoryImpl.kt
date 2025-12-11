@@ -859,6 +859,30 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
+    override suspend fun getBalance(): Flow<NetworkResult<Pair<String,String>>> =flow {
+        try {
+            api.getBalance().apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        if (resp.has("success") && resp.get("success").asBoolean) {
+                            val obj = resp.get("data").asJsonObject
+                            val balance = obj.get("balance").asString
+                            val currency = obj.get("currency").asString
+                            emit(NetworkResult.Success(Pair(balance,currency)))
+                        } else {
+                            emit(NetworkResult.Error(resp.get("message").asString))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
 
 }
 
