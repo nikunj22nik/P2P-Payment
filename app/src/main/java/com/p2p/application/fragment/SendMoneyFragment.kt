@@ -114,7 +114,15 @@ class SendMoneyFragment : Fragment() {
             binding.layoutSendMoney.visibility = View.GONE
             binding.layoutSecretCode.visibility = View.VISIBLE
             binding.amnt.setText(receiver.amount)
-            binding.confirmAmount.setText(receiver.amount)
+
+            val number = receiver.amount.toDoubleOrNull()
+            if (number != null) {
+                val result = number * 1.01
+                val finalValue = String.format("%.2f", result).toDouble()
+                binding.confirmAmount.setText(finalValue.toString())
+            }else{
+                binding.confirmAmount.setText(receiver.amount)
+            }
         }
 
         settingData(viewModel.receiver)

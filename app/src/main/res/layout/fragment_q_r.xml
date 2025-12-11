@@ -44,7 +44,9 @@
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp"
         android:clipToOutline="true"
-        android:layout_margin="20dp">
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_marginBottom="@dimen/_20sdp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -54,16 +56,17 @@
             android:gravity="center"
             android:background="@drawable/scanner_card_bg"
             android:clipToPadding="true">
-            <!-- QR Image -->
+
             <ImageView
                 android:id="@+id/qrCodeImage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_230sdp"
                 android:layout_gravity="top|center"
-                android:layout_margin="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_25sdp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/todo"
-                android:scaleType="centerCrop" />
+                android:scaleType="fitXY" />
             <!-- Logo at bottom -->
             <ImageView
                 android:id="@+id/logoContainer"

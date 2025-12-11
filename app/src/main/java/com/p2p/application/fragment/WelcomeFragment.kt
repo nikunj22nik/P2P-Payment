@@ -453,7 +453,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         btnContinue?.setOnClickListener {
             dialogWeight.dismiss()
             val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
-                merchantData.id,merchantData.phone,merchantData.role,amount=edAmount?.text.toString())
+                merchantData.id,merchantData.phone,merchantData.role,amount=edUserAmount?.text.toString())
             val json = Gson().toJson(receiver)
             val bundle = Bundle()
             bundle.putString("receiver_json", json)

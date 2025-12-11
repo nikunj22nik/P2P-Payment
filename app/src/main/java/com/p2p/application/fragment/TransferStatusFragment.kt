@@ -104,6 +104,14 @@ class TransferStatusFragment : Fragment() {
                             binding.tvReference.text = data?.reference_no?:""
                             binding.tvFees.text = data?.transaction_fee?:""
                             binding.card.visibility=View.VISIBLE
+
+                            if (it.data?.data?.receiver?.role?.equals("merchant", ignoreCase = true) == true) {
+                                binding.rlTotalPayment.visibility =View.VISIBLE
+                                val total = (data?.amount?.toDouble() ?: 0.0) +
+                                        (data?.transaction_fee?.toDouble() ?: 0.0)
+                                binding.tvFeesTotal.setText(total.toString())
+                            }
+
                         }
                         is NetworkResult.Error ->{
                             LoadingUtils.hide(requireActivity())
