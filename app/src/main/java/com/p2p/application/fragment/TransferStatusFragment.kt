@@ -1,5 +1,6 @@
 package com.p2p.application.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -86,6 +87,7 @@ class TransferStatusFragment : Fragment() {
 
 
 
+    @SuppressLint("SetTextI18n")
     private fun callingGetTransactionDetailApi(transactionId: Long?) {
 
         lifecycleScope.launch {
