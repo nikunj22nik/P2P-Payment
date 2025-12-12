@@ -20,7 +20,6 @@
                 android:id="@+id/logo"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/icon_park_outline_check_one"
                 android:layout_height="@dimen/_50sdp"/>
             <TextView
                 android:id="@+id/tvHeader"

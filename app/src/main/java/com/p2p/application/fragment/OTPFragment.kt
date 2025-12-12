@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +68,7 @@ class OTPFragment : Fragment() {
         viewModel.screenType = screenType
          extractingParameter()
         callingResendTask()
-        makeAstrict()
+       // makeAstrict()
         return binding.root
     }
 
@@ -103,9 +104,11 @@ class OTPFragment : Fragment() {
     private fun callingResendOtp(){
         lifecycleScope.launch {
             val type = AppConstant.mapperType(SessionManager(requireContext()).getLoginType())
-             val screenType = if(viewModel.screenType.equals("Registration")) "registration" else "login"
+            val screenType = if(viewModel.screenType.equals("Registration")) "registration" else "login"
             LoadingUtils.show(requireActivity())
-            viewModel.resendOtp( viewModel.phoneNumber,type, viewModel.countryCode,screenType).collect {
+            viewModel.
+            resendOtp( viewModel.phoneNumber,type, viewModel.countryCode,screenType).
+            collect {
                 when(it){
                     is NetworkResult.Success ->{
                         LoadingUtils.hide(requireActivity())
@@ -169,10 +172,10 @@ class OTPFragment : Fragment() {
         val tvHeader: TextView = dialog.findViewById<TextView>(R.id.tvHeader)
         val btnTv: TextView = dialog.findViewById<TextView>(R.id.tvBtn)
         val logo: ImageView = dialog.findViewById<ImageView>(R.id.logo)
+        logo.setImageDrawable(null)
         logo.setImageResource(iconRes)
         tvContent.text = content
         tvHeader.text = header
-
         if (subheader.isEmpty()) tvSubHeader.visibility = View.GONE
         tvContent.text = content
         tvHeader.text = header
@@ -211,7 +214,6 @@ class OTPFragment : Fragment() {
             }
         }
         dialog.show()
-
     }
 
     private fun callingCreateAccount(){
@@ -414,12 +416,12 @@ class OTPFragment : Fragment() {
                         subheader = "",
                         content = "Your account is under review, and we’ll get back to you within 24–48 hours once verification is complete.",
                         buttonContent = AppConstant.BACK_TO_LOGIN,
-                        iconRes = R.drawable.ic_verification_progress
+                        iconRes = R.drawable.ic_verfication_merchant
                     )
                     1 -> showAlertDialog(
                         header = "Documents Approved",
                         subheader = "",
-                        content = "Your agent account has been verified successfully. You can now use all features.",
+                        content = "Your merchant account has been verified successfully. You can now use all features.",
                         buttonContent = AppConstant.BACK_TO_HOME,
                         iconRes = R.drawable.ic_document_approve
                     )
@@ -494,19 +496,52 @@ class OTPFragment : Fragment() {
                 binding.etOtp4.text.toString()
     }
 
+//    private fun setupOtpFields(vararg fields: EditText) {
+//
+//        fields.forEachIndexed { index, editText ->
+//
+//            val next = fields.getOrNull(index + 1)
+//
+//            val prev = fields.getOrNull(index - 1)
+//
+//            editText.addTextChangedListener(object : TextWatcher {
+//                override fun afterTextChanged(s: Editable?) {
+//                    when {
+//                        s?.length == 1 -> next?.requestFocus()
+//                        s?.isEmpty() == true -> prev?.requestFocus()
+//                    }
+//                }
+//
+//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//            })
+//        }
+//    }
+
     private fun setupOtpFields(vararg fields: EditText) {
 
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
-
             val prev = fields.getOrNull(index - 1)
 
+            // Detect BACKSPACE (DEL key)
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editText.text.isEmpty()) {
+                        prev?.requestFocus()
+                        prev?.setSelection(prev.text.length)
+                    }
+                }
+                false
+            }
+
+            // Detect input change (typing)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    when {
-                        s?.length == 1 -> next?.requestFocus()
-                        s?.isEmpty() == true -> prev?.requestFocus()
+                    // Move forward on typing 1 digit
+                    if (s?.length == 1) {
+                        next?.requestFocus()
                     }
                 }
 

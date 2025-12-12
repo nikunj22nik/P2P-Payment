@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,7 @@ class ForgotCodeOtpVerifyFragment : Fragment() {
         sessionManager= SessionManager(requireContext())
         viewModel = ViewModelProvider(requireActivity())[SendOtpForgotSecretViewModel::class.java]
         extractingParameter()
-        makeAstrict()
+        //makeAstrict()
         setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
 
         startTime()
@@ -176,17 +177,32 @@ class ForgotCodeOtpVerifyFragment : Fragment() {
         val timeLeftFormatted = String.format(Locale.getDefault(), "%02d", seconds)
         binding.tvResend.text = "Resend in $timeLeftFormatted sec"
     }
+
+
     private fun setupOtpFields(vararg fields: EditText) {
+
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
             val prev = fields.getOrNull(index - 1)
 
+            // Detect BACKSPACE (DEL key)
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editText.text.isEmpty()) {
+                        prev?.requestFocus()
+                        prev?.setSelection(prev.text.length)
+                    }
+                }
+                false
+            }
+
+            // Detect input change (typing)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    when {
-                        s?.length == 1 -> next?.requestFocus()             // move next
-                        s?.isEmpty() == true -> prev?.requestFocus()        // move back
+                    // Move forward on typing 1 digit
+                    if (s?.length == 1) {
+                        next?.requestFocus()
                     }
                 }
 
@@ -195,6 +211,9 @@ class ForgotCodeOtpVerifyFragment : Fragment() {
             })
         }
     }
+
+
+
     private fun getOtp(): String {
         return binding.etOtp1.text.toString() +
                 binding.etOtp2.text.toString() +

@@ -6,11 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -53,8 +55,8 @@ class EditSecretCodeFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())[SendOtpForgotSecretViewModel::class.java]
 
         screenType=arguments?.getString("screenType","")?:""
-        setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
-        setupOtpFieldsRe(binding.etOtp11, binding.etOtp22, binding.etOtp33, binding.etOtp44)
+        setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4,binding.etOtp11)
+        setupOtpFields(binding.etOtp11, binding.etOtp22, binding.etOtp33, binding.etOtp44)
           makeAstrict()
 
         return binding.root
@@ -166,18 +168,32 @@ class EditSecretCodeFragment : Fragment() {
     }
 
     private fun setupOtpFieldsRe(vararg fields: EditText) {
+
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
             val prev = fields.getOrNull(index - 1)
 
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    when {
-                        s?.length == 1 -> next?.requestFocus()             // move next
-                        s?.isEmpty() == true -> prev?.requestFocus()        // move back
+            // Detect BACKSPACE (DEL key)
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editText.text.isEmpty()) {
+                        prev?.requestFocus()
+                        prev?.setSelection(prev.text.length)
                     }
                 }
+                false
+            }
+
+            // Detect input change (typing)
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // Move forward on typing 1 digit
+                    if (s?.length == 1) {
+                        next?.requestFocus()
+                    }
+                }
+
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
@@ -198,17 +214,44 @@ class EditSecretCodeFragment : Fragment() {
                 binding.etOtp44.text.toString()
     }
 
-    private fun setupOtpFields(vararg fields: EditText) {
+
+    private fun setupOtpFields(vararg fields: EditText, nextGroupFirst: EditText? = null) {
+
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
             val prev = fields.getOrNull(index - 1)
 
+            editText.imeOptions =
+                if (index == fields.lastIndex) EditorInfo.IME_ACTION_DONE
+                else EditorInfo.IME_ACTION_NEXT
+
+            // Handle backspace navigation
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editText.text.isEmpty()) {
+                        prev?.requestFocus()
+                        prev?.setSelection(prev.text.length)
+                    }
+                }
+                false
+            }
+
+            // Handle typing navigation
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    when {
-                        s?.length == 1 -> next?.requestFocus()             // move next
-                        s?.isEmpty() == true -> prev?.requestFocus()        // move back
+
+                    // Normal next
+                    if (s?.length == 1) {
+
+                        // If last box and next group exists → move to next group
+                        if (index == fields.lastIndex && nextGroupFirst != null) {
+                            nextGroupFirst.requestFocus()
+                            return
+                        }
+
+                        // otherwise normal next
+                        next?.requestFocus()
                     }
                 }
 
@@ -217,6 +260,7 @@ class EditSecretCodeFragment : Fragment() {
             })
         }
     }
+
 
 
 }

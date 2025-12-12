@@ -1,6 +1,5 @@
 package com.p2p.application.repository
 
-
 import com.google.gson.Gson
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
@@ -652,7 +651,6 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                 if (isSuccessful) {
                     body()?.let { resp ->
                         if (resp.has("success") && resp.get("success").asBoolean) {
-                           // val dataObject = resp.get("data").asJsonObject
                             val list = resp.getAsJsonArray("data").map { element ->
                                 val obj = element.asJsonObject
                                 TransactionItem(
@@ -669,25 +667,21 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                                             first_name = u.get("first_name").asString,
                                             last_name = u.get("last_name").asString,
                                             phone = u.get("phone").asString,
-                                            business_logo = if (u.get("business_logo").isJsonNull) null else u.get(
-                                                "business_logo"
-                                            ).asString
+                                            business_logo = if (u.get("business_logo").isJsonNull) null
+                                            else u.get("business_logo").asString
                                         )
                                     }
                                 )
                             }
 
                             val finalData = TransactionHistoryResponse(
-                                page =1,
-                                limit = 20,
-                                total = 1,
-                                total_page = 1,
-                                data = list
+                                page =1, limit = 20, total = 1, total_page = 1, data = list
                             )
 
                             emit(NetworkResult.Success(finalData))
 
-                        } else {
+                        }
+                        else {
                             emit(NetworkResult.Error(resp.get("message").asString))
                         }
 
