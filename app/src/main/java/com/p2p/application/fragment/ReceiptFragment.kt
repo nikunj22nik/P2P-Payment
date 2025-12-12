@@ -54,7 +54,7 @@ class ReceiptFragment : Fragment() {
     ): View {
         binding = FragmentReceiptBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[ReceiptViewModel::class.java]
-//        requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
+//      requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
         receiptId=arguments?.getString("receiptId","")?:""
@@ -68,22 +68,18 @@ class ReceiptFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.layPrice.applyExactGradient()
         binding.layPrice1.applyExactGradient()
 
         binding.btnHome.setOnClickListener {
             findNavController().navigate(R.id.userWelcomeFragment)
         }
-
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
         binding.imgShare.setOnClickListener {
             shareCard(binding.cardHide,requireContext())
         }
-
         binding.pullToRefresh.setOnRefreshListener {
             loadApi()
         }
@@ -95,6 +91,7 @@ class ReceiptFragment : Fragment() {
             intent.data = "tel:${MessageError.HELP_NUMBER}".toUri()
             startActivity(intent)
         }
+
     }
 
     private fun loadApi(){
@@ -130,10 +127,10 @@ class ReceiptFragment : Fragment() {
                 when(it){
                     is NetworkResult.Success ->{
                         hide(requireActivity())
-                        it.data?.let {
+                        it.data?.let { data->
                             DownloadWorker().downloadPdfWithNotification(
                                 binding.root.context,
-                                it,
+                                data,
                                 "Transaction_" + "file_${(10000..99999).random()}.pdf"
                             )
                         }
