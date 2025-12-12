@@ -1,13 +1,17 @@
 package com.p2p.application.fragment
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.pm.PackageManager
+import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -50,7 +54,34 @@ class NotificationFragment : Fragment() {
             }
         }
 
+        startRippleAnimation()
+
     }
+
+
+    private fun startRippleAnimation() {
+        val circles = listOf(
+            binding.circle1,
+            binding.circle2,
+            binding.circle3
+        )
+
+        circles.forEachIndexed { index, circle ->
+            circle.scaleX = 0f
+            circle.scaleY = 0f
+            circle.alpha = 1f
+
+            circle.animate()
+                .scaleX(2.5f)
+                .scaleY(2.5f)
+                .alpha(0f)
+                .setStartDelay((index * 400).toLong())
+                .setDuration(5000)
+                .withEndAction { startRippleAnimation() }
+                .start()
+        }
+    }
+
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
