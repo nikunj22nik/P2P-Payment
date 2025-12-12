@@ -582,19 +582,15 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         page: Int,
         limit: Int
     ): Flow<NetworkResult<TransactionHistoryResponse>>
-        = flow { try {
+        = flow {
+            try {
                 api.getTransactionHistory(page, limit).apply {
-
                     if (isSuccessful) {
-
                         body()?.let { resp ->
-
                             if (resp.has("success") && resp.get("success").asBoolean) {
-
                                 val dataObject = resp.get("data").asJsonObject
-
                                 val list = dataObject.getAsJsonArray("data").map { element ->
-                                    val obj = element.asJsonObject
+                                val obj = element.asJsonObject
 
                                     TransactionItem(
                                         id = obj.get("id").asInt,
@@ -608,7 +604,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                                             UserInfo(
                                                 id = u.get("id").asInt,
                                                 first_name = u.get("first_name").asString,
-                                                last_name = u.get("last_name").asString,
+                                                last_name = if(u.get("last_name").isJsonNull==false)u.get("last_name").asString else "",
                                                 phone = u.get("phone").asString,
                                                 business_logo = if (u.get("business_logo").isJsonNull) null else u.get(
                                                     "business_logo"
@@ -665,7 +661,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                                         UserInfo(
                                             id = u.get("id").asInt,
                                             first_name = u.get("first_name").asString,
-                                            last_name = u.get("last_name").asString,
+                                            last_name = if(u.get("last_name").isJsonNull==false)u.get("last_name").asString else "",
                                             phone = u.get("phone").asString,
                                             business_logo = if (u.get("business_logo").isJsonNull) null
                                             else u.get("business_logo").asString
