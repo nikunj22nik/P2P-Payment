@@ -139,7 +139,7 @@ class ReceiptFragment : Fragment() {
                         }
                     }
                     is NetworkResult.Error ->{
-                        LoadingUtils.hide(requireActivity())
+                        hide(requireActivity())
                     }
                     else ->{
 
