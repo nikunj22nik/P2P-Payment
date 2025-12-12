@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -88,6 +89,11 @@ class ReceiptFragment : Fragment() {
         }
         binding.llDownload.setOnClickListener {
             callingReceiptDownload()
+        }
+        binding.btnHelp.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = "tel:${MessageError.HELP_NUMBER}".toUri()
+            startActivity(intent)
         }
     }
 
