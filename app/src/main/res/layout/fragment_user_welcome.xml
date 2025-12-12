@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SplashActivity">
+
     <RelativeLayout
         android:id="@+id/layTittle"
         android:layout_width="match_parent"
@@ -51,7 +52,8 @@
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_below="@id/layTittle"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
       <RelativeLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent">
@@ -92,14 +94,17 @@
                       android:fontFamily="@font/satoshi_medium"
                       android:layout_gravity="center"
                       android:text="@string/send_and_receive_money_instantly_with_just_a_few_ntaps" />
+
               </LinearLayout>
+
               <LinearLayout
                   android:id="@+id/layBalance"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
                   android:visibility="gone"
-                  tools:ignore="UselessParent">
+                  tools:ignore="UselessParent"
+                  >
 
                   <TextView
                       android:id="@+id/tvBalanceTitle"
@@ -130,6 +135,7 @@
                           android:gravity="center"
                           android:fontFamily="@font/satoshi_bold"
                           android:layout_gravity="center"
+                          android:layout_marginTop="@dimen/_3ssp"
                           android:text="@string/star" />
                       <ImageView
                           android:id="@+id/imgHide"
@@ -321,7 +327,5 @@
       </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
 
 </RelativeLayout>

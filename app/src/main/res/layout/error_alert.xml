@@ -37,7 +37,7 @@
                     android:gravity="center"
                     android:text="This is an error page "
                     android:textColor="#FF0000"
-                    android:textSize="@dimen/_17sdp" />
+                    android:textSize="@dimen/_15sdp" />
                 <LinearLayout
                     android:id="@+id/btnOk"
                     android:layout_width="@dimen/_80sdp"
