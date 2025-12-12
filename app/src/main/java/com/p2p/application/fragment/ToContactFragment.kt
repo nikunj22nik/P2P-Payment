@@ -245,6 +245,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             null,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"
         )
+
         cursor?.use {
             val idIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
             val nameIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
@@ -256,11 +257,12 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                 contactsList.add(ContactModel(id = id, name = name, phone = phone))
             }
         }
-        // Example: print to console or update UI
-        contactsList.forEach { println(it) }
+        contactsList = contactsList.distinctBy { it.phone }.toMutableList()
+
         if (contactsList.isNotEmpty()){
             adapter.updateList(contactsList)
         }
+
     }
 
     override fun onItemClick(data: String, type: String) {
