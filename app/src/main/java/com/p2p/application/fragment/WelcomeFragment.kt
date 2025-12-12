@@ -137,7 +137,15 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             if (binding.tvBalance.text.toString().contains("*")){
                 binding.tvBalance.text = originalBalance
                 binding.imgHide.setImageResource(R.drawable.eye_off)
+                // Get the current LayoutParams of the TextView
+                val params = binding.tvBalance.layoutParams as ViewGroup.MarginLayoutParams
+                params.topMargin = 0
+                binding.tvBalance.layoutParams = params
             }else{
+                val topMargin = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._3sdp)
+                val params = binding.tvBalance.layoutParams as ViewGroup.MarginLayoutParams
+                params.topMargin = topMargin
+                binding.tvBalance.layoutParams = params
                 showStart()
             }
         }

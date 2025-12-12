@@ -59,10 +59,7 @@ class LoginFragment : Fragment(),ItemClickListener {
 
         selectedType = sessionManager.getLoginType().orEmpty()
         handleBackPress()
-
-        binding.img.setOnClickListener {
-            findNavController().navigate(R.id.notificationFragment)
-        }
+        
 
         return binding.root
     }

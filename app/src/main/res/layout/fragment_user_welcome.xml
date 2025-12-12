@@ -133,6 +133,7 @@
                           android:textColor="#FFFFFF"
                           android:textSize="@dimen/_18sdp"
                           android:gravity="center"
+                          android:layout_marginTop="@dimen/_3sdp"
                           android:typeface="monospace"
                           android:fontFamily="@font/satoshi_bold"
                           android:layout_gravity="center"
@@ -272,11 +273,11 @@
                   android:id="@+id/noData"
                   android:layout_gravity="center"
                   android:layout_width="match_parent"
-                  android:layout_height="@dimen/_200sdp"
+                  android:layout_height="@dimen/_220sdp"
                   android:layout_marginBottom="@dimen/_15sdp"
                   android:visibility="visible"
                   android:layout_centerInParent="true"
-                  android:scaleType="centerCrop"
+                  android:scaleType="fitXY"
                   android:background="@drawable/userhomeicon"
                   android:contentDescription="@string/todo" />
               <LinearLayout
