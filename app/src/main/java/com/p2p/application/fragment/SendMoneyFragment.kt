@@ -195,8 +195,9 @@ class SendMoneyFragment : Fragment() {
                     } else {
                         binding.confirmAmount.setText(number.toString())
                     }
+
                 } else {
-                    binding.confirmAmount.hint = ""
+                    binding.confirmAmount.setText("")
                 }
             }
         })
@@ -269,9 +270,18 @@ class SendMoneyFragment : Fragment() {
             // Detect input change (typing)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    // Move forward on typing 1 digit
-                    if (s?.length == 1) {
-                        next?.requestFocus()
+                    when {
+                        s?.length == 1 -> {
+                            next?.requestFocus()
+                            if (index == fields.lastIndex) {
+                                val otp = getOtp()
+                                if (otp.length == fields.size) {
+                                    callingCheckSecretCodeApi(getOtp())
+                                }
+                            }
+                        }
+
+                        s?.isEmpty() == true -> prev?.requestFocus()
                     }
                 }
 
