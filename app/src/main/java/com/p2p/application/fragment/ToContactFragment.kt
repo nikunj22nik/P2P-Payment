@@ -69,9 +69,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         loadBalance()
         return binding.root
     }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+0    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.edSearch.addTextChangedListener(object : TextWatcher {
@@ -130,7 +128,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         }
 
     }
-
     @SuppressLint("SetTextI18n")
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()
@@ -156,7 +153,6 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
             }
         }
     }
-
     private fun countryListApi() {
         show(requireActivity())
         lifecycleScope.launch {
@@ -256,6 +252,9 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                 contactsList.add(ContactModel(id = id, name = name, phone = phone))
             }
         }
+        contactsList = contactsList
+            .distinctBy { it.phone }
+            .toMutableList()
         // Example: print to console or update UI
         contactsList.forEach { println(it) }
         if (contactsList.isNotEmpty()){
