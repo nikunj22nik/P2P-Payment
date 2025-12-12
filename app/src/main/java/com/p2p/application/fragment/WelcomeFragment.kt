@@ -145,8 +145,11 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
+
     private fun recentMerchant(){
+
         show(requireActivity())
+
         lifecycleScope.launch {
             viewModel.homeMerchantRequest().collect {
                 hide(requireActivity())
@@ -170,6 +173,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+
+
+
     @SuppressLint("SetTextI18n")
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){
@@ -276,6 +282,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+
     private fun homeApi(){
         if (isOnline(requireContext())) {
             show(requireActivity())
@@ -303,6 +310,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun showUIData(){
         dataHome?.let { data ->
@@ -321,6 +329,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+
     private fun showNoData(){
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
             binding.noData.setBackgroundResource(R.drawable.rafikiicon)
@@ -330,6 +339,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.layTransaction.visibility = View.GONE
         binding.noData.visibility = View.VISIBLE
     }
+
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -340,6 +350,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         )
     }
+
     fun showAlertPay(){
         dialogPay = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogPay.setContentView(R.layout.choosemerchent_alert)
@@ -371,6 +382,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogPay.show()
     }
+
     fun showAlertSend(){
         dialogSend = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogSend.setContentView(R.layout.send_alert)
@@ -395,6 +407,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogSend.show()
     }
+
     private fun askContactPermission() {
         if (checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(
@@ -406,6 +419,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             findNavController().navigate(R.id.toContactFragment)
         }
     }
+
     @SuppressLint("SetTextI18n")
     fun showAlertPayMerchant(data: String) {
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
@@ -485,6 +499,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
 
     }
+
     private fun showAlertContact() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

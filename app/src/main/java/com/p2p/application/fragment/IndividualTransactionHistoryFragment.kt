@@ -34,7 +34,6 @@ import kotlinx.coroutines.withContext
 class IndividualTransactionHistoryFragment : Fragment() {
 
     private lateinit  var binding : FragmentIndividualTransactionHistoryBinding
-
     private lateinit var adapter: TransactionAdapter
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
@@ -97,46 +96,34 @@ class IndividualTransactionHistoryFragment : Fragment() {
         binding.itemRcy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
 
                 if (!viewModel.isLoading && !viewModel.isLastPage) {
                     if (lastVisible == adapter.itemCount - 1) {
                         viewModel.nextPage()
-
                         lifecycleScope.launch {
                             viewModel.getTransactionHistory().collect { result ->
                                 when (result) {
-
                                     is NetworkResult.Success -> {
-
-
                                         val response = result.data
-
                                         val list = withContext(Dispatchers.Default) {
                                             response?.data?.let { data ->
                                                 buildHistoryList(data).toMutableList()
                                             } ?: mutableListOf()
                                         }
-
-
-
                                         adapter.updateAdapter(list)
-
                                         viewModel.isLoading = false
                                         binding.itemRcy.post {
                                             //  LoadingUtils.hide(requireActivity())
                                         }
                                         viewModel.isLastPage = viewModel.currentPage >= (response?.total_page ?: 1)
                                     }
-
                                     is NetworkResult.Error -> {
                                         LoadingUtils.hide(requireActivity())
                                         LoadingUtils.showErrorDialog(requireActivity(), result.message.toString())
                                         viewModel.isLoading = false
                                     }
-
                                     else -> Unit
                                 }
                             }
@@ -149,17 +136,11 @@ class IndividualTransactionHistoryFragment : Fragment() {
 
     private fun callingTransactionHistoryApi(){
         lifecycleScope.launch {
-
             LoadingUtils.show(requireActivity())
-
             viewModel.genOneToOneTransactionHistory(userId).collect { result ->
-
                 when (result) {
-
                     is NetworkResult.Success -> {
-
                         val response = result.data
-
                         val list = withContext(Dispatchers.Default) {
                             response?.data?.let { data ->
                                 buildHistoryList(data).toMutableList()
