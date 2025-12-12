@@ -157,7 +157,6 @@ class SettingFragment : Fragment(),ItemClickListener {
             }
         }
     }
-
     private fun setValueFromSession(){
         val name = sessionManager.getFirstName() +" "+ sessionManager.getLastName()
         binding.tvName.text = name
@@ -192,7 +191,6 @@ class SettingFragment : Fragment(),ItemClickListener {
         }
         dialogUser.show()
     }
-
     fun alertSessionClear(viewType: String){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
@@ -265,7 +263,6 @@ class SettingFragment : Fragment(),ItemClickListener {
              }
         }
     }
-
     private fun switchUserApi(id: String, phone: String, role: String?) {
         show(requireActivity())
         val loginType = AppConstant.mapperType(role)
@@ -354,7 +351,6 @@ class SettingFragment : Fragment(),ItemClickListener {
             }
         }
     }
-
     private fun handleUserLogin(response: LoginModel, role: String) {
         sessionManager.clearSession()
         sessionManager.setLoginType(role)
@@ -375,7 +371,6 @@ class SettingFragment : Fragment(),ItemClickListener {
             findNavController().navigate(R.id.secretCodeFragment)
         }
     }
-
     private fun handleVerificationStatus(status: Int, userRole: String) {
         when (userRole) {
             AppConstant.MERCHANT -> {
@@ -455,7 +450,6 @@ class SettingFragment : Fragment(),ItemClickListener {
             }
         }
     }
-
     @SuppressLint("SetTextI18n")
     private fun showAlertDialog(header:String, subHeader:String,
                                 content:String,
@@ -510,7 +504,6 @@ class SettingFragment : Fragment(),ItemClickListener {
         dialog.show()
 
     }
-
     private fun fetchToken() {
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { task ->
@@ -523,7 +516,6 @@ class SettingFragment : Fragment(),ItemClickListener {
                 }
             }
     }
-
     override fun onResume() {
         super.onResume()
         fetchToken()
