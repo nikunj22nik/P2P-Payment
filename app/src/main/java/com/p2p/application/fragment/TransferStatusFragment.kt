@@ -48,8 +48,11 @@ class TransferStatusFragment : Fragment() {
     ): View {
         binding = FragmentTransferStatusBinding.inflate(inflater, container, false)
 //        requireActivity().window.setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE)
+
         viewModel = ViewModelProvider(this)[ReceiptViewModel::class.java]
+
         sessionManager = SessionManager(requireContext())
+
         selectType = sessionManager.getLoginType() ?: ""
 
         handleBackPress()
@@ -63,20 +66,14 @@ class TransferStatusFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         binding.layPrice.applyExactGradient()
-
-
         binding.btnHome.setOnClickListener {
             findNavController().navigate(R.id.userWelcomeFragment)
         }
-
         binding.btnShare.setOnClickListener {
             shareCard(binding.card,requireContext())
         }
         settingDataToUi()
-
     }
 
     private fun settingDataToUi(){
@@ -147,8 +144,7 @@ class TransferStatusFragment : Fragment() {
 
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
+            viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController().navigate(R.id.userWelcomeFragment)
                 }

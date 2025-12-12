@@ -86,7 +86,7 @@
     <string name="_24_900_fcfa">24 900 fcfa</string>
     <string name="recent_transactions">Recent transactions</string>
     <string name="see_all">See all</string>
-    <string name="transfer_successful">Transfer successful!</string>
+    <string name="transfer_successful">Transaction successful!</string>
     <string name="share">Share</string>
     <string name="back_to_home_page">Back to home page</string>
     <string name="need_help">Need Help ?</string>
