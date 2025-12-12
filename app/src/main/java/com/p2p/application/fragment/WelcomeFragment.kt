@@ -236,7 +236,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize, 0, 0, 0)
                 binding.tvRebalancing.setTextColor("#444444".toColorInt())
                 binding.btnRebalancing.setBackgroundResource(R.drawable.button_custom_border)
-                binding.imgLogo.setBackgroundResource(R.drawable.bbs_logo)
+                binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
             }
         } else{
             if (selectedType.equals(MessageError.USER,true)){

@@ -103,7 +103,7 @@ class SettingFragment : Fragment(),ItemClickListener {
         }
         binding.btnService.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = "tel:${binding.tvNumbar.text}".toUri()
+            intent.data = "tel:${MessageError.HELP_NUMBER}".toUri()
             startActivity(intent)
         }
         if (selectedType.equals(AppConstant.MERCHANT,true)){

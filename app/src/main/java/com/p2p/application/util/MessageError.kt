@@ -29,5 +29,8 @@ class MessageError {
         val UPLOAD_BUSINESS_LOGO= "Please Upload Your Business logo."
         val FRONT_SMS= "Please upload front image."
         val BACK_SMS= "Please upload back image."
+
+        const val HELP_NUMBER="0123456789"
+
     }
 }

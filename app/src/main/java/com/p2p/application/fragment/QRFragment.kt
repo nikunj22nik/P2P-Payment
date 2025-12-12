@@ -58,7 +58,7 @@ class QRFragment : Fragment() {
         binding.qrCodeImage.visibility =View.INVISIBLE
 
         if (selectedType.equals(AppConstant.MERCHANT,true)){
-            binding.tvScanner.visibility  = View.GONE
+            binding.bottomTabs.visibility  = View.INVISIBLE
         }
 
         registerUiListener()
