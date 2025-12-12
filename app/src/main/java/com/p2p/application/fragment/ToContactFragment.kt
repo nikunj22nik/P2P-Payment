@@ -253,11 +253,10 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                 contactsList.add(ContactModel(id = id, name = name, phone = phone))
             }
         }
-
         // Example: print to console or update UI
         contactsList.forEach { println(it) }
-        contactsList = contactsList.distinctBy { it.phone }.toMutableList()
         if (contactsList.isNotEmpty()){
+            contactsList = contactsList.distinctBy { it.phone }.toMutableList()
             adapter.updateList(contactsList)
         }
 

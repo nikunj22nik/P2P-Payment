@@ -9,22 +9,23 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.TypedValue
-import android.view.Gravity
+import android.os.Build
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.graphics.drawable.DrawableCompat
+import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.p2p.application.R
 
 class LoadingUtils {
+
+
     companion object {
+
+        private var dialogLoader: Dialog? = null
+
         fun showErrorDialog(context: Context?, text: String) {
             if (context == null) return
             val dialog= Dialog(context, R.style.BottomSheetDialog)
@@ -67,7 +68,7 @@ class LoadingUtils {
         private const val LOADER_TAG = "APP_GLOBAL_LOADER"
 
         fun show(activity: Activity, transparent: Boolean = true) {
-            val decorView = activity.window.decorView as ViewGroup
+            /*val decorView = activity.window.decorView as ViewGroup
             val existing = decorView.findViewWithTag<View>(LOADER_TAG)
             if (existing != null) return
             val containerParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT).apply { gravity = Gravity.CENTER }
@@ -90,13 +91,20 @@ class LoadingUtils {
             }
             DrawableCompat.setTint(DrawableCompat.wrap(progressBar.indeterminateDrawable), Color.RED)
             container.addView(progressBar, progressParams)
-            decorView.addView(container, containerParams)
+            decorView.addView(container, containerParams)*/
+            dialogLoader?.dismiss()
+            dialogLoader = Dialog(activity)
+            dialogLoader?.setContentView(R.layout.my_progess)
+            dialogLoader?.setCancelable(false)
+            dialogLoader?.window?.setDimAmount(0f)
+            dialogLoader?.window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            dialogLoader?.show()
         }
 
         fun hide(activity: Activity) {
-            val decorView = activity.window.decorView as ViewGroup
-            val loader = decorView.findViewWithTag<View>(LOADER_TAG)
-            loader?.let { decorView.removeView(it) }
+            if (dialogLoader != null) {
+                dialogLoader?.dismiss()
+            }
         }
 
 
@@ -125,46 +133,7 @@ class LoadingUtils {
                 .joinToString("") { it[0].uppercase() }
         }
 
-        fun formatDisplay(dateStr: String?, timeStr: String?): String {
-            if (dateStr.isNullOrBlank() || timeStr.isNullOrBlank()) {
-                return ""
-            }
-            return try {
-                // Parse date
-                val date = java.time.LocalDate.parse(
-                    dateStr,
-                    java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
-                )
-
-                // Parse time
-                val time = java.time.LocalTime.parse(
-                    timeStr,
-                    java.time.format.DateTimeFormatter.ofPattern("hh:mm a")
-                )
-
-                val zone = java.time.ZoneId.systemDefault()
-                val now = java.time.ZonedDateTime.now(zone).toLocalDate()
-
-                val formattedTime = time.format(
-                    java.time.format.DateTimeFormatter.ofPattern("HH:mm")
-                )
-
-                val label = when (date) {
-                    now -> "Today"
-                    now.minusDays(1) -> "Yesterday"
-                    else -> date.format(
-                        java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
-                    )
-                }
-
-                "$label · $formattedTime"
-
-            } catch (e: Exception) {
-                ""
-            }
-        }
-
-
+        @RequiresApi(Build.VERSION_CODES.O)
         fun formatDateOnly(dateStr: String?): String {
             if (dateStr.isNullOrBlank()) return ""
 

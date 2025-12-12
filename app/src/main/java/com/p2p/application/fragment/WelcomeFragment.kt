@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -21,6 +20,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
@@ -73,6 +73,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     private var originalBalance="0"
     private var transactionsList: MutableList<Transaction> = mutableListOf()
     private var merchantList: MutableList<Merchant> = mutableListOf()
+
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -133,9 +134,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }else{
                 showStart()
             }
-
         }
-
     }
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
@@ -171,6 +170,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+    @SuppressLint("SetTextI18n")
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){
             if (selectedType.equals(MessageError.USER,true)){
@@ -396,11 +396,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         dialogSend.show()
     }
     private fun askContactPermission() {
-        if (checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(
                 arrayOf(android.Manifest.permission.READ_CONTACTS),
                 readContactsPermission
@@ -502,12 +498,13 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             intent.data = Uri.fromParts("package", requireContext().packageName, null)
             startActivity(intent)
         }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT
         )
         dialog.window?.setGravity(Gravity.CENTER)
         dialog.show()
     }
+
     override fun onResume() {
         super.onResume()
         if (openedSettings){
@@ -516,4 +513,5 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         sessionManager.setIsWelcome(false)
     }
+    
 }
