@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -79,31 +80,29 @@ class EnterSecretCodeFragment : Fragment() {
     }
 
     private fun setupOtpFields(vararg fields: EditText) {
+
         fields.forEachIndexed { index, editText ->
 
             val next = fields.getOrNull(index + 1)
             val prev = fields.getOrNull(index - 1)
 
+            // Detect BACKSPACE (DEL key)
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editText.text.isEmpty()) {
+                        prev?.requestFocus()
+                        prev?.setSelection(prev.text.length)
+                    }
+                }
+                false
+            }
+
+            // Detect input change (typing)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-
-                    when {
-                        s?.length == 1 -> {
-                            next?.requestFocus()
-
-                            // If last digit entered
-                            if (index == fields.lastIndex) {
-                                val otp = getOtp()
-
-                                if (otp.length == fields.size) {
-                                    // Delay 2 seconds then navigate
-                                    Handler(Looper.getMainLooper()).postDelayed({
-                                        findNavController().navigate(R.id.transferStatusFragment)
-                                    }, 2000)
-                                }
-                            }
-                        }
-                        s?.isEmpty() == true -> prev?.requestFocus()
+                    // Move forward on typing 1 digit
+                    if (s?.length == 1) {
+                        next?.requestFocus()
                     }
                 }
 
@@ -113,5 +112,41 @@ class EnterSecretCodeFragment : Fragment() {
         }
     }
 
+
+//    private fun setupOtpFields(vararg fields: EditText) {
+//        fields.forEachIndexed { index, editText ->
+//
+//            val next = fields.getOrNull(index + 1)
+//            val prev = fields.getOrNull(index - 1)
+//
+//            editText.addTextChangedListener(object : TextWatcher {
+//                override fun afterTextChanged(s: Editable?) {
+//
+//                    when {
+//                        s?.length == 1 -> {
+//                            next?.requestFocus()
+//
+//                            // If last digit entered
+//                            if (index == fields.lastIndex) {
+//                                val otp = getOtp()
+//
+//                                if (otp.length == fields.size) {
+//                                    // Delay 2 seconds then navigate
+//                                    Handler(Looper.getMainLooper()).postDelayed({
+//                                        findNavController().navigate(R.id.transferStatusFragment)
+//                                    }, 2000)
+//                                }
+//                            }
+//                        }
+//                        s?.isEmpty() == true -> prev?.requestFocus()
+//                    }
+//                }
+//
+//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//            })
+//        }
+//    }
+//
 
 }

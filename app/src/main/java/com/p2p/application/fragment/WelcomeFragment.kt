@@ -93,13 +93,17 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
+
         binding.btnSetting.setOnClickListener {
             findNavController().navigate(R.id.settingFragment)
         }
+
         binding.btnNotification.setOnClickListener {
             findNavController().navigate(R.id.notificationListFragment)
         }
+
         binding.imgPay.setOnClickListener {
             if (isOnline(requireContext())) {
                 recentMerchant()
@@ -107,9 +111,11 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             }
         }
+
         binding.imgscan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
+
         binding.imgSend.setOnClickListener {
             showAlertSend()
         }
