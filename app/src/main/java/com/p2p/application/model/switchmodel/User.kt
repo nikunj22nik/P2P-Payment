@@ -4,7 +4,7 @@ data class User(
     val business_logo: String?,
     val first_name: String?,
     val id: Int,
-    val last_name: String?,
+    val last_name: String? ="",
     val phone: String,
     val role: String?,
     val type: String,
