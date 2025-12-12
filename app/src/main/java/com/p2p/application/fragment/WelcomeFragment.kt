@@ -147,9 +147,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     }
 
     private fun recentMerchant(){
-
         show(requireActivity())
-
         lifecycleScope.launch {
             viewModel.homeMerchantRequest().collect {
                 hide(requireActivity())
