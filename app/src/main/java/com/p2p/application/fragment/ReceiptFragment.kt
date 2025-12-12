@@ -152,23 +152,22 @@ class ReceiptFragment : Fragment() {
         data?.let { userData->
             binding.layDownload.visibility = View.VISIBLE
             if (userData.data?.status.toString().equals("success",true)){
-                binding.tvStatus.text = "Transfer successful!"
+                binding.tvStatus.text = "Transaction successful!"
                 binding.tvStatus.setTextColor("#03B961".toColorInt())
                 binding.tvText.text = "Your transaction has been completed successfully."
-
                 binding.tvStatus1.text = "Transfer successful!"
                 binding.tvStatus1.setTextColor("#03B961".toColorInt())
                 binding.tvText1.text = "Your transaction has been completed successfully."
-            }else{
+            }
+            else{
                 binding.tvStatus.text = "Transfer Failed!"
                 binding.tvStatus.setTextColor("#F90B1B".toColorInt())
                 binding.tvText.text = "Your transaction has been failed."
-
                 binding.tvStatus1.text = "Transfer Failed!"
                 binding.tvStatus1.setTextColor("#F90B1B".toColorInt())
                 binding.tvText1.text = "Your transaction has been failed."
-
             }
+
             binding.layPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
             binding.tvPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
             binding.tvName.text = (userData.data?.receiver?.first_name?:"") + " " + (userData.data?.receiver?.last_name?:"")
