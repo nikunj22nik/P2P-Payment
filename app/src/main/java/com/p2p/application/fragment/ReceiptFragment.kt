@@ -152,7 +152,7 @@ class ReceiptFragment : Fragment() {
         data?.let { userData->
             binding.layDownload.visibility = View.VISIBLE
             if (userData.data?.status.toString().equals("success",true)){
-                binding.tvStatus.text = "Transaction successful!"
+                binding.tvStatus.text = "Transfer successful!"
                 binding.tvStatus.setTextColor("#03B961".toColorInt())
                 binding.tvText.text = "Your transaction has been completed successfully."
                 binding.tvStatus1.text = "Transfer successful!"
