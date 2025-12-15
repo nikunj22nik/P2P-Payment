@@ -147,7 +147,12 @@ class  SecretCodeFragment : Fragment() {
         val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
         btnOk.setOnClickListener {
             dialog.dismiss()
-            findNavController().navigate(R.id.notificationFragment)
+            if (selectedType.equals(MessageError.MERCHANT,true)){
+                findNavController().navigate(R.id.userWelcomeFragment)
+            }else{
+                findNavController().navigate(R.id.notificationFragment)
+            }
+
         }
         dialog.show()
     }
