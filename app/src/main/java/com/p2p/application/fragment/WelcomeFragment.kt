@@ -64,7 +64,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     private lateinit var adapter: AdapterHomeTransaction
     private lateinit var adapterMerchant: AdapterMerchant
     private lateinit var sessionManager: SessionManager
-    private lateinit var dialogSend : BottomSheetDialog
+    private var dialogSend : BottomSheetDialog? = null
     private lateinit var dialogPay : BottomSheetDialog
     private var selectedType: String=""
     private val readContactsPermission = 100
@@ -73,6 +73,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     private var originalBalance="0"
     private var transactionsList: MutableList<Transaction> = mutableListOf()
     private var merchantList: MutableList<Merchant> = mutableListOf()
+
+    private var itemSelect : String = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -120,8 +122,10 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             showAlertSend()
         }
         binding.btnRebalancing.setOnClickListener {
-            findNavController().navigate(R.id.rebalancingFragment)
+            itemSelect="Rebalancing"
+            askContactPermission()
         }
+
         binding.btnScanCode.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
@@ -397,13 +401,13 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
 
     fun showAlertSend(){
         dialogSend = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-        dialogSend.setContentView(R.layout.send_alert)
-        dialogSend.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialogSend.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        dialogSend.window?.setGravity(Gravity.BOTTOM)
-        val bottomSheet = dialogSend.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        val layNumber = dialogSend.findViewById<LinearLayout>(R.id.layNumber)
-        val layContact = dialogSend.findViewById<LinearLayout>(R.id.layContact)
+        dialogSend?.setContentView(R.layout.send_alert)
+        dialogSend?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogSend?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogSend?.window?.setGravity(Gravity.BOTTOM)
+        val bottomSheet = dialogSend?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val layNumber = dialogSend?.findViewById<LinearLayout>(R.id.layNumber)
+        val layContact = dialogSend?.findViewById<LinearLayout>(R.id.layContact)
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.isHideable = true
@@ -411,13 +415,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             behavior.skipCollapsed = true
         }
         layContact?.setOnClickListener {
+            itemSelect="Contact"
             askContactPermission()
         }
         layNumber?.setOnClickListener {
-            dialogSend.dismiss()
+            dialogSend?.dismiss()
             findNavController().navigate(R.id.newNumberFragment)
         }
-        dialogSend.show()
+        dialogSend?.show()
     }
 
     private fun askContactPermission() {
@@ -427,8 +432,13 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 readContactsPermission
             )
         } else {
-            dialogSend.dismiss()
-            findNavController().navigate(R.id.toContactFragment)
+            if (itemSelect.equals("Rebalancing",true)){
+                findNavController().navigate(R.id.rebalancingFragment)
+            }
+            if (itemSelect.equals("Contact",true)){
+                dialogSend?.dismiss()
+                findNavController().navigate(R.id.toContactFragment)
+            }
         }
     }
 
@@ -500,11 +510,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == readContactsPermission) {
-            if (grantResults.isNotEmpty() &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-                dialogSend.dismiss()
-                findNavController().navigate(R.id.toContactFragment)
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (itemSelect.equals("Rebalancing",true)){
+                    findNavController().navigate(R.id.rebalancingFragment)
+                }
+                if (itemSelect.equals("Contact",true)){
+                    dialogSend?.dismiss()
+                    findNavController().navigate(R.id.toContactFragment)
+                }
             } else {
                 showAlertContact()
             }

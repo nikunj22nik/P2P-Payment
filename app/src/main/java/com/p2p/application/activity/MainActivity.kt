@@ -1,5 +1,7 @@
 package com.p2p.application.activity
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             navGraph.setStartDestination(R.id.developerFragment)
         }else{
             if (sessionManager.getIsLogin()?:false){
-                if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)|| selectedType.equals(AppConstant.MASTER_AGENT,true)) {
+                /*if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)|| selectedType.equals(AppConstant.MASTER_AGENT,true)) {
                     if (sessionManager.getIsPin()){
                         navGraph.setStartDestination(R.id.userWelcomeFragment)
                     }else{
@@ -65,6 +67,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }else{
                     navGraph.setStartDestination(R.id.userWelcomeFragment)
+                }*/
+                if (sessionManager.getIsPin()){
+                    navGraph.setStartDestination(R.id.userWelcomeFragment)
+                }else{
+                    navGraph.setStartDestination(R.id.secretCodeFragment)
                 }
             }else{
                 navGraph.setStartDestination(R.id.accountTypeFragment)
@@ -74,5 +81,11 @@ class MainActivity : AppCompatActivity() {
         navController.graph = navGraph
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        val configuration: Configuration = newBase.resources.configuration
+        configuration.fontScale = 1.0f // system font size ignore
+        val context = newBase.createConfigurationContext(configuration)
+        super.attachBaseContext(context)
+    }
 
 }
