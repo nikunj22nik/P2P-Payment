@@ -155,7 +155,17 @@ class SettingFragment : Fragment(),ItemClickListener {
     }
     private fun setValueFromSession(){
         val name = sessionManager.getFirstName() +" "+ sessionManager.getLastName()
-        binding.tvName.text = name
+        val firstName = sessionManager.getFirstName()
+        val lastName = sessionManager.getLastName()
+        val capitalName = listOfNotNull(firstName, lastName)
+            .joinToString(" ")
+            .trim()
+            .split(" ")
+            .filter { it.isNotEmpty() }
+            .joinToString(" ") {
+                it.replaceFirstChar { ch -> ch.uppercase() }
+            }
+        binding.tvName.text = capitalName
         binding.tvNumbar.text = sessionManager.getPhoneNumber()
         binding.tvShortName.text = toInitials(name)
     }

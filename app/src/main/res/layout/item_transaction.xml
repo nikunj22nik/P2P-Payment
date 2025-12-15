@@ -14,9 +14,8 @@
         android:layout_marginTop="@dimen/_15sdp">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageProfile"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
             android:src="@drawable/transfericon"/>
     </LinearLayout>
     <LinearLayout

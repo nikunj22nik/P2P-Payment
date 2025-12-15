@@ -60,7 +60,6 @@ class QRFragment : Fragment() {
 //        if (selectedType.equals(AppConstant.MERCHANT,true)){
 //            binding.bottomTabs.visibility  = View.INVISIBLE
 //        }
-
         registerUiListener()
 
         return binding.root

@@ -190,8 +190,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
     }
 
-
-
     @SuppressLint("SetTextI18n")
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){

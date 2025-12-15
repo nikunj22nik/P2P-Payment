@@ -28,15 +28,24 @@ class AdapterSwitchUser(var requireActivity: Context, var itemClickListener: Ite
     }
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val data= switchUserList[position]
         if (data.accountActive == true){
             holder.binding.layActive.visibility = View.VISIBLE
             holder.binding.layInActive.visibility = View.GONE
             val name = (data.first_name?:"") +" "+ (data.last_name?:"")
-            holder.binding.tvName.text = name
+            val firstName = data.first_name?:""
+            val lastName = data.last_name?:""
+            val capitalName = listOfNotNull(firstName, lastName)
+                .joinToString(" ")
+                .trim()
+                .split(" ")
+                .filter { it.isNotEmpty() }
+                .joinToString(" ") {
+                    it.replaceFirstChar { ch -> ch.uppercase() }
+                }
+            holder.binding.tvName.text = capitalName
             holder.binding.tvShortName.text = toInitials(name)
-            holder.binding.tvPhone.text = data.phone?:""
+            holder.binding.tvPhone.text = data.phone
             holder.binding.tvRole.text = data.type
             if (data.userActive == true){
                 holder.binding.imgActive.setImageResource(R.drawable.icon_select)
@@ -49,18 +58,10 @@ class AdapterSwitchUser(var requireActivity: Context, var itemClickListener: Ite
             holder.binding.layActive.visibility = View.GONE
             holder.binding.layInActive.visibility = View.VISIBLE
         }
-
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(position.toString())
         }
-
     }
-
-    fun updateList(updateList: MutableList<User>){
-        switchUserList=updateList
-        notifyDataSetChanged()
-    }
-
 
     override fun getItemCount(): Int {
         return switchUserList.size

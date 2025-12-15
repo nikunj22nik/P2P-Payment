@@ -33,9 +33,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingHorizontal="@dimen/_10sdp"
                     android:fontFamily="@font/urbanist_semibold"
                     android:gravity="center"
-                    android:text="This is an error page "
+                    android:text=""
                     android:textColor="#FF0000"
                     android:textSize="@dimen/_15sdp" />
                 <LinearLayout
