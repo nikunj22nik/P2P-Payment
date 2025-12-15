@@ -152,7 +152,6 @@ class  SecretCodeFragment : Fragment() {
             }else{
                 findNavController().navigate(R.id.notificationFragment)
             }
-
         }
         dialog.show()
     }
