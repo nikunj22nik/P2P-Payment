@@ -333,6 +333,7 @@ class OTPFragment : Fragment() {
                                     }
                                     showDialogToHome = response.first_login_status
 
+
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
@@ -358,6 +359,9 @@ class OTPFragment : Fragment() {
                                             }
                                         }
                                     }
+                                    showDialogToHome = response.first_login_status
+
+
                                     handleVerificationStatus(status = user.verification_status, role = AppConstant.AGENT)
                                 }
                                 AppConstant.MASTER_AGENT -> {
@@ -373,6 +377,9 @@ class OTPFragment : Fragment() {
                                             }
                                         }
                                     }
+                                    showDialogToHome = response.first_login_status
+
+
                                     handleVerificationStatus(status = user.verification_status, role = AppConstant.MASTER_AGENT)
                                 }
                                 else -> {
@@ -462,13 +469,23 @@ class OTPFragment : Fragment() {
                         buttonContent = AppConstant.BACK_TO_LOGIN,
                         iconRes = R.drawable.ic_verification_progress
                     )
-                    1 -> showAlertDialog(
-                        header = "Verification Approved",
-                        subheader = "",
-                        content = "Your agent account has been verified successfully. You can now use all features.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                            showAlertDialog(
+                                header = "Verification Approved",
+                                subheader = "",
+                                content = "Your agent account has been verified successfully. You can now use all features.",
+                                buttonContent = AppConstant.BACK_TO_HOME,
+                                iconRes = R.drawable.ic_document_approve
+                            )
+                        }
+                    }
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subheader = "",
@@ -487,13 +504,23 @@ class OTPFragment : Fragment() {
                         buttonContent = "Back",
                         iconRes = R.drawable.ic_verification_progress
                     )
-                    1 -> showAlertDialog(
-                        header = "Verification Approved",
-                        subheader = "",
-                        content = "Verification completed.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                            showAlertDialog(
+                                header = "Verification Approved",
+                                subheader = "",
+                                content = "Verification completed.",
+                                buttonContent = AppConstant.BACK_TO_HOME,
+                                iconRes = R.drawable.ic_document_approve
+                            )
+                        }
+                    }
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subheader = "",
