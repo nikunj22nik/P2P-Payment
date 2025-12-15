@@ -358,10 +358,12 @@ class SettingFragment : Fragment(),ItemClickListener {
             setLastName(user.last_name ?: "")
             setPhoneNumber(user.phone ?: "")
             setIsLogin(true)
+
             if (response.user.mpin!=null){
                 setIsPin(true)
             }
         }
+
         if (sessionManager.getIsPin()){
             findNavController().navigate(R.id.userWelcomeFragment)
         }else{
@@ -390,7 +392,7 @@ class SettingFragment : Fragment(),ItemClickListener {
                             showAlertDialog(
                                 header = "Documents Approved",
                                 subHeader = "",
-                                content = "Your agent account has been verified successfully. You can now use all features.",
+                                content = "Your merchant account has been verified successfully. You can now use all features.",
                                 buttonContent = AppConstant.BACK_TO_HOME,
                                 iconRes = R.drawable.ic_document_approve
                             )
