@@ -129,19 +129,16 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
                             it.phone?.contains(searchText, ignoreCase = true) == true
                         }.toMutableList()
                         if (filtered.isNotEmpty()){
-                            popupWindowContact?.isShowing
+                            showContactList()
                             adapter.updateList(filtered)
                         }else{
-                            popupWindowContact?.dismiss()
+                            hideContactPopup()
                         }
                     } else {
-                        popupWindowContact?.isShowing
-                        adapter.updateList(contactsList)
-
+                        hideContactPopup()
                     }
                 }
             })
-
         }
 
        private fun askContactPermission() {
@@ -209,24 +206,38 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
         }
 
         @SuppressLint("InflateParams")
-        fun showContactList() {
+        private fun showContactList() {
+            if (popupWindowContact?.isShowing == true) return
+
             val anchorView = binding.layEdit
             anchorView.post {
-                val inflater = LayoutInflater.from(requireContext())
-                val popupView = inflater.inflate(R.layout.alert_country, null)
+                val popupView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.alert_country, null)
+
                 popupWindowContact = PopupWindow(
                     popupView,
                     anchorView.width,
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     true
                 )
+
                 val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
                 rcyCountry.adapter = adapter
-                popupWindowContact?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                popupWindowContact?.isOutsideTouchable = true
-                popupWindowContact?.showAsDropDown(anchorView)
+
+                popupWindowContact?.apply {
+                    setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                    isOutsideTouchable = true
+                    showAsDropDown(anchorView)
+                }
             }
         }
+
+
+    private fun hideContactPopup() {
+            popupWindowContact?.dismiss()
+            popupWindowContact = null
+        }
+
 
         @SuppressLint("InflateParams")
         fun showCountry() {

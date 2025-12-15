@@ -478,15 +478,15 @@ class SettingFragment : Fragment(),ItemClickListener {
         btnContinue.setOnClickListener {
             dialog.dismiss()
             if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
-                if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
+//                if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
                     if (sessionManager.getIsPin()){
                         findNavController().navigate(R.id.userWelcomeFragment)
                     }else{
                         findNavController().navigate(R.id.secretCodeFragment)
                     }
-                }else{
-                    findNavController().navigate(R.id.userWelcomeFragment)
-                }
+//                }else{
+//                    findNavController().navigate(R.id.userWelcomeFragment)
+//                }
             } else if (buttonContent.equals(AppConstant.BACK_TO_LOGIN,true)) {
                 findNavController().navigate(R.id.loginFragment)
             } else if (buttonContent.equals(AppConstant.TRY_AGAIN,true)) {
