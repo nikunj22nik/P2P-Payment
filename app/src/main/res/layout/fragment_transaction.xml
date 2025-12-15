@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_9sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </LinearLayout>
 

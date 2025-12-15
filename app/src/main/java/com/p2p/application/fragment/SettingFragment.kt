@@ -313,6 +313,7 @@ class SettingFragment : Fragment(),ItemClickListener {
                                         }
                                     }
                                 }
+                                showDialogToHome = response.first_login_status
                                 handleVerificationStatus(status = user.verification_status, userRole = AppConstant.AGENT)
                             }
                             AppConstant.MASTER_AGENT -> {
@@ -331,6 +332,7 @@ class SettingFragment : Fragment(),ItemClickListener {
                                         }
                                     }
                                 }
+                                showDialogToHome = response.first_login_status
                                 handleVerificationStatus(status = user.verification_status, userRole = AppConstant.MASTER_AGENT)
                             }
                             else -> {
@@ -416,13 +418,25 @@ class SettingFragment : Fragment(),ItemClickListener {
                         buttonContent = AppConstant.BACK_TO_LOGIN,
                         iconRes = R.drawable.ic_verification_progress
                     )
-                    1 -> showAlertDialog(
-                        header = "Verification Approved",
-                        subHeader = "",
-                        content = "Your agent account has been verified successfully. You can now use all features.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                            showAlertDialog(
+                                header = "Verification Approved",
+                                subHeader = "",
+                                content = "Your agent account has been verified successfully. You can now use all features.",
+                                buttonContent = AppConstant.BACK_TO_HOME,
+                                iconRes = R.drawable.ic_document_approve
+                            )
+                        }
+
+                    }
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subHeader = "",
@@ -441,13 +455,23 @@ class SettingFragment : Fragment(),ItemClickListener {
                         buttonContent = "Back",
                         iconRes = R.drawable.ic_verification_progress
                     )
-                    1 -> showAlertDialog(
-                        header = "Verification Approved",
-                        subHeader = "",
-                        content = "Verification completed.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                        showAlertDialog(
+                            header = "Verification Approved",
+                            subHeader = "",
+                            content = "Verification completed.",
+                            buttonContent = AppConstant.BACK_TO_HOME,
+                            iconRes = R.drawable.ic_document_approve
+                        )
+                      }
+                    }
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subHeader = "",
