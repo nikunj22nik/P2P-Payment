@@ -106,11 +106,7 @@ class SettingFragment : Fragment(),ItemClickListener {
             intent.data = "tel:${MessageError.HELP_NUMBER}".toUri()
             startActivity(intent)
         }
-        if (selectedType.equals(AppConstant.MERCHANT,true)){
-            binding.btnAccountLimit.visibility = View.GONE
-            binding.btnEditCode.visibility = View.GONE
-        }
-        if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
+        if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true) || selectedType.equals(AppConstant.MERCHANT,true)){
             binding.btnAccountLimit.visibility = View.GONE
         }
     }

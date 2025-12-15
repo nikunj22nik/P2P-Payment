@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.RebalancingFragment">
-
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -25,7 +25,6 @@
                 android:src="@drawable/backicon"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +36,6 @@
             android:layout_centerInParent="true"
             android:text="Rebalancing"/>
     </RelativeLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:background="@drawable/bottom_layout"
@@ -46,10 +44,10 @@
         android:orientation="vertical"
         android:padding="@dimen/_10sdp"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:weightSum="2"
+            android:visibility="gone"
             android:layout_margin="@dimen/_20sdp"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -101,10 +99,59 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/layCountry"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:id="@+id/imgIcon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/countryicon"
+                    android:layout_height="@dimen/_15sdp"/>
+                <TextView
+                    android:id="@+id/tvCountryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:text="@string/_221"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textColor="#696969"
+                    app:drawableEndCompat="@drawable/icondown" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/edSearch"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:textSize="@dimen/_13sdp"
+                android:hint="@string/enter_a_new_phone_number"
+                android:background="@null"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="#696969"
+                android:textColorHint="#696969"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <View
+            android:id="@+id/layEdit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#696969"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="match_parent"
@@ -190,5 +237,4 @@
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"/>
     </LinearLayout>
-
 </RelativeLayout>
