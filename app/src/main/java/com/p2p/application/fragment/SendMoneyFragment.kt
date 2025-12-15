@@ -34,6 +34,7 @@ import java.util.Date
 import java.util.Locale
 import androidx.core.view.isVisible
 import com.p2p.application.util.EditTextUtils
+import com.p2p.application.util.LoadingUtils.Companion.isOnline
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
@@ -84,6 +85,7 @@ class SendMoneyFragment : Fragment() {
                 binding.etOtp4.setText("")
             }
         }
+
         binding.btnSend.setOnClickListener {
             if(availableBalance != null && !availableBalance.isEmpty() && binding.confirmAmount.length() > 0){
                 val balance: Double = availableBalance.toDouble()
@@ -328,6 +330,11 @@ class SendMoneyFragment : Fragment() {
 //    }
 
     private fun callingCheckSecretCodeApi(code: String) {
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+
         lifecycleScope.launch {
             LoadingUtils.show(requireActivity())
             viewModel.checkSecretCode(code).collect {
@@ -381,6 +388,10 @@ class SendMoneyFragment : Fragment() {
     }
 
     private fun callingPaymentApi() {
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
         lifecycleScope.launch {
             val loginType = SessionManager(requireContext()).getLoginType()
             val type = AppConstant.mapperType(loginType)

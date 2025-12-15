@@ -77,15 +77,19 @@ class ReceiptFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
         binding.imgShare.setOnClickListener {
             shareCard(binding.cardHide,requireContext())
         }
+
         binding.pullToRefresh.setOnRefreshListener {
             loadApi()
         }
+
         binding.llDownload.setOnClickListener {
             callingReceiptDownload()
         }
+
         binding.btnHelp.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = "tel:${MessageError.HELP_NUMBER}".toUri()
@@ -207,6 +211,5 @@ class ReceiptFragment : Fragment() {
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         requireActivity().startActivity(Intent.createChooser(shareIntent, "Share Receipt"))
     }
-
 
 }
