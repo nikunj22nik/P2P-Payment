@@ -119,6 +119,7 @@ class ReceiptFragment : Fragment() {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun callingReceiptDownload(){
         lifecycleScope.launch {
