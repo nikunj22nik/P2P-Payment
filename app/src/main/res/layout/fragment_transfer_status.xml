@@ -20,7 +20,7 @@ tools:context=".fragment.TransferStatusFragment">
         <LinearLayout
             android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_400sdp"
+            android:layout_height="@dimen/_415sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_25sdp"
             android:orientation="vertical"

@@ -54,6 +54,7 @@ class OTPFragment : Fragment() {
     private var countDownTimer: CountDownTimer? = null
     private var fcmToken: String = ""
     private lateinit var viewModel : OtpViewModel
+    private var showDialogToHome :Boolean  = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -330,11 +331,18 @@ class OTPFragment : Fragment() {
                                         }
                                      }
                                     }
+                                    showDialogToHome = response.first_login_status
 
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
-                                        handleVerificationStatus(status = user.verification_status, role = AppConstant.MERCHANT)
+
+                                            handleVerificationStatus(
+                                                status = user.verification_status,
+                                                role = AppConstant.MERCHANT
+                                            )
+
+
                                     }
                                 }
                                 AppConstant.AGENT -> {
@@ -418,13 +426,24 @@ class OTPFragment : Fragment() {
                         buttonContent = AppConstant.BACK_TO_LOGIN,
                         iconRes = R.drawable.ic_verfication_merchant
                     )
-                    1 -> showAlertDialog(
-                        header = "Documents Approved",
-                        subheader = "",
-                        content = "Your merchant account has been verified successfully. You can now use all features.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                            showAlertDialog(
+                                header = "Documents Approved",
+                                subheader = "",
+                                content = "Your merchant account has been verified successfully. You can now use all features.",
+                                buttonContent = AppConstant.BACK_TO_HOME,
+                                iconRes = R.drawable.ic_document_approve
+                            )
+                        }
+                    }
                     2 -> showAlertDialog(
                         header = "Documents Rejected",
                         subheader = "",
