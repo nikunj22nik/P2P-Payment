@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.PopupWindow
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
@@ -55,6 +56,7 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
     private lateinit var adapter: AdapterToContact
     private var contactsList : MutableList<ContactModel> = mutableListOf()
     private val readContactsPermission = 100
+    private lateinit var contactAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -116,22 +118,36 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
             }
 
             binding.edSearch.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    p0: CharSequence?,
+                    p1: Int,
+                    p2: Int,
+                    p3: Int
+                ) {
 
                 }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                override fun onTextChanged(
+                    p0: CharSequence?,
+                    p1: Int,
+                    p2: Int,
+                    p3: Int
+                ) {
 
                 }
+
                 override fun afterTextChanged(value: Editable) {
                     val searchText = value.toString().trim()
+
                     if (searchText.isNotEmpty()) {
                         val filtered = contactsList.filter {
-                            it.phone?.contains(searchText, ignoreCase = true) == true
+                            it.phone?.contains(searchText) == true
                         }.toMutableList()
-                        if (filtered.isNotEmpty()){
-                            showContactList()
+
+                        if (filtered.isNotEmpty()) {
                             adapter.updateList(filtered)
-                        }else{
+                            showContactList()
+                        } else {
                             hideContactPopup()
                         }
                     } else {
@@ -139,6 +155,13 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
                     }
                 }
             })
+
+            binding.edSearchAuto.setOnItemClickListener { parent, _, position, _ ->
+                val selected = parent.getItemAtPosition(position).toString()
+                binding.edSearch.setText(selected)
+                binding.edSearch.setSelection(selected.length)
+            }
+
         }
 
        private fun askContactPermission() {
@@ -149,7 +172,9 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
         }
     }
 
-        private fun loadContacts() {
+    private fun loadContacts() {
+        val numbers = mutableListOf<String>()
+
         val cursor = requireContext().contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             null,
@@ -159,26 +184,30 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
         )
 
         cursor?.use {
-            val idIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
-            val nameIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-            val phoneIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            val phoneIdx = it.getColumnIndex(
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+            )
+
             while (it.moveToNext()) {
-                val id = it.getString(idIdx)
-                val name = it.getString(nameIdx)
                 val phone = normalizeNumber(it.getString(phoneIdx))
-                contactsList.add(ContactModel(id = id, name = name, phone = phone))
+                numbers.add(phone)
             }
         }
-        // Example: print to console or update UI
-        contactsList.forEach { println(it) }
-        if (contactsList.isNotEmpty()) {
-            contactsList = contactsList.distinctBy { it.phone }.toMutableList()
-            adapter.updateList(contactsList)
-        }
-        showContactList()
+
+        val uniqueNumbers = numbers.distinct()
+
+        contactAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            uniqueNumbers
+        )
+
+        binding.edSearchAuto.setAdapter(contactAdapter)
     }
 
-        private fun countryListApi() {
+
+
+    private fun countryListApi() {
             show(requireActivity())
             lifecycleScope.launch {
                 viewModel.countryRequest().collect { result ->
@@ -207,36 +236,34 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
 
         @SuppressLint("InflateParams")
         private fun showContactList() {
-            if (popupWindowContact?.isShowing == true) return
+            if (popupWindowContact != null && popupWindowContact!!.isShowing) return
 
-            val anchorView = binding.layEdit
-            anchorView.post {
-                val popupView = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.alert_country, null)
+            val popupView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.alert_country, null)
 
-                popupWindowContact = PopupWindow(
-                    popupView,
-                    anchorView.width,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    true
-                )
+            popupWindowContact = PopupWindow(
+                popupView,
+                binding.layEdit.width,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+            )
 
-                val rcyCountry = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
-                rcyCountry.adapter = adapter
+            val rcy = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
+            rcy.adapter = adapter
 
-                popupWindowContact?.apply {
-                    setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                    isOutsideTouchable = true
-                    showAsDropDown(anchorView)
-                }
+            popupWindowContact!!.apply {
+                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                isOutsideTouchable = true
+                showAsDropDown(binding.layEdit)
             }
         }
 
 
+
     private fun hideContactPopup() {
-            popupWindowContact?.dismiss()
-            popupWindowContact = null
-        }
+        popupWindowContact?.dismiss()
+        popupWindowContact = null
+    }
 
 
         @SuppressLint("InflateParams")
@@ -265,10 +292,11 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
             binding.tvCountryCode.text = "(" + item.country_code + ")"
         }
 
-        override fun onItemClick(data: String, type: String) {
-            popupWindowContact?.dismiss()
-            binding.edSearch.setText(data)
-        }
+    override fun onItemClick(data: String, type: String) {
+        hideContactPopup()
+        binding.edSearch.setText(data)
+        binding.edSearch.setSelection(data.length)
+    }
 
 }
 
