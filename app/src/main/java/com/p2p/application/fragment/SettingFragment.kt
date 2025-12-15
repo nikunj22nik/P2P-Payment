@@ -55,7 +55,7 @@ class SettingFragment : Fragment(),ItemClickListener {
     private var fcmToken: String = ""
     private lateinit var dialogUser : BottomSheetDialog
     private var switchUserList: MutableList<User> = mutableListOf()
-
+    private var showDialogToHome :Boolean = false
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         sessionManager= SessionManager(requireContext())
@@ -290,6 +290,7 @@ class SettingFragment : Fragment(),ItemClickListener {
                                         }
                                     }
                                 }
+                                showDialogToHome = response.first_login_status
                                 if(response.user.verification_docs_upload_status ==1 ){
                                     findNavController().navigate(R.id.merchantVerificationFragment)
                                 }else {
@@ -378,13 +379,23 @@ class SettingFragment : Fragment(),ItemClickListener {
                         buttonContent = AppConstant.BACK_TO_LOGIN,
                         iconRes = R.drawable.ic_verification_progress
                     )
-                    1 -> showAlertDialog(
-                        header = "Documents Approved",
-                        subHeader = "",
-                        content = "Your agent account has been verified successfully. You can now use all features.",
-                        buttonContent = AppConstant.BACK_TO_HOME,
-                        iconRes = R.drawable.ic_document_approve
-                    )
+                    1 -> {
+                        if(!showDialogToHome){
+                            if (sessionManager.getIsPin()){
+                                findNavController().navigate(R.id.userWelcomeFragment)
+                            }else{
+                                findNavController().navigate(R.id.secretCodeFragment)
+                            }
+                        }else {
+                            showAlertDialog(
+                                header = "Documents Approved",
+                                subHeader = "",
+                                content = "Your agent account has been verified successfully. You can now use all features.",
+                                buttonContent = AppConstant.BACK_TO_HOME,
+                                iconRes = R.drawable.ic_document_approve
+                            )
+                        }
+                    }
                     2 -> showAlertDialog(
                         header = "Documents Rejected",
                         subHeader = "",
