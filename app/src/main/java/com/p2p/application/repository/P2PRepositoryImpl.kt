@@ -462,14 +462,10 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
     }
 
     override suspend fun login(
-        phone: String,
-        otp: String,
-        countryCode: String,
-        userType: String,
-        fcmToken: String
-    ): Flow<NetworkResult<LoginModel>> =flow{
+        phone: String, otp: String, countryCode: String, userType: String, fcmToken: String
+    ) : Flow<NetworkResult<LoginModel>> =flow{
         try {
-            api.login(phone, otp, countryCode, userType,fcmToken).apply {
+            api.login(phone,otp,countryCode, userType,fcmToken).apply {
                 if (isSuccessful) {
                     body()?.let {
                             resp -> if (resp.has("success") && resp.get("success").asBoolean) {
@@ -479,7 +475,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                     } else {
                         emit(NetworkResult.Error(resp.get("message").asString))
                     }
-                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+              } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
                 } else {
                     emit(NetworkResult.Error(AppConstant.serverError))
                 }
