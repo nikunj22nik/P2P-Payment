@@ -39,6 +39,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class TransactionFragment : Fragment() {
@@ -350,67 +352,124 @@ class TransactionFragment : Fragment() {
         newTransactions: List<TransactionItem>
     ): MutableList<HistoryItem> {
 
-        // Group new transactions by month + year
-        val grouped = newTransactions.groupBy { item ->
-            val dateStr = item.date ?: "Unknown"
-            val parts = dateStr.split(" ")
-            if (parts.size >= 3) {
-                val month = parts[1]
-                val year = parts[2]
-                "$month $year" // this is your monthYear string
-            } else {
-                "Unknown"
+        val allTransactions = mutableListOf<HistoryItem.Transaction>()
+
+        // Extract existing transactions
+        existingHistory.forEach {
+            if (it is HistoryItem.Transaction) {
+                allTransactions.add(it)
             }
         }
 
-        // Sort months descending
-        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
-            val (month, year) = monthYear.split(" ")
-            val monthNum = monthToNumber(month)
-            year.toInt() * 100 + monthNum
-        })
-
-        sortedGroups.forEach { (monthYear, list) ->
-
-            // Check if header already exists
-            val headerIndex = existingHistory.indexOfFirst { it is HistoryItem.Header && it.month == monthYear }
-
-            if (headerIndex != -1) {
-                // Header exists → insert transactions after header
-                var insertIndex = headerIndex + 1
-                list.forEach { item ->
-                    existingHistory.add(insertIndex, HistoryItem.Transaction(
-                        title = "${item.user.first_name} ${item.user.last_name}",
-                        phone = item.user.phone,
-                        date = "${item.date} ${item.time}",
-                        amount = if (item.transaction_type.equals("debit", true))
-                            -1 * item.amount.toDouble() else item.amount.toDouble(),
-                        profile = item.user.business_logo,
-                        id = item.user.id.toString(),
-                        currency = item.currency
-                    ))
-                    insertIndex++
-                }
-            } else {
-                // Header does not exist → add header + transactions
-                existingHistory.add(HistoryItem.Header(monthYear))
-                list.forEach { item ->
-                    existingHistory.add(HistoryItem.Transaction(
-                        title = "${item.user.first_name} ${item.user.last_name}",
-                        phone = item.user.phone,
-                        date = "${item.date} ${item.time}",
-                        amount = if (item.transaction_type.equals("debit", true))
-                            -1 * item.amount.toDouble() else item.amount.toDouble(),
-                        profile = item.user.business_logo,
-                        id = item.user.id.toString(),
-                        currency = item.currency
-                    ))
-                }
-            }
+        // Convert new transactions
+        val convertedNew = newTransactions.map { item ->
+            HistoryItem.Transaction(
+                title = "${item.user.first_name} ${item.user.last_name}",
+                phone = item.user.phone,
+                date = "${item.date} ${item.time}",
+                amount = if (item.transaction_type.equals("debit", true))
+                    -item.amount.toDouble() else item.amount.toDouble(),
+                profile = item.user.business_logo,
+                id = item.user.id.toString(),
+                currency = item.currency
+            )
         }
 
-        return existingHistory
+        allTransactions.addAll(convertedNew)
+
+        // Sort ALL transactions by date DESC
+        val sortedTransactions = allTransactions.sortedByDescending {
+            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm",   Locale.ENGLISH)
+            formatter.parse(it.date)?.time ?: 0L
+        }
+
+        // Rebuild history with headers
+        val result = mutableListOf<HistoryItem>()
+        var currentHeader: String? = null
+
+        sortedTransactions.forEach { txn ->
+            val parts = txn.date.split(" ")
+            val monthYear = "${parts[1]} ${parts[2]}"
+
+            if (currentHeader != monthYear) {
+                currentHeader = monthYear
+                result.add(HistoryItem.Header(monthYear))
+            }
+
+            result.add(txn)
+        }
+
+        return result
     }
+
+
+
+//    fun mergeHistoryList(
+//        existingHistory: MutableList<HistoryItem>,
+//        newTransactions: List<TransactionItem>
+//    ): MutableList<HistoryItem> {
+//
+//        // Group new transactions by month + year
+//        val grouped = newTransactions.groupBy { item ->
+//            val dateStr = item.date ?: "Unknown"
+//            val parts = dateStr.split(" ")
+//            if (parts.size >= 3) {
+//                val month = parts[1]
+//                val year = parts[2]
+//                "$month $year" // this is your monthYear string
+//            } else {
+//                "Unknown"
+//            }
+//        }
+//
+//        // Sort months descending
+//        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
+//            val (month, year) = monthYear.split(" ")
+//            val monthNum = monthToNumber(month)
+//            year.toInt() * 100 + monthNum
+//        })
+//
+//        sortedGroups.forEach { (monthYear, list) ->
+//
+//            // Check if header already exists
+//            val headerIndex = existingHistory.indexOfFirst { it is HistoryItem.Header && it.month == monthYear }
+//
+//            if (headerIndex != -1) {
+//                // Header exists → insert transactions after header
+//                var insertIndex = headerIndex + 1
+//                list.forEach { item ->
+//                    existingHistory.add(insertIndex, HistoryItem.Transaction(
+//                        title = "${item.user.first_name} ${item.user.last_name}",
+//                        phone = item.user.phone,
+//                        date = "${item.date} ${item.time}",
+//                        amount = if (item.transaction_type.equals("debit", true))
+//                            -1 * item.amount.toDouble() else item.amount.toDouble(),
+//                        profile = item.user.business_logo,
+//                        id = item.user.id.toString(),
+//                        currency = item.currency
+//                    ))
+//                    insertIndex++
+//                }
+//            } else {
+//                // Header does not exist → add header + transactions
+//                existingHistory.add(HistoryItem.Header(monthYear))
+//                list.forEach { item ->
+//                    existingHistory.add(HistoryItem.Transaction(
+//                        title = "${item.user.first_name} ${item.user.last_name}",
+//                        phone = item.user.phone,
+//                        date = "${item.date} ${item.time}",
+//                        amount = if (item.transaction_type.equals("debit", true))
+//                            -1 * item.amount.toDouble() else item.amount.toDouble(),
+//                        profile = item.user.business_logo,
+//                        id = item.user.id.toString(),
+//                        currency = item.currency
+//                    ))
+//                }
+//            }
+//        }
+//
+//        return existingHistory
+//    }
 
 
 

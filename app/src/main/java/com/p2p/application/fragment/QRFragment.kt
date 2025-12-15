@@ -57,9 +57,9 @@ class QRFragment : Fragment() {
         initVars()
         binding.qrCodeImage.visibility =View.INVISIBLE
 
-        if (selectedType.equals(AppConstant.MERCHANT,true)){
-            binding.bottomTabs.visibility  = View.INVISIBLE
-        }
+//        if (selectedType.equals(AppConstant.MERCHANT,true)){
+//            binding.bottomTabs.visibility  = View.INVISIBLE
+//        }
 
         registerUiListener()
 
