@@ -76,7 +76,7 @@ class IndividualTransactionHistoryFragment : Fragment() {
         }
 
         binding.itemRcy.adapter = adapter
-        binding.tvName.setText(userName)
+        binding.tvName.text = userName
         binding.tvPhoneNumber.text = userNumber
 
         Glide.with(requireActivity())
