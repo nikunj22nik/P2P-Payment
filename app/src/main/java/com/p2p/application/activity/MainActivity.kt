@@ -3,14 +3,12 @@ package com.p2p.application.activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.p2p.application.R
 import com.p2p.application.di.SessionEventBus
-import com.p2p.application.util.AppConstant
 import com.p2p.application.util.AppConstant.Companion.SESSION_ERROR
 import com.p2p.application.util.LoadingUtils.Companion.showSessionDialog
 import com.p2p.application.util.SessionManager

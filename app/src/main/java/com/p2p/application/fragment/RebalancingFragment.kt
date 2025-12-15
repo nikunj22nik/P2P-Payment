@@ -5,12 +5,9 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils.normalizeNumber
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.PopupWindow
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
@@ -30,7 +27,6 @@ import com.p2p.application.adapter.ContactDropdownAdapter
 import com.p2p.application.databinding.FragmentRebalancingBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
-import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.LoadingUtils.Companion.hide
@@ -164,10 +160,8 @@ class RebalancingFragment : Fragment(),ItemClickListener {
         contactAdapter = ContactDropdownAdapter(requireContext(), contactsList)
         binding.edSearchAuto.setAdapter(contactAdapter)
         binding.edSearchAuto.threshold = 1
+
     }
-
-
-
 
     private fun countryListApi() {
             show(requireActivity())
@@ -196,40 +190,8 @@ class RebalancingFragment : Fragment(),ItemClickListener {
             }
         }
 
-        @SuppressLint("InflateParams")
-        private fun showContactList() {
-            if (popupWindowContact != null && popupWindowContact!!.isShowing) return
-
-            val popupView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.alert_country, null)
-
-            popupWindowContact = PopupWindow(
-                popupView,
-                binding.layEdit.width,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                true
-            )
-
-            val rcy = popupView.findViewById<RecyclerView>(R.id.rcyCountry)
-            rcy.adapter = adapter
-
-            popupWindowContact!!.apply {
-                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                isOutsideTouchable = true
-                showAsDropDown(binding.layEdit)
-            }
-        }
-
-
-
-    private fun hideContactPopup() {
-        popupWindowContact?.dismiss()
-        popupWindowContact = null
-    }
-
-
-        @SuppressLint("InflateParams")
-        fun showCountry() {
+    @SuppressLint("InflateParams")
+    fun showCountry() {
             val anchorView = binding.layCountry
             anchorView.post {
                 val inflater = LayoutInflater.from(requireContext())
@@ -244,8 +206,8 @@ class RebalancingFragment : Fragment(),ItemClickListener {
             }
         }
 
-        @SuppressLint("SetTextI18n")
-        override fun onItemClick(data: String) {
+    @SuppressLint("SetTextI18n")
+    override fun onItemClick(data: String) {
             popupWindow?.dismiss()
             val item = countryList[data.toInt()]
             Glide.with(this)
@@ -253,7 +215,6 @@ class RebalancingFragment : Fragment(),ItemClickListener {
                 .into(binding.imgIcon)
             binding.tvCountryCode.text = "(" + item.country_code + ")"
         }
-
 
 
 }
