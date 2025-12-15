@@ -29,7 +29,7 @@ tools:context=".fragment.TransferStatusFragment">
             android:background="@drawable/status">
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_90sdp"/>
+                android:layout_height="@dimen/_80sdp"/>
             <TextView
                 android:id="@+id/tvText"
                 android:layout_width="match_parent"
@@ -52,7 +52,7 @@ tools:context=".fragment.TransferStatusFragment">
                 android:id="@+id/layPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5 500 FCFA"
+                android:text="0 FCFA"
                 android:textSize="@dimen/_25ssp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"/>
@@ -78,6 +78,7 @@ tools:context=".fragment.TransferStatusFragment">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginHorizontal="@dimen/_20sdp">
@@ -230,21 +231,21 @@ tools:context=".fragment.TransferStatusFragment">
                         android:gravity="center"
                         android:text="500 FCFA"/>
                 </RelativeLayout>
-
                 <RelativeLayout
                     android:id="@+id/rl_total_payment"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:visibility="gone"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvTotal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#B13A7E"
-                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_toStartOf="@id/tv_fees_total"
                         android:textSize="@dimen/_12sdp"
                         android:fontFamily="@font/satoshi_bold"
-                        android:gravity="center"
+                        android:gravity="center|start"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:text="@string/total_payment"/>
@@ -253,13 +254,12 @@ tools:context=".fragment.TransferStatusFragment">
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#B13A7E"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:textSize="@dimen/_13sdp"
+                        android:textSize="@dimen/_14sdp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/satoshi_bold"
                         android:gravity="center"
-                        android:text="500 FCFA"/>
+                        android:text="0 FCFA"/>
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>

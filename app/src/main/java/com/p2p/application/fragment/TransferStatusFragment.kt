@@ -67,6 +67,8 @@ class TransferStatusFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.layPrice.applyExactGradient()
+        binding.tvFeesTotal.applyExactGradient()
+        binding.tvTotal.applyExactGradient()
         binding.btnHome.setOnClickListener {
             findNavController().navigate(R.id.userWelcomeFragment)
         }
@@ -103,12 +105,11 @@ class TransferStatusFragment : Fragment() {
                             binding.tvReference.text = data?.reference_no?:""
                             binding.tvFees.text = data?.transaction_fee?:""
                             binding.card.visibility=View.VISIBLE
-
                             if (it.data?.data?.receiver?.role?.equals("merchant", ignoreCase = true) == true) {
                                 binding.rlTotalPayment.visibility =View.VISIBLE
-                                val total = (data?.amount?.toDouble() ?: 0.0) +
-                                        (data?.transaction_fee?.toDouble() ?: 0.0)
-                                binding.tvFeesTotal.setText(total.toString())
+                                val total = getValidAmountString(data.amount).toDouble() +
+                                        getValidAmountString(data.transaction_fee).toDouble()
+                                binding.tvFeesTotal.text = total.toString()+" "+ (data.currency?:"")
                             }
 
                         }
@@ -125,7 +126,18 @@ class TransferStatusFragment : Fragment() {
         }
     }
 
-
+    fun getValidAmountString(amount: String?): String {
+        return amount
+            ?.trim()
+            ?.replace(Regex("[^0-9.]"), "") // removes commas, currency symbols, spaces
+            ?.let {
+                if (it.count { ch -> ch == '.' } > 1) {
+                    it.substring(0, it.lastIndexOf('.')) // safety for malformed input
+                } else it
+            }
+            ?.ifEmpty { "0.00" }
+            ?: "0.00"
+    }
 
     fun Fragment.getReceiverArgTransfer(): Transaction? {
         val json = arguments?.getString("transaction_json") ?: run {
