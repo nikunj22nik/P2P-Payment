@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -85,11 +87,25 @@ class IndividualTransactionHistoryFragment : Fragment() {
 
         callingRecyclerSetupPagination()
         callingTransactionHistoryApi()
+        handleBackPress()
         binding.ivBackArrow.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.transactionFragment)
         }
 
         return binding.root
+    }
+
+
+    private fun handleBackPress() {
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.transactionFragment)
+                }
+            }
+        )
     }
 
     private fun callingRecyclerSetupPagination() {

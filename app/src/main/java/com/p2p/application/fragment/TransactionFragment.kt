@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -91,14 +92,19 @@ class TransactionFragment : Fragment() {
 
 
         binding.itemRcy.adapter = adapter
-        callingRecyclerSetupPagination()
-        callingTransactionHistoryApi()
+
 
         binding.edSearch.addTextChangedListener { text ->
             adapter.filter(text.toString())
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        callingRecyclerSetupPagination()
+        callingTransactionHistoryApi()
     }
 
     private fun callingRecyclerSetupPagination() {
@@ -163,13 +169,25 @@ class TransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.imgBack.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.userWelcomeFragment)
         }
-
+        handleBackPress()
         binding.layTransaction.setOnClickListener {
             alertView()
         }
 
+    }
+
+    private fun handleBackPress() {
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.userWelcomeFragment)
+                }
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n", "InflateParams")

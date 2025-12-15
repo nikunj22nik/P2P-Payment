@@ -434,14 +434,14 @@ class OTPFragment : Fragment() {
                         iconRes = R.drawable.ic_verfication_merchant
                     )
                     1 -> {
-
                         if(!showDialogToHome){
                             if (sessionManager.getIsPin()){
                                 findNavController().navigate(R.id.userWelcomeFragment)
                             }else{
                                 findNavController().navigate(R.id.secretCodeFragment)
                             }
-                        }else {
+                        }
+                        else {
                             showAlertDialog(
                                 header = "Documents Approved",
                                 subheader = "",
