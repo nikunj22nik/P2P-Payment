@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import android.widget.ImageView
 import android.widget.TextView
 import com.p2p.application.R
 import com.p2p.application.model.contactmodel.ContactModel
@@ -29,7 +30,8 @@ class ContactDropdownAdapter(
         val item = filteredList[position]
 
         view.findViewById<TextView>(R.id.tvName).text = item.name
-        view.findViewById<TextView>(R.id.tvPhone).text = item.phone
+        view.findViewById<TextView>(R.id.tvNumber).text = item.phone
+        view.findViewById<ImageView>(R.id.rightArrow).visibility = View.GONE
 
         return view
     }

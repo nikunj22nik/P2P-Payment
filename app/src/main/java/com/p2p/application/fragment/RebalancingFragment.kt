@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
+class RebalancingFragment : Fragment(),ItemClickListener {
 
     private lateinit var binding: FragmentRebalancingBinding
     private lateinit var viewModel : NumberViewModel
@@ -67,9 +67,7 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
         viewModel = ViewModelProvider(this)[NumberViewModel::class.java]
         sessionManager = SessionManager(requireContext())
         contactsList.clear()
-        adapter=AdapterToContact(requireContext(),this,contactsList)
         askContactPermission()
-
         return binding.root
     }
 
@@ -118,51 +116,11 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
                 }
             }
 
-            binding.edSearch.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    p0: CharSequence?,
-                    p1: Int,
-                    p2: Int,
-                    p3: Int
-                ) {
-
-                }
-
-                override fun onTextChanged(
-                    p0: CharSequence?,
-                    p1: Int,
-                    p2: Int,
-                    p3: Int
-                ) {
-
-                }
-
-                override fun afterTextChanged(value: Editable) {
-                    val searchText = value.toString().trim()
-
-                    if (searchText.isNotEmpty()) {
-                        val filtered = contactsList.filter {
-                            it.phone?.contains(searchText) == true
-                        }.toMutableList()
-
-                        if (filtered.isNotEmpty()) {
-                            adapter.updateList(filtered)
-                            showContactList()
-                        } else {
-                            hideContactPopup()
-                        }
-                    } else {
-                        hideContactPopup()
-                    }
-                }
-            })
-
             binding.edSearchAuto.setOnItemClickListener { parent, _, position, _ ->
-                val selected = parent.getItemAtPosition(position).toString()
-                binding.edSearch.setText(selected)
-                binding.edSearch.setSelection(selected.length)
+                val item = parent.getItemAtPosition(position) as ContactModel
+                binding.edSearchAuto.setText(item.phone)
+                binding.edSearchAuto.setSelection(item.phone?.length ?: 0)
             }
-
         }
 
        private fun askContactPermission() {
@@ -296,11 +254,7 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
             binding.tvCountryCode.text = "(" + item.country_code + ")"
         }
 
-    override fun onItemClick(data: String, type: String) {
-        hideContactPopup()
-        binding.edSearch.setText(data)
-        binding.edSearch.setSelection(data.length)
-    }
+
 
 }
 

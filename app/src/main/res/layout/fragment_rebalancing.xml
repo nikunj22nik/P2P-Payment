@@ -128,31 +128,19 @@
                     android:textColor="#696969"
                     app:drawableEndCompat="@drawable/icondown" />
             </LinearLayout>
-            <EditText
-                android:id="@+id/edSearch"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:textSize="@dimen/_13sdp"
-                android:hint="@string/enter_a_new_phone_number"
-                android:background="@null"
-                android:inputType="number"
-                android:singleLine="true"
-                android:visibility="gone"
-                android:textColor="#696969"
-                android:textColorHint="#696969"
-                android:paddingHorizontal="@dimen/_5sdp"
-                android:fontFamily="@font/satoshi_medium"
-                android:layout_gravity="center"/>
             <AutoCompleteTextView
                 android:id="@+id/edSearchAuto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_a_new_phone_number"
                 android:inputType="phone"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:textSize="@dimen/_13sdp"
                 android:textColorHint="#696969"
                 android:paddingHorizontal="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:padding="12dp"
+                android:padding="@dimen/_10sdp"
                 android:background="@null"
                 />
         </LinearLayout>
