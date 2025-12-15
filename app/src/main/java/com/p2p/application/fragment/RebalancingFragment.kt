@@ -26,6 +26,7 @@ import com.p2p.application.BuildConfig
 import com.p2p.application.R
 import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.adapter.AdapterToContact
+import com.p2p.application.adapter.ContactDropdownAdapter
 import com.p2p.application.databinding.FragmentRebalancingBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.listener.ItemClickListener
@@ -56,7 +57,7 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
     private lateinit var adapter: AdapterToContact
     private var contactsList : MutableList<ContactModel> = mutableListOf()
     private val readContactsPermission = 100
-    private lateinit var contactAdapter: ArrayAdapter<String>
+    private lateinit var contactAdapter: ContactDropdownAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -173,7 +174,7 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
     }
 
     private fun loadContacts() {
-        val numbers = mutableListOf<String>()
+        val tempList = mutableListOf<ContactModel>()
 
         val cursor = requireContext().contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -184,26 +185,29 @@ class RebalancingFragment : Fragment(),ItemClickListener,ItemClickListenerType {
         )
 
         cursor?.use {
-            val phoneIdx = it.getColumnIndex(
-                ContactsContract.CommonDataKinds.Phone.NUMBER
-            )
+            val idIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
+            val nameIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            val phoneIdx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
 
             while (it.moveToNext()) {
-                val phone = normalizeNumber(it.getString(phoneIdx))
-                numbers.add(phone)
+                tempList.add(
+                    ContactModel(
+                        id = it.getString(idIdx),
+                        name = it.getString(nameIdx),
+                        phone = normalizeNumber(it.getString(phoneIdx))
+                    )
+                )
             }
         }
 
-        val uniqueNumbers = numbers.distinct()
+        contactsList.clear()
+        contactsList.addAll(tempList.distinctBy { it.phone })
 
-        contactAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            uniqueNumbers
-        )
-
+        contactAdapter = ContactDropdownAdapter(requireContext(), contactsList)
         binding.edSearchAuto.setAdapter(contactAdapter)
+        binding.edSearchAuto.threshold = 1
     }
+
 
 
 
