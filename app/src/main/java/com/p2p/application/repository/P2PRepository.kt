@@ -101,7 +101,8 @@ interface P2PRepository {
 
     suspend fun getTransactionHistory(
         @Field("page")page: Int,
-        @Field("limit")limit: Int
+        @Field("limit")limit: Int,
+        searchTxt:String
     ): Flow<NetworkResult<TransactionHistoryResponse>>
 
     suspend fun genOneToOneTransactionHistory(
@@ -130,5 +131,6 @@ interface P2PRepository {
 
     suspend fun getBalance() : Flow<NetworkResult<Pair<String,String>>>
 
+    suspend fun getUserReceivedTransaction() : Flow<NetworkResult<TransactionHistoryResponse>>
 
 }

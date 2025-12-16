@@ -70,7 +70,7 @@ class TransactionAdapter(
             }
         }
 
-        // Step 2 — remove headers with no items under them
+
         val cleanedList = mutableListOf<HistoryItem>()
         var lastHeader: HistoryItem.Header? = null
         var headerHasItems = false
@@ -148,10 +148,10 @@ class TransactionAdapter(
         private val lay: RelativeLayout = itemView.findViewById(R.id.trans_layout)
 
         fun extractTime(str: String): String {
-
             val parts = str.trim().split(" ")
             return parts.takeLast(2).joinToString(" ")
         }
+
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(data: HistoryItem.Transaction) {
             if (data.amount < 0) {
@@ -168,7 +168,6 @@ class TransactionAdapter(
             }
 
             date.text = if (!isToday(data.date)) data.date else "Today" +" "+extractTime(data.date)
-
             amount.setTextColor(if (data.amount > 0) "#03B961".toColorInt() else "#E74C3C".toColorInt())
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")

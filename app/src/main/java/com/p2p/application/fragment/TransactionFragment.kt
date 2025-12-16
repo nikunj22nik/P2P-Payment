@@ -37,10 +37,13 @@ import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.TransactionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -52,18 +55,17 @@ class TransactionFragment : Fragment() {
     private var selectedType: String = ""
     private var popupWindow: PopupWindow? = null
     private lateinit var viewModel: TransactionViewModel
+    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
         sessionManager = SessionManager(requireContext())
-
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
-
         selectedType = sessionManager.getLoginType().orEmpty()
-
         lifecycleScope.launch {
             binding.itemRcy.visibility = View.VISIBLE
         }
@@ -72,97 +74,182 @@ class TransactionFragment : Fragment() {
             binding.layShow.visibility = View.GONE
             binding.imgQuestion.visibility = View.VISIBLE
             binding.layHide.visibility = View.VISIBLE
-        } else {
+        }
+        else {
             binding.layShow.visibility = View.VISIBLE
             binding.imgQuestion.visibility = View.GONE
             binding.layHide.visibility = View.VISIBLE
         }
 
         val items = mutableListOf<HistoryItem>()
-
-        adapter = TransactionAdapter(items) { userId, userName, userNumber, userProfile,paymentId ->
+        adapter = TransactionAdapter(items) {
+            userId, userName, userNumber, userProfile, paymentId ->
             val bundle = Bundle()
             bundle.putInt("userId", userId)
             bundle.putString("userName", userName)
             bundle.putString("userNumber", userNumber)
             bundle.putString("userProfile", userProfile)
+
             findNavController().navigate(R.id.individualTransactionFragment, bundle)
         }
 
-
-
         binding.itemRcy.adapter = adapter
 
+        binding.edSearch.addTextChangedListener(object : TextWatcher {
+            private var searchJob: Job? = null
 
-        binding.edSearch.addTextChangedListener { text ->
-            adapter.filter(text.toString())
-        }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString().orEmpty()
 
+                  if(!viewModel.filter) {
+                      searchJob?.cancel()
+
+
+                      searchJob = lifecycleScope.launch {
+                          delay(400) // debounce delay in ms
+                          if (query.isEmpty()) {
+                              viewModel.isSearching = false
+                              adapter.updateAdapter(viewModel.mainList)
+                          } else {
+                              viewModel.isSearching = true
+                              searchTransactions(query)
+                          }
+                      }
+                  }else{
+                      adapter.filter(query)
+                  }
+            }
+        })
+
+        callingRecyclerSetupPagination()
+
+        callingTransactionHistoryApi()
         return binding.root
     }
 
+    fun searchTransactions(query: String) {
+        searchJob?.cancel()
+        Log.d("TESTING_DATA",query.toString())
+        searchJob = lifecycleScope.launch {
+            delay(400)
+          //  LoadingUtils.show(requireActivity(),false)
+            viewModel.getTransactionHistory(query.trim()).collect { result ->
+                 // LoadingUtils.hide(requireActivity())
+                   when (result) {
+                       is NetworkResult.Success -> {
+                           val response = result.data
+                           Log.d("TESTING_DATA"," "+response)
+
+                           val list = withContext(Dispatchers.Default) {
+                               response?.data?.let { data ->
+                                   Log.d("TESTING_DATA"," "+data)
+                                   buildHistoryList(data).toMutableList()
+                               } ?: mutableListOf()
+                           }
+
+                           Log.d("TESTING_DATA",list.size.toString())
+
+                           if (list.isNotEmpty()){
+                               binding.itemRcy.visibility = View.VISIBLE
+                               binding.layItem.visibility = View.VISIBLE
+                               binding.imgNoData.visibility = View.GONE
+                               adapter.updateAdapter(mutableListOf())
+                               adapter.updateAdapter(list)
+                               Choreographer.getInstance().postFrameCallback {
+                                   LoadingUtils.hide(requireActivity())
+                               }
+                           }
+                           else{
+                               adapter.updateAdapter(list)
+                           }
+
+                       }
+                       is NetworkResult.Error -> {
+                       //    LoadingUtils.hide(requireActivity())
+                           LoadingUtils.showErrorDialog(requireActivity(), result.message.toString())
+                           viewModel.isLoading = false
+                       }
+                       else -> Unit
+                   }
+               }
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
-        callingRecyclerSetupPagination()
-        callingTransactionHistoryApi()
     }
 
     private fun callingRecyclerSetupPagination() {
-        binding.itemRcy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
 
-                Log.d("TESTING_TRANSACTION","TRUE WHEN CALLED"+ lastVisible +" "+viewModel.isLastPage+" "+
-                  viewModel.currentPage +" "+viewModel.isLoading
-                )
+            binding.itemRcy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
-                if (!viewModel.isLastPage) {
-                    if (lastVisible == adapter.itemCount - 1) {
-                        viewModel.nextPage()
-                        LoadingUtils.show(requireActivity())
-                        lifecycleScope.launch {
-                            viewModel.getTransactionHistory().collect { result ->
-                                when (result) {
-                                    is NetworkResult.Success -> {
-                                        LoadingUtils.hide(requireActivity())
-                                        Log.d("TESTING_TRANSACTION","TRUE WHEN CALLED")
-                                        val response = result.data
-                                        val list = withContext(Dispatchers.Default) {
-                                            response?.data?.let { data ->
-                                                mergeHistoryList(viewModel.mainList,data).toMutableList()
-                                            } ?: mutableListOf()
+                    super.onScrolled(recyclerView, dx, dy)
 
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+
+                    val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
+
+                    Log.d("TESTING_TRANSACTION",
+                        "TRUE WHEN CALLED" + lastVisible + " " + viewModel.isLastPage + " " +
+                                viewModel.currentPage + " " + viewModel.isLoading
+                    )
+
+                    if (!viewModel.isLastPage && !viewModel.filter) {
+                        if (lastVisible == adapter.itemCount - 1) {
+                            viewModel.nextPage()
+                            LoadingUtils.show(requireActivity())
+                            lifecycleScope.launch {
+                                viewModel.getTransactionHistory().collect { result ->
+                                    when (result) {
+                                        is NetworkResult.Success -> {
+                                            LoadingUtils.hide(requireActivity())
+                                            if (binding.edSearch.text.toString().trim().length == 0) {
+                                                Log.d("TESTING_TRANSACTION", "TRUE WHEN CALLED")
+                                                val response = result.data
+                                                val list = withContext(Dispatchers.Default) {
+                                                    response?.data?.let { data ->
+                                                        mergeHistoryList(
+                                                            viewModel.mainList,
+                                                            data
+                                                        ).toMutableList()
+                                                    } ?: mutableListOf()
+
+                                                }
+                                                viewModel.mainList.clear()
+                                                viewModel.mainList.addAll(list)
+                                                adapter.updateAdapter(viewModel.mainList)
+                                                viewModel.isLoading = false
+                                                binding.itemRcy.post {
+                                                    //  LoadingUtils.hide(requireActivity())
+                                                }
+                                                viewModel.isLastPage =
+                                                    viewModel.currentPage >= (response?.total_page
+                                                        ?: 1)
+                                            }
                                         }
-                                        viewModel.mainList.clear()
-                                        viewModel.mainList.addAll(list)
-                                        adapter.updateAdapter(viewModel.mainList)
-                                        viewModel.isLoading = false
-                                        binding.itemRcy.post {
-                                            //  LoadingUtils.hide(requireActivity())
+
+                                        is NetworkResult.Error -> {
+                                            LoadingUtils.hide(requireActivity())
+                                            LoadingUtils.showErrorDialog(
+                                                requireActivity(),
+                                                result.message.toString()
+                                            )
+                                            viewModel.isLoading = false
                                         }
-                                        viewModel.isLastPage =
-                                            viewModel.currentPage >= (response?.total_page ?: 1)
-                                    }
 
-                                    is NetworkResult.Error -> {
-                                        LoadingUtils.hide(requireActivity())
-                                        LoadingUtils.showErrorDialog(
-                                            requireActivity(),
-                                            result.message.toString()
-                                        )
-                                        viewModel.isLoading = false
+                                        else -> Unit
                                     }
-
-                                    else -> Unit
                                 }
                             }
                         }
                     }
                 }
-            }
-        })
+            })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -188,13 +275,55 @@ class TransactionFragment : Fragment() {
                 }
             }
         )
+
+    }
+
+    private fun callingTransactionFilter(){
+        lifecycleScope.launch {
+            Log.d("TESTING_CALLING_TRANSACTION_FILTER","here inside calling transaction filter")
+            LoadingUtils.show(requireActivity())
+            viewModel.getUserReceivedTransaction().collect {
+                when(it){
+                    is NetworkResult.Success ->{
+                       LoadingUtils.hide(requireActivity())
+                        val response = it.data
+                        val list = withContext(Dispatchers.Default) {
+                            response?.data?.let { data ->
+                                buildHistoryList(data).toMutableList()
+                            } ?: mutableListOf()
+                        }
+                        if (list.isNotEmpty()){
+                            binding.itemRcy.visibility = View.VISIBLE
+                            binding.layItem.visibility = View.VISIBLE
+                            binding.imgNoData.visibility = View.GONE
+                            adapter.updateAdapter(list)
+                            Choreographer.getInstance().postFrameCallback {
+                                LoadingUtils.hide(requireActivity())
+                            }
+
+                        }else{
+                            binding.imgNoData.visibility = View.VISIBLE
+                            binding.itemRcy.visibility = View.GONE
+                            binding.layItem.visibility = View.GONE
+                        }
+                    }
+                    is NetworkResult.Error ->{
+                        LoadingUtils.hide(requireActivity())
+                        LoadingUtils.showErrorDialog(requireActivity(), it.message.toString())
+                        viewModel.isLoading = false
+                    }
+                    else ->{
+
+                    }
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n", "InflateParams")
     private fun alertView() {
 
         val anchorView = binding.layTransaction
-
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
             val popupView = inflater.inflate(R.layout.alert_transation, null)
@@ -206,20 +335,28 @@ class TransactionFragment : Fragment() {
 
             tvAll.setOnClickListener {
                 binding.tvName.text = "All Transactions"
+                viewModel.filter = false
+                viewModel.isSearching = false
+                binding.edSearch.text.clear()
                 adapter.updateAdapter(viewModel.mainList)
                 popupWindow?.dismiss()
             }
 
             tvFrom.setOnClickListener {
                 binding.tvName.text = "From BBS"
-                adapter.filterReceived()
+          //      adapter.filterReceived()
                 popupWindow?.dismiss()
+                viewModel.filter = true
+                viewModel.isSearching = false
+                binding.edSearch.text.clear()
+                callingTransactionFilter()
             }
 
             popupWindow?.setBackgroundDrawable(null)
             popupWindow?.isOutsideTouchable = true
             popupWindow?.showAsDropDown(anchorView, 0, 20)
         }
+
     }
 
     private fun callingTransactionHistoryApi() {
@@ -236,7 +373,6 @@ class TransactionFragment : Fragment() {
                         val response = result.data
                         val list = withContext(Dispatchers.Default) {
                             response?.data?.let { data ->
-
                                 buildHistoryList(data).toMutableList()
                             } ?: mutableListOf()
                         }
@@ -369,24 +505,60 @@ class TransactionFragment : Fragment() {
         existingHistory: MutableList<HistoryItem>,
         newTransactions: List<TransactionItem>
     ): MutableList<HistoryItem> {
-
+//        val allTransactions = mutableListOf<HistoryItem.Transaction>()
+//
+//        existingHistory.forEach {
+//            if (it is HistoryItem.Transaction) {
+//                allTransactions.add(it)
+//            }
+//        }
+//
+//        val convertedNew = newTransactions.map { item ->
+//            HistoryItem.Transaction(
+//                title = "${item.user.first_name} ${item.user.last_name}",
+//                phone = item.user.phone,
+//                date = "${item.date} ${item.time}",
+//                amount = if (item.transaction_type.equals("debit", true))
+//                    -item.amount.toDouble() else item.amount.toDouble(),
+//                profile = item.user.business_logo,
+//                id = item.user.id.toString(),
+//                currency = item.currency
+//            )
+//        }
+//
+//        allTransactions.addAll(convertedNew)
+//
+//        val sortedTransactions = allTransactions.sortedByDescending {
+//            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm",   Locale.ENGLISH)
+//            formatter.parse(it.date)?.time ?: 0L
+//        }
+//
+//        val result = mutableListOf<HistoryItem>()
+//        var currentHeader: String? = null
+//        sortedTransactions.forEach { txn ->
+//            val parts = txn.date.split(" ")
+//            val monthYear = "${parts[1]} ${parts[2]}"
+//            if (currentHeader != monthYear) {
+//                currentHeader = monthYear
+//                result.add(HistoryItem.Header(monthYear))
+//            }
+//            result.add(txn)
+//        }
+//        return result
         val allTransactions = mutableListOf<HistoryItem.Transaction>()
 
-        // Extract existing transactions
+        // 1. Add existing transactions
         existingHistory.forEach {
-            if (it is HistoryItem.Transaction) {
-                allTransactions.add(it)
-            }
+            if (it is HistoryItem.Transaction) allTransactions.add(it)
         }
 
-        // Convert new transactions
+        // 2. Convert new transactions
         val convertedNew = newTransactions.map { item ->
             HistoryItem.Transaction(
                 title = "${item.user.first_name} ${item.user.last_name}",
                 phone = item.user.phone,
-                date = "${item.date} ${item.time}",
-                amount = if (item.transaction_type.equals("debit", true))
-                    -item.amount.toDouble() else item.amount.toDouble(),
+                date = "${item.date} ${item.time}", // can be Today HH:mm or dd MMM yyyy
+                amount = if (item.transaction_type.equals("debit", true)) -item.amount.toDouble() else item.amount.toDouble(),
                 profile = item.user.business_logo,
                 id = item.user.id.toString(),
                 currency = item.currency
@@ -395,19 +567,25 @@ class TransactionFragment : Fragment() {
 
         allTransactions.addAll(convertedNew)
 
-        // Sort ALL transactions by date DESC
+        // 3. Sort descending, handle "Today" properly
         val sortedTransactions = allTransactions.sortedByDescending {
-            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm",   Locale.ENGLISH)
-            formatter.parse(it.date)?.time ?: 0L
+            parseTransactionTime(it.date)
         }
 
-        // Rebuild history with headers
+        // 4. Rebuild headers
         val result = mutableListOf<HistoryItem>()
         var currentHeader: String? = null
 
         sortedTransactions.forEach { txn ->
             val parts = txn.date.split(" ")
-            val monthYear = "${parts[1]} ${parts[2]}"
+            val monthYear = if (parts[0].equals("Today", true)) {
+                val cal = Calendar.getInstance()
+                val month = SimpleDateFormat("MMM", Locale.ENGLISH).format(cal.time)
+                val year = cal.get(Calendar.YEAR)
+                "$month $year"
+            } else {
+                "${parts[1]} ${parts[2]}"
+            }
 
             if (currentHeader != monthYear) {
                 currentHeader = monthYear
@@ -420,76 +598,31 @@ class TransactionFragment : Fragment() {
         return result
     }
 
+    // Helper function to parse time for sorting
+    fun parseTransactionTime(dateStr: String): Long {
+        return try {
+            if (dateStr.startsWith("Today", true)) {
+                // Example: "Today 04:46 PM"
+                val timePart = dateStr.replace("Today", "").trim()
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+                val time = timeFormat.parse(timePart)
 
-
-//    fun mergeHistoryList(
-//        existingHistory: MutableList<HistoryItem>,
-//        newTransactions: List<TransactionItem>
-//    ): MutableList<HistoryItem> {
-//
-//        // Group new transactions by month + year
-//        val grouped = newTransactions.groupBy { item ->
-//            val dateStr = item.date ?: "Unknown"
-//            val parts = dateStr.split(" ")
-//            if (parts.size >= 3) {
-//                val month = parts[1]
-//                val year = parts[2]
-//                "$month $year" // this is your monthYear string
-//            } else {
-//                "Unknown"
-//            }
-//        }
-//
-//        // Sort months descending
-//        val sortedGroups = grouped.toSortedMap(compareByDescending { monthYear ->
-//            val (month, year) = monthYear.split(" ")
-//            val monthNum = monthToNumber(month)
-//            year.toInt() * 100 + monthNum
-//        })
-//
-//        sortedGroups.forEach { (monthYear, list) ->
-//
-//            // Check if header already exists
-//            val headerIndex = existingHistory.indexOfFirst { it is HistoryItem.Header && it.month == monthYear }
-//
-//            if (headerIndex != -1) {
-//                // Header exists → insert transactions after header
-//                var insertIndex = headerIndex + 1
-//                list.forEach { item ->
-//                    existingHistory.add(insertIndex, HistoryItem.Transaction(
-//                        title = "${item.user.first_name} ${item.user.last_name}",
-//                        phone = item.user.phone,
-//                        date = "${item.date} ${item.time}",
-//                        amount = if (item.transaction_type.equals("debit", true))
-//                            -1 * item.amount.toDouble() else item.amount.toDouble(),
-//                        profile = item.user.business_logo,
-//                        id = item.user.id.toString(),
-//                        currency = item.currency
-//                    ))
-//                    insertIndex++
-//                }
-//            } else {
-//                // Header does not exist → add header + transactions
-//                existingHistory.add(HistoryItem.Header(monthYear))
-//                list.forEach { item ->
-//                    existingHistory.add(HistoryItem.Transaction(
-//                        title = "${item.user.first_name} ${item.user.last_name}",
-//                        phone = item.user.phone,
-//                        date = "${item.date} ${item.time}",
-//                        amount = if (item.transaction_type.equals("debit", true))
-//                            -1 * item.amount.toDouble() else item.amount.toDouble(),
-//                        profile = item.user.business_logo,
-//                        id = item.user.id.toString(),
-//                        currency = item.currency
-//                    ))
-//                }
-//            }
-//        }
-//
-//        return existingHistory
-//    }
-
-
+                val cal = Calendar.getInstance()
+                cal.time = time!!
+                val today = Calendar.getInstance()
+                today.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY))
+                today.set(Calendar.MINUTE, cal.get(Calendar.MINUTE))
+                today.set(Calendar.SECOND, 0)
+                today.timeInMillis
+            } else {
+                // Example: "15 Dec 2025 12:56 PM"
+                val formatter = SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH)
+                formatter.parse(dateStr)?.time ?: 0L
+            }
+        } catch (e: Exception) {
+            0L
+        }
+    }
 
 
 }
