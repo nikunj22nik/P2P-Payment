@@ -154,7 +154,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-    
+
 
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
@@ -165,9 +165,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
-
-
-
+    
     private fun recentMerchant(){
         show(requireActivity())
         lifecycleScope.launch {
