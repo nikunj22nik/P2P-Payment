@@ -47,10 +47,6 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
                         holder.binding.price.setTextColor("#F90B1B".toColorInt())
-                        holder.binding.tvName.text = "Rebalancing"
-                        Glide.with(requireActivity)
-                            .load(R.drawable.maximize)
-                            .into(holder.binding.imageProfile)
                     }else{
                         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
                             holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
@@ -59,11 +55,12 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.setTextColor("#03B961".toColorInt())
                         holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
-                        holder.binding.tvName.text = "Rebalancing"
-                        Glide.with(requireActivity)
-                            .load(R.drawable.maximize)
-                            .into(holder.binding.imageProfile)
                     }
+                    holder.binding.tvName.text = "Rebalancing"
+                    Glide.with(requireActivity)
+                        .load(R.drawable.icon_rebalancing)
+                        .error(R.drawable.icon_rebalancing)
+                        .into(holder.binding.imageProfile)
                 }
             }else{
                 data.transaction_type?.let { type->
@@ -79,11 +76,15 @@ class AdapterHomeTransaction(
                             holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
                             Glide.with(requireActivity)
                                 .load(BuildConfig.MEDIA_URL+url)
+                                .placeholder(R.drawable.transfericon)
+                                .error(R.drawable.transfericon)
                                 .into(holder.binding.imageProfile)
                         }?:run {
                             holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                             Glide.with(requireActivity)
                                 .load(R.drawable.transfericon)
+                                .placeholder(R.drawable.transfericon)
+                                .error(R.drawable.transfericon)
                                 .into(holder.binding.imageProfile)
                         }
                     }else{
@@ -108,6 +109,7 @@ class AdapterHomeTransaction(
                     }
                 }
             }
+
         }?:run {
             data.transaction_type?.let { type->
                 if (type.equals("debit",true)){
