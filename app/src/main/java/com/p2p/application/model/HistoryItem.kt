@@ -9,6 +9,7 @@ sealed class HistoryItem {
         val amount: Double,
         val profile:String?=null,
         val id :String ="",
-        var currency :String ="FCFA"
+        var currency :String ="FCFA",
+        var rebalance:String ="normal"
     ) : HistoryItem()
 }

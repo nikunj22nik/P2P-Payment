@@ -158,26 +158,42 @@ class TransactionAdapter(
                 title.setTextColor("#0F0D1C".toColorInt())
                 val formatted = String.format("%.2f", data.amount)
                 amount.text = formatted+" "+ data.currency
-                title.text = if (data.phone.isNotEmpty()) "To ${data.title}" else data.title
+                if(data.rebalance.equals("normal")){
+                    title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
+                }else{
+                    title.text =  "Rebalancing From ${data.title}"
+                }
             }
             else {
                 val formatted = String.format("%.2f", data.amount)
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
-                title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
+                if(data.rebalance.equals("normal")){
+                    title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
+                }else{
+                    title.text =  "Rebalancing To ${data.title}"
+                }
             }
 
             date.text = if (!isToday(data.date)) data.date else "Today" +" "+extractTime(data.date)
             amount.setTextColor(if (data.amount > 0) "#03B961".toColorInt() else "#E74C3C".toColorInt())
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
-
+             Log.d("TESTING_REBALANCE",data.rebalance)
             if (type.equals("list", true)) {
-                Glide.with(itemView.context)
-                    .load(url.ifEmpty { null })
-                    .placeholder(R.drawable.transfericon)
-                    .error(R.drawable.transfericon)
-                    .into(image)
+                if(data.rebalance.equals("normal")) {
+                    Glide.with(itemView.context)
+                        .load(url.ifEmpty { null })
+                        .placeholder(R.drawable.transfericon)
+                        .error(R.drawable.transfericon)
+                        .into(image)
+                }
+                else{
+                    Glide.with(itemView.context)
+                        .load(url.ifEmpty { null })
+                        .placeholder(R.drawable.rebalancingicon).error(R.drawable.rebalancingicon)
+                        .into(image)
+                }
             } else {
                 if (data.amount < 0) {
                     Glide.with(itemView.context)

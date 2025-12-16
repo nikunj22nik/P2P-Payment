@@ -7,4 +7,5 @@ data class TransactionItem( val id: Int,
                             val date: String?,
                             val time:String?,
                             val transaction_type: String,
+                            val transaction_mode:String?=null,
                             val user: UserInfo)
