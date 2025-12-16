@@ -154,6 +154,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+    
+
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
         originalBalance=originalText
@@ -163,6 +165,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
+
+
 
     private fun recentMerchant(){
         show(requireActivity())
@@ -234,6 +238,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.tvHeader.setTextColor("#FFFFFF".toColorInt())
                 binding.tvHSubHeader.setTextColor("#FFFFFF".toColorInt())
                 binding.tvBalance.setTextColor("#FFFFFF".toColorInt())
+                binding.tvCurancy.setTextColor("#FFFFFF".toColorInt())
                 binding.tvBalanceTitle.setTextColor("#FFFFFF".toColorInt())
                 binding.recentTitle.setTextColor("#000000".toColorInt())
                 binding.viewPayOr.visibility = View.GONE
@@ -287,6 +292,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.tvHeader.setTextColor("#000000".toColorInt())
                 binding.tvHSubHeader.setTextColor("#000000".toColorInt())
                 binding.tvBalance.setTextColor("#000000".toColorInt())
+                binding.tvCurancy.setTextColor("#000000".toColorInt())
                 binding.tvBalanceTitle.setTextColor("#000000".toColorInt())
                 binding.recentTitle.setTextColor("#FFFFFF".toColorInt())
                 binding.tvRebalancing.setCompoundDrawablesWithIntrinsicBounds(R.drawable.maximize_white, 0, 0, 0)
@@ -328,7 +334,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     @SuppressLint("SetTextI18n")
     private fun showUIData(){
         dataHome?.let { data ->
-            binding.tvBalance.text = (data.wallet?.balance?:"0") +" "+ (data.wallet?.currency?:"")
+            binding.tvBalance.text = (data.wallet?.balance?:"0")
+            binding.tvCurancy.text = (data.wallet?.currency?:"")
             showStart()
             transactionsList.clear()
             data.transactions?.let { list->

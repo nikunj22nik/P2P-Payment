@@ -109,7 +109,6 @@ class AdapterHomeTransaction(
                     }
                 }
             }
-
         }?:run {
             data.transaction_type?.let { type->
                 if (type.equals("debit",true)){
@@ -153,7 +152,6 @@ class AdapterHomeTransaction(
                 }
             }
         }
-
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(data.id.toString(),"receiptFragment")
         }
