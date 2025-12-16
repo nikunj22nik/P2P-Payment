@@ -69,6 +69,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         loadBalance()
         return binding.root
     }
+
    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -128,6 +129,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         }
 
     }
+
     @SuppressLint("SetTextI18n")
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()

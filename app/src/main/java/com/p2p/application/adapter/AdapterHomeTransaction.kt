@@ -23,8 +23,6 @@ class AdapterHomeTransaction(
     var selectedType: String
 ) :
     RecyclerView.Adapter<AdapterHomeTransaction.ViewHolder>() {
-
-        var color: String="#0F0D1C"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding: ItemHomeTransactionBinding =
@@ -38,47 +36,122 @@ class AdapterHomeTransaction(
         val time = data.time ?: ""
         val text = "$date · $time"
         holder.binding.tvDate.text = text
-        data.transaction_type?.let { type->
-            if (type.equals("debit",true)){
-                if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
-                    holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
-                }else{
-                    holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
-                }
-                holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
-                holder.binding.price.setTextColor("#F90B1B".toColorInt())
-                data.user?.business_logo?.let { url->
-                    holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
-                    Glide.with(requireActivity)
-                        .load(BuildConfig.MEDIA_URL+url)
-                        .into(holder.binding.imageProfile)
-                }?:run {
-                    holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                    Glide.with(requireActivity)
-                        .load(R.drawable.transfericon)
-                        .into(holder.binding.imageProfile)
+        data.transaction_mode?.let { type->
+            if (type.equals("rebalancing",true)){
+                data.transaction_type?.let { type->
+                    if (type.equals("debit",true)){
+                        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                            holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                        }else{
+                            holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                        }
+                        holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.setTextColor("#F90B1B".toColorInt())
+                        holder.binding.tvName.text = "Rebalancing"
+                        Glide.with(requireActivity)
+                            .load(R.drawable.maximize)
+                            .into(holder.binding.imageProfile)
+                    }else{
+                        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                            holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                        }else{
+                            holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                        }
+                        holder.binding.price.setTextColor("#03B961".toColorInt())
+                        holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.tvName.text = "Rebalancing"
+                        Glide.with(requireActivity)
+                            .load(R.drawable.maximize)
+                            .into(holder.binding.imageProfile)
+                    }
                 }
             }else{
-                if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
-                    holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
-                }else{
-                    holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                data.transaction_type?.let { type->
+                    if (type.equals("debit",true)){
+                        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                            holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                        }else{
+                            holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                        }
+                        holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.setTextColor("#F90B1B".toColorInt())
+                        data.user?.business_logo?.let { url->
+                            holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
+                            Glide.with(requireActivity)
+                                .load(BuildConfig.MEDIA_URL+url)
+                                .into(holder.binding.imageProfile)
+                        }?:run {
+                            holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                            Glide.with(requireActivity)
+                                .load(R.drawable.transfericon)
+                                .into(holder.binding.imageProfile)
+                        }
+                    }else{
+                        if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                            holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                        }else{
+                            holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                        }
+                        holder.binding.price.setTextColor("#03B961".toColorInt())
+                        holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        data.user?.business_logo?.let { url->
+                            holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
+                            Glide.with(requireActivity)
+                                .load(BuildConfig.MEDIA_URL+url)
+                                .into(holder.binding.imageProfile)
+                        }?:run {
+                            holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                            Glide.with(requireActivity)
+                                .load(R.drawable.transfericon)
+                                .into(holder.binding.imageProfile)
+                        }
+                    }
                 }
-                holder.binding.price.setTextColor("#03B961".toColorInt())
-                holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
-                data.user?.business_logo?.let { url->
-                    holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
-                    Glide.with(requireActivity)
-                        .load(BuildConfig.MEDIA_URL+url)
-                        .into(holder.binding.imageProfile)
-                }?:run {
-                    holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                    Glide.with(requireActivity)
-                        .load(R.drawable.transfericon)
-                        .into(holder.binding.imageProfile)
+            }
+        }?:run {
+            data.transaction_type?.let { type->
+                if (type.equals("debit",true)){
+                    if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                        holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                    }else{
+                        holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                    }
+                    holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                    holder.binding.price.setTextColor("#F90B1B".toColorInt())
+                    data.user?.business_logo?.let { url->
+                        holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
+                        Glide.with(requireActivity)
+                            .load(BuildConfig.MEDIA_URL+url)
+                            .into(holder.binding.imageProfile)
+                    }?:run {
+                        holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                        Glide.with(requireActivity)
+                            .load(R.drawable.transfericon)
+                            .into(holder.binding.imageProfile)
+                    }
+                }else{
+                    if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
+                        holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
+                    }else{
+                        holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
+                    }
+                    holder.binding.price.setTextColor("#03B961".toColorInt())
+                    holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                    data.user?.business_logo?.let { url->
+                        holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
+                        Glide.with(requireActivity)
+                            .load(BuildConfig.MEDIA_URL+url)
+                            .into(holder.binding.imageProfile)
+                    }?:run {
+                        holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                        Glide.with(requireActivity)
+                            .load(R.drawable.transfericon)
+                            .into(holder.binding.imageProfile)
+                    }
                 }
             }
         }
+
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(data.id.toString(),"receiptFragment")
         }

@@ -1,6 +1,5 @@
 package com.p2p.application.repository
 
-import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.LoginModel
 import com.p2p.application.model.ReceiverInfo
@@ -21,7 +20,6 @@ import com.p2p.application.model.switchmodel.SwitchUserModel
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.Part
 
@@ -64,6 +62,14 @@ interface P2PRepository {
     suspend fun switchUserApiRequest(id: String,phone: String,loginType: String,fcmToken: String):Flow<NetworkResult<LoginModel>>
     suspend fun userAccountList():Flow<NetworkResult<SwitchUserModel>>
     suspend fun receiptRequest(id: String):Flow<NetworkResult<ReceiptModel>>
+
+    suspend fun rebalancingRequest(
+        amount: String,
+        country: String,
+        mobile: String,
+        currentTime: String,
+        currentDate: String
+    ):Flow<NetworkResult<ReceiptModel>>
 
 
     suspend fun register(

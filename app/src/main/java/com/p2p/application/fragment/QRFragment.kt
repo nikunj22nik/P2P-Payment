@@ -155,9 +155,14 @@ class QRFragment : Fragment() {
                             val bundle = Bundle()
                             bundle.putString("receiver_json", json)
                             if(SessionManager(requireContext()).getLoginType().equals(AppConstant.MERCHANT,true)){
-                                if(receiver.user_type.equals("user",true)){
-                                    LoadingUtils.showErrorDialog(requireContext(),"Merchants are not allowed to send money to users.")
-                                     return@repeatOnLifecycle
+                                val errorMessage = when (receiver.user_type?.lowercase()) {
+                                    "merchant" -> "Merchants are not allowed to send money to Merchants."
+                                    "user" -> "Users are not allowed to send money to Users."
+                                    else -> null
+                                }
+                                errorMessage?.let {
+                                    LoadingUtils.showErrorDialog(requireContext(), it)
+                                    return@repeatOnLifecycle
                                 }
                             }
                             bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)

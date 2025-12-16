@@ -8,5 +8,6 @@ data class Transaction(
     val id: Int,
     val status: String?,
     val transaction_type: String?,
+    val transaction_mode: String?,
     val user: User?
 )

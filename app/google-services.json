@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "47793005788",
-    "project_id": "p2p-app-82a38",
-    "storage_bucket": "p2p-app-82a38.firebasestorage.app"
+    "project_number": "475312370192",
+    "project_id": "many-project-ce772",
+    "storage_bucket": "many-project-ce772.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:47793005788:android:0be05736900d83747e8019",
+        "mobilesdk_app_id": "1:475312370192:android:5cf5a3c489386079d21095",
         "android_client_info": {
           "package_name": "com.p2p.application"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBiADeobBkWEyX6B2Xl1LznHEdi5dzI9qc"
+          "current_key": "AIzaSyB4X4BaT48LkifjlKZct4F2oTBLE59FbIY"
         }
       ],
       "services": {

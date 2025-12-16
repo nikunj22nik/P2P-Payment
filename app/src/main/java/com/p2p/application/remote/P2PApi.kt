@@ -59,6 +59,15 @@ interface P2PApi {
     @FormUrlEncoded
     suspend fun receiptRequest(@Field("transaction_id")userId :String) :Response<JsonObject>
 
+    @POST("rebalancing")
+    @FormUrlEncoded
+    suspend fun rebalancingRequest(@Field("amount")amount :String,
+                                   @Field("countryCode")countryCode :String,
+                                   @Field("phone")phone :String,
+                                   @Field("time")time :String,
+                                   @Field("date")date :String
+    ) :Response<JsonObject>
+
     @POST("logout")
     suspend fun deleteApi() :Response<JsonObject>
 
