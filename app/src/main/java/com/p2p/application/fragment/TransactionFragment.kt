@@ -58,14 +58,17 @@ class TransactionFragment : Fragment() {
     private var searchJob: Job? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
+
         sessionManager = SessionManager(requireContext())
+
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+
         selectedType = sessionManager.getLoginType().orEmpty()
+
         lifecycleScope.launch {
             binding.itemRcy.visibility = View.VISIBLE
         }
@@ -82,6 +85,7 @@ class TransactionFragment : Fragment() {
         }
 
         val items = mutableListOf<HistoryItem>()
+
         adapter = TransactionAdapter(items) {
             userId, userName, userNumber, userProfile, paymentId ->
             val bundle = Bundle()
@@ -89,7 +93,6 @@ class TransactionFragment : Fragment() {
             bundle.putString("userName", userName)
             bundle.putString("userNumber", userNumber)
             bundle.putString("userProfile", userProfile)
-
             findNavController().navigate(R.id.individualTransactionFragment, bundle)
         }
 
@@ -105,8 +108,6 @@ class TransactionFragment : Fragment() {
 
                   if(!viewModel.filter) {
                       searchJob?.cancel()
-
-
                       searchJob = lifecycleScope.launch {
                           delay(400) // debounce delay in ms
                           if (query.isEmpty()) {
@@ -324,6 +325,7 @@ class TransactionFragment : Fragment() {
     private fun alertView() {
 
         val anchorView = binding.layTransaction
+
         anchorView.post {
             val inflater = LayoutInflater.from(requireContext())
             val popupView = inflater.inflate(R.layout.alert_transation, null)
@@ -343,7 +345,7 @@ class TransactionFragment : Fragment() {
             }
 
             tvFrom.setOnClickListener {
-                binding.tvName.text = "From BBS"
+                binding.tvName.text = "Received"
           //      adapter.filterReceived()
                 popupWindow?.dismiss()
                 viewModel.filter = true
@@ -445,7 +447,8 @@ class TransactionFragment : Fragment() {
                         ) -1 * item.amount.toDouble() else item.amount.toDouble(),
                         profile = item.user.business_logo,
                         id = item.user.id.toString(),
-                        item.currency
+                        item.currency,
+                        rebalance = if(item.transaction_mode != null) item.transaction_mode else "normal"
                     )
                 )
             }
@@ -547,12 +550,11 @@ class TransactionFragment : Fragment() {
 //        return result
         val allTransactions = mutableListOf<HistoryItem.Transaction>()
 
-        // 1. Add existing transactions
         existingHistory.forEach {
             if (it is HistoryItem.Transaction) allTransactions.add(it)
         }
 
-        // 2. Convert new transactions
+
         val convertedNew = newTransactions.map { item ->
             HistoryItem.Transaction(
                 title = "${item.user.first_name} ${item.user.last_name}",
@@ -561,18 +563,19 @@ class TransactionFragment : Fragment() {
                 amount = if (item.transaction_type.equals("debit", true)) -item.amount.toDouble() else item.amount.toDouble(),
                 profile = item.user.business_logo,
                 id = item.user.id.toString(),
-                currency = item.currency
+                currency = item.currency,
+                rebalance = if(item.transaction_mode != null) item.transaction_mode else "normal"
             )
         }
 
         allTransactions.addAll(convertedNew)
 
-        // 3. Sort descending, handle "Today" properly
+
         val sortedTransactions = allTransactions.sortedByDescending {
             parseTransactionTime(it.date)
         }
 
-        // 4. Rebuild headers
+
         val result = mutableListOf<HistoryItem>()
         var currentHeader: String? = null
 
@@ -598,7 +601,7 @@ class TransactionFragment : Fragment() {
         return result
     }
 
-    // Helper function to parse time for sorting
+
     fun parseTransactionTime(dateStr: String): Long {
         return try {
             if (dateStr.startsWith("Today", true)) {
@@ -615,7 +618,6 @@ class TransactionFragment : Fragment() {
                 today.set(Calendar.SECOND, 0)
                 today.timeInMillis
             } else {
-                // Example: "15 Dec 2025 12:56 PM"
                 val formatter = SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH)
                 formatter.parse(dateStr)?.time ?: 0L
             }

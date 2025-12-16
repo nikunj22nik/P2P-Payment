@@ -128,4 +128,6 @@
     <string name="okay">Okay</string>
     <string name="total_payment">Total Payment</string>
     <string name="_0_fcfa">0 FCFA</string>
+    <string name="received">Received</string>
+    <string name="all_trans">All Transactions</string>
 </resources>
