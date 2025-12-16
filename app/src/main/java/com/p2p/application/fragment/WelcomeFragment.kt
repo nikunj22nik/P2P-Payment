@@ -165,7 +165,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
-    
+
     private fun recentMerchant(){
         show(requireActivity())
         lifecycleScope.launch {

@@ -158,20 +158,20 @@ class TransactionAdapter(
                 title.setTextColor("#0F0D1C".toColorInt())
                 val formatted = String.format("%.2f", data.amount)
                 amount.text = formatted+" "+ data.currency
-                if(data.rebalance.equals("normal")){
+                if(data.rebalance.equals("normal",true)){
                     title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
                 }else{
-                    title.text =  "Rebalancing From ${data.title}"
+                    title.text =  "Rebalancing To ${data.title}"
                 }
             }
             else {
                 val formatted = String.format("%.2f", data.amount)
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
-                if(data.rebalance.equals("normal")){
+                if(data.rebalance.equals("normal",true)){
                     title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
                 }else{
-                    title.text =  "Rebalancing To ${data.title}"
+                    title.text =  "Rebalancing From ${data.title}"
                 }
             }
 

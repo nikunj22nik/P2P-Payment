@@ -438,21 +438,19 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         mobile: String,
         currentTime: String,
         currentDate: String
-    ): Flow<NetworkResult<ReceiptModel>> = flow {
+    ): Flow<NetworkResult<Transaction>> = flow {
         try {
             val response = api.rebalancingRequest(amount,country,mobile,currentTime,currentDate)
             if (response.isSuccessful) {
-                val respBody = response.body()
-                if (respBody != null) {
-                    val response = Gson().fromJson(respBody, ReceiptModel::class.java)
-                    if (response.success) {
-                        emit(NetworkResult.Success(response))
-                    } else {
-                        emit(NetworkResult.Error(respBody.get("message").asString))
-                    }
+                response.body()?.let {
+                        resp -> if (resp.has("success") && resp.get("success").asBoolean) {
+                    val data = resp.get("data").asJsonObject
+                    val transactionResponse = Gson().fromJson(data, Transaction::class.java)
+                    emit(NetworkResult.Success(transactionResponse))
                 } else {
-                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                    emit(NetworkResult.Error(resp.get("message").asString))
                 }
+                } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
             } else {
                 emit(NetworkResult.Error(AppConstant.serverError))
             }

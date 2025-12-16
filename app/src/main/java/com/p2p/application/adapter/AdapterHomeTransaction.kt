@@ -47,6 +47,7 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
                         holder.binding.price.setTextColor("#F90B1B".toColorInt())
+                        holder.binding.tvName.text = "Rebalancing"+" To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }else{
                         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
                             holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
@@ -55,8 +56,9 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.setTextColor("#03B961".toColorInt())
                         holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.tvName.text = "Rebalancing"+" From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }
-                    holder.binding.tvName.text = "Rebalancing"
+
                     Glide.with(requireActivity)
                         .load(R.drawable.icon_rebalancing)
                         .error(R.drawable.icon_rebalancing)

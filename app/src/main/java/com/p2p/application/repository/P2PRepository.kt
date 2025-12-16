@@ -69,7 +69,7 @@ interface P2PRepository {
         mobile: String,
         currentTime: String,
         currentDate: String
-    ):Flow<NetworkResult<ReceiptModel>>
+    ):Flow<NetworkResult<Transaction>>
 
 
     suspend fun register(
