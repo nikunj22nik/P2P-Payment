@@ -157,7 +157,8 @@ interface P2PApi {
     suspend fun getTransactionHistory(
         @Field("page")page:Int,
 
-        @Field("limit") limit:Int
+        @Field("limit") limit:Int,
+        @Field("search") search :String
     ) : Response<JsonObject>
 
     @POST("get_one_to_one_transaction_history")
@@ -200,5 +201,9 @@ interface P2PApi {
 
     @POST("get_balance")
     suspend fun getBalance() : Response<JsonObject>
+
+    @POST("get_user_received_transaction")
+    suspend fun getUserReceivedTransaction() : Response<JsonObject>
+
 
   }

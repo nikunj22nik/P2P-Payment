@@ -20,6 +20,7 @@ import com.p2p.application.repository.P2PRepository
 import com.p2p.application.repository.P2PRepositoryImpl
 import com.p2p.application.util.AuthInterceptor
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object  NetworkModule {
@@ -59,11 +60,42 @@ object  NetworkModule {
         }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(60,java.util.concurrent.TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val requestBody = request.body
+                val bodyString = StringBuilder()
+
+                if (requestBody is okhttp3.FormBody) {
+                    for (i in 0 until requestBody.size) {
+                        bodyString.append(requestBody.name(i))
+                            .append(" = ")
+                            .append(requestBody.value(i))
+                            .append("\n")
+                    }
+                }
+
+                Log.d("@@@@@@@@", """
+        REQUEST →
+        URL: ${request.url}
+        METHOD: ${request.method}
+        HEADERS: ${request.headers}
+        FIELDS:
+        ${if (bodyString.isNotEmpty()) bodyString.toString() else "NO FIELDS"}
+    """.trimIndent())
+
+
+                val response = chain.proceed(chain.request())
+                val responseBody = response.peekBody(Long.MAX_VALUE).string()
+                Log.d("@@@@@@@@", "response body:\n$responseBody")
+                if (response.code == 401) {
+                    SessionEventBus.emitSessionExpired()
+                }
+                response
+            }.connectTimeout(60,java.util.concurrent.TimeUnit.SECONDS)
             .writeTimeout(60,java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(60,java.util.concurrent.TimeUnit.SECONDS)
             .build()
+
     }
 
     @Singleton
