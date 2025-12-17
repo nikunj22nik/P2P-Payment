@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.PopupWindow
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
@@ -38,7 +37,7 @@ import com.p2p.application.listener.ItemClickListener
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
-import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -80,8 +79,16 @@ class RebalancingFragment : Fragment(),ItemClickListener {
         viewModel = ViewModelProvider(this)[NumberViewModel::class.java]
         sessionManager = SessionManager(requireContext())
         contactsList.clear()
+        makeAstrict()
         askContactPermission()
         return binding.root
+    }
+
+    fun makeAstrict() {
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
+        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
     }
 
         @SuppressLint("SetTextI18n")
@@ -199,7 +206,6 @@ class RebalancingFragment : Fragment(),ItemClickListener {
                                 }
                             }
                         }
-
                         s?.isEmpty() == true -> prev?.requestFocus()
                     }
                 }
