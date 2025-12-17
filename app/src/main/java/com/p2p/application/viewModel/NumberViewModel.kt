@@ -34,6 +34,15 @@ class NumberViewModel @Inject constructor(private var repository: P2PRepository)
         return repository.searchNewNumberRequest(phone,countryCode,apiType)
     }
 
+    suspend fun searchNewNumberUserMerchantRequest(
+        phone: String,
+        countryCode: String,
+        apiType: String
+    ) : Flow<NetworkResult<NewNumberModel>>{
+        return repository.searchNewNumberUserMerchantRequest(phone,countryCode,apiType)
+    }
+
+
     suspend fun balanceRequest() : Flow<NetworkResult<String>>{
         return repository.balanceRequest()
     }

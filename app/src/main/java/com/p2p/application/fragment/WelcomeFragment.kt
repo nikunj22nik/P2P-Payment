@@ -397,7 +397,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         btnTransfer?.setOnClickListener {
             dialogPay.dismiss()
-            findNavController().navigate(R.id.newNumberFragment)
+            val bundle = Bundle()
+            bundle.putString("apiType","merchant")
+            findNavController().navigate(R.id.newNumberFragment,bundle)
         }
         dialogPay.show()
     }
@@ -423,7 +425,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         layNumber?.setOnClickListener {
             dialogSend?.dismiss()
-            findNavController().navigate(R.id.newNumberFragment)
+            val bundle = Bundle()
+            bundle.putString("apiType","user")
+            findNavController().navigate(R.id.newNumberFragment,bundle)
         }
         dialogSend?.show()
     }

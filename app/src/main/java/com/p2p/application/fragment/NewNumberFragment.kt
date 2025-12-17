@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
     private lateinit var textListener: TextWatcher
     private var textChangedJob: Job? = null
     private var searchFor = ""
+    private var apiType = "user"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +69,8 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         binding = FragmentNewNumberBinding.inflate(layoutInflater, container, false)
         viewModel = ViewModelProvider(this)[NumberViewModel::class.java]
         sessionManager = SessionManager(requireContext())
+        apiType = arguments?.getString("apiType")?:"user"
+        Log.d("apiType", "*******$apiType")
         adapterPeople = AdapterRecentPeople(requireContext(),peopleList,this)
         adapterUserPeople = AdapterUserPeople(requireContext(),userList,this)
         binding.rcyRecentPeople.adapter = adapterPeople
@@ -147,7 +151,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                         binding.layLoader.visibility = View.GONE
                     }
                 }else{
-
                     if(peopleList.size >0 )binding.layRecentPeople.visibility = View.VISIBLE else binding.layRecentPeople.visibility =View.GONE
                     binding.layPeople.visibility = View.GONE
                     binding.layInfo.visibility = View.GONE
@@ -162,7 +165,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
         val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
         lifecycleScope.launch {
-            viewModel.searchNewNumberRequest(binding.edUser.text.toString(),countryCode,type).collect {
+            viewModel.searchNewNumberUserMerchantRequest(binding.edUser.text.toString(),countryCode,type).collect {
                 binding.layLoader.visibility = View.GONE
                 when(it){
                     is NetworkResult.Success ->{
@@ -171,6 +174,15 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                         data?.let { list->
                             userList.addAll(list)
                         }
+                        /*if (apiType.equals("user",true)){
+                            userList.removeAll { userData->
+                                userData.role.equals("merchant", true)
+                                }
+                        }else{
+                            userList.removeAll {userData->
+                                userData.role.equals("user", true)
+                                }
+                        }*/
                         if (userList.isNotEmpty()){
                             adapterUserPeople.updateData(userList)
                             binding.layRecentPeople.visibility = View.GONE
@@ -208,6 +220,15 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                             result.data?.data?.recent_people?.let {
                                 peopleList.addAll(it)
                             }
+                            /*if (apiType.equals("user",true)){
+                                peopleList.removeAll {
+                                    it.role.equals("merchant", true)
+                                }
+                            }else{
+                                peopleList.removeAll {
+                                    it.role.equals("user", true)
+                                }
+                            }*/
                             if (peopleList.isNotEmpty()){
                                 adapterPeople.updateData(peopleList)
                                 binding.layRecentPeople.visibility = View.VISIBLE

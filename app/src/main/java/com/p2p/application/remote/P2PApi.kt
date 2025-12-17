@@ -110,6 +110,14 @@ interface P2PApi {
         @Field("user_type") userType :String
     ) : Response<JsonObject>
 
+    @POST("search_new_number")
+    @FormUrlEncoded
+    suspend fun searchNewNumberUserMerchantRequest(
+        @Field("phone") code :String,
+        @Field("countryCode") countryCode :String,
+        @Field("user_type") userType :String
+    ) : Response<JsonObject>
+
     @POST("forgot_secret_code")
     @FormUrlEncoded
     suspend fun sendSecretCodeRequest(

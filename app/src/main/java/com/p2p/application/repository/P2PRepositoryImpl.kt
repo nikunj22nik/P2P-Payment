@@ -112,6 +112,32 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
+    override suspend fun searchNewNumberUserMerchantRequest(
+        phone: String,
+        countryCode: String,
+        apiType: String
+    ) : Flow<NetworkResult<NewNumberModel>> = flow {
+        try {
+            api.searchNewNumberUserMerchantRequest(phone,countryCode, apiType).apply {
+                if (isSuccessful) {
+                    body()?.let { resp ->
+                        val response = Gson().fromJson(resp, NewNumberModel::class.java)
+                        if (response.success) {
+                            emit(NetworkResult.Success(response))
+                        } else {
+                            emit(NetworkResult.Error(response.message))
+                        }
+                    } ?: emit(NetworkResult.Error(AppConstant.unKnownError))
+                } else {
+                    emit(NetworkResult.Error(AppConstant.serverError))
+                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+    }
+
     override suspend fun sendSecretCodeRequest(
         countryCode: String,
         phone: String,
