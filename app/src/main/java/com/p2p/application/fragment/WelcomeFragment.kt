@@ -325,6 +325,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 }
             }
         } else {
+            binding.swipeRefresh.isRefreshing = false
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }

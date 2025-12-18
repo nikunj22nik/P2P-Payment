@@ -174,7 +174,8 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                         data?.let { list->
                             userList.addAll(list)
                         }
-                        /*if (apiType.equals("user",true)){
+
+                        if (apiType.equals("user",true)){
                             userList.removeAll { userData->
                                 userData.role.equals("merchant", true)
                                 }
@@ -182,7 +183,8 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                             userList.removeAll {userData->
                                 userData.role.equals("user", true)
                                 }
-                        }*/
+                        }
+
                         if (userList.isNotEmpty()){
                             adapterUserPeople.updateData(userList)
                             binding.layRecentPeople.visibility = View.GONE
@@ -220,7 +222,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                             result.data?.data?.recent_people?.let {
                                 peopleList.addAll(it)
                             }
-                            /*if (apiType.equals("user",true)){
+                            if (apiType.equals("user",true)){
                                 peopleList.removeAll {
                                     it.role.equals("merchant", true)
                                 }
@@ -228,7 +230,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                                 peopleList.removeAll {
                                     it.role.equals("user", true)
                                 }
-                            }*/
+                            }
                             if (peopleList.isNotEmpty()){
                                 adapterPeople.updateData(peopleList)
                                 binding.layRecentPeople.visibility = View.VISIBLE
