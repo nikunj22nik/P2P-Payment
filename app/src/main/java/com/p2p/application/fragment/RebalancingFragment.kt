@@ -106,8 +106,6 @@ class RebalancingFragment : Fragment(),ItemClickListener {
                 binding.imgAdd.setColorFilter("#FFFFFF".toColorInt())
                 binding.tvWithdrawal.setTextColor("#E2692B".toColorInt())
                 binding.imgMinus.setColorFilter("#E2692B".toColorInt())
-
-
             }
 
             binding.layWithdrawal.setOnClickListener {
@@ -349,7 +347,6 @@ class RebalancingFragment : Fragment(),ItemClickListener {
         contactAdapter = ContactDropdownAdapter(requireContext(), contactsList)
         binding.edSearchAuto.setAdapter(contactAdapter)
         binding.edSearchAuto.threshold = 1
-
     }
 
     private fun countryListApi() {

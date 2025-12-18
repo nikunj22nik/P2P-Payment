@@ -1,4 +1,5 @@
 package com.p2p.application.fragment
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class QRFragment : Fragment() {
+
     private lateinit var viewModel : QrCodeViewModel
     private lateinit var scanQrBtn: TextView
     private lateinit var scannedValueTv: TextView
@@ -67,8 +69,7 @@ class QRFragment : Fragment() {
     private fun installGoogleScanner() {
         val moduleInstall = ModuleInstall.getClient(requireContext())
         val moduleInstallRequest = ModuleInstallRequest.newBuilder()
-            .addApi(GmsBarcodeScanning.getClient(requireContext()))
-            .build()
+            .addApi(GmsBarcodeScanning.getClient(requireContext())).build()
 
         moduleInstall.installModules(moduleInstallRequest).addOnSuccessListener {
             isScannerInstalled = true
@@ -103,10 +104,12 @@ class QRFragment : Fragment() {
         }
     }
     private fun initVars() {
+
         scanQrBtn = binding.tvScanner
         scannedValueTv = binding.tvScanVal
         val options = initializeGoogleScanner()
         scanner = GmsBarcodeScanning.getClient(requireContext(), options)
+
     }
 
     override fun onResume() {
@@ -122,6 +125,7 @@ class QRFragment : Fragment() {
             .enableAutoZoom().build()
     }
     private fun registerUiListener() {
+
         scanQrBtn.setOnClickListener {
             scanQrBtn.setBackgroundResource(R.drawable.active)
             binding.myCard.background = null
@@ -133,38 +137,82 @@ class QRFragment : Fragment() {
                 Toast.makeText(requireContext(), "Please try again...", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.myCard.setOnClickListener {
             scanQrBtn.background = null
             scanQrBtn.setTextColor("#ffffff".toColorInt())
             binding.myCard.setTextColor("#1B1B1B".toColorInt())
             binding.myCard.setBackgroundResource(R.drawable.active)
         }
+
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
     }
+
     private fun startScanning() {
         scanner.startScan()
             .addOnSuccessListener { barcode ->
                 val result = barcode.rawValue
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
+
                     lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.RESUMED) {
                             val json = Gson().toJson(receiver)
                             val bundle = Bundle()
                             bundle.putString("receiver_json", json)
-                            if(SessionManager(requireContext()).getLoginType().equals(AppConstant.MERCHANT,true)){
+                            if(SessionManager(requireContext()).getLoginType().
+                                equals(AppConstant.MERCHANT,true)){
+
                                 val errorMessage = when (receiver.user_type?.lowercase()) {
                                     "merchant" -> "Merchants are not allowed to send money to Merchants."
-                                    "user" -> "Users are not allowed to send money to Users."
+                                    "user" -> "Merchants are not allowed to send money to Users."
                                     else -> null
                                 }
+
                                 errorMessage?.let {
                                     LoadingUtils.showErrorDialog(requireContext(), it)
                                     return@repeatOnLifecycle
                                 }
                             }
+
+//                            else if(SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)){
+//                                val errorMessage = when (receiver.user_type?.lowercase()) {
+//                                    "agent" -> "User are not allowed to send money to Agent."
+//                                    "agent_master" -> "User are not allowed to send money to Agent Master."
+//                                    else -> null
+//                                }
+//                                errorMessage?.let {
+//                                    LoadingUtils.showErrorDialog(requireContext(), it)
+//                                    return@repeatOnLifecycle
+//                                }
+//                            }
+//
+//                            else if(SessionManager(requireContext()).getLoginType().equals(AppConstant.AGENT)){
+//                                val errorMessage = when (receiver.user_type?.lowercase()) {
+//                                    "agent" -> "Agents are not allowed to send money to Agent."
+//                                    "merchant" -> "Agents are not allowed to send money to Merchant."
+//                                    else -> null
+//                                }
+//                                errorMessage?.let {
+//                                    LoadingUtils.showErrorDialog(requireContext(), it)
+//                                    return@repeatOnLifecycle
+//                                }
+//                            }
+//                            else if(SessionManager(requireContext()).getLoginType().equals(
+//                                    AppConstant.MASTER_AGENT)){
+//                                val errorMessage = when (receiver.user_type?.lowercase()) {
+//                                    "user" -> "Master Agents are not allowed to send money to User."
+//                                    "merchant" -> "Master Agents are not allowed to send money to Merchant."
+//                                    else -> null
+//                                }
+//                                errorMessage?.let {
+//                                    LoadingUtils.showErrorDialog(requireContext(), it)
+//                                    return@repeatOnLifecycle
+//                                }
+//                            }
+
                             bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                             findNavController().navigate(R.id.sendMoneyFragment, bundle)
                         }

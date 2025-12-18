@@ -178,11 +178,8 @@ class TransactionFragment : Fragment() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
                     super.onScrolled(recyclerView, dx, dy)
-
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-
                     val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
-
                     Log.d("TESTING_TRANSACTION",
                         "TRUE WHEN CALLED" + lastVisible + " " + viewModel.isLastPage + " " +
                                 viewModel.currentPage + " " + viewModel.isLoading
@@ -539,13 +536,14 @@ class TransactionFragment : Fragment() {
 //        return result
         val allTransactions = mutableListOf<HistoryItem.Transaction>()
 
+
         existingHistory.forEach {
             if (it is HistoryItem.Transaction) allTransactions.add(it)
         }
 
 
-        val convertedNew = newTransactions.map { item ->
-            HistoryItem.Transaction(
+        val convertedNew = newTransactions.map {
+            item -> HistoryItem.Transaction(
                 title = "${item.user.first_name} ${item.user.last_name}",
                 phone = item.user.phone,
                 date = "${item.date} ${item.time}", // can be Today HH:mm or dd MMM yyyy

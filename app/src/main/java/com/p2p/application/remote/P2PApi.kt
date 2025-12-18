@@ -84,7 +84,6 @@ interface P2PApi {
         @Field("fcm_token") fcmToken :String
     ) : Response<JsonObject>
 
-
     @POST("login")
     @FormUrlEncoded
     suspend fun login(
@@ -164,7 +163,6 @@ interface P2PApi {
     @FormUrlEncoded
     suspend fun getTransactionHistory(
         @Field("page")page:Int,
-
         @Field("limit") limit:Int,
         @Field("search") search :String
     ) : Response<JsonObject>

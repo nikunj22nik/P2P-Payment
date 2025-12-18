@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionViewModel @Inject constructor(private var repository: P2PRepository): ViewModel() {
 
-    var  list: MutableList<HistoryItem> = mutableListOf()
+    var list : MutableList<HistoryItem> = mutableListOf()
     var currentPage = 1
     var isLoading = false
     var isLastPage = false
@@ -27,31 +27,23 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
     var isSearching :Boolean = false
     var filter :Boolean = false
 
-
     suspend fun getTransactionHistory(searchTxt :String=""): Flow<NetworkResult<TransactionHistoryResponse>> {
         isLoading = true
         Log.d("TESTING_DATA"," "+searchTxt)
-
-        return if(searchTxt.length == 0) {
-            repository.getTransactionHistory(currentPage, limit, searchTxt).onEach {
-
-            }
-        }else {
-            repository.getTransactionHistory(1, 1, searchTxt).onEach {
-
-            }
+        return if(searchTxt.isEmpty()) {
+            repository.getTransactionHistory(currentPage, limit, searchTxt).onEach { }
         }
+        else {
+            repository.getTransactionHistory(1, 1, searchTxt).onEach { }
+        }
+
     }
 
     suspend fun genOneToOneTransactionHistory(
         @Field("user_id") userId :Int
-    ) :Flow<NetworkResult<TransactionHistoryResponse>>{
+    ) : Flow<NetworkResult<TransactionHistoryResponse>>{
         return repository.genOneToOneTransactionHistory(userId).onEach {  }
     }
-
-
-
-
 
     fun nextPage() {
         if (!isLastPage && !isSearching) {
@@ -61,11 +53,7 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
 
      suspend fun getUserReceivedTransaction(): Flow<NetworkResult<TransactionHistoryResponse>>{
          return repository.getUserReceivedTransaction().onEach {
-
          }
      }
-
-
-
 
 }
