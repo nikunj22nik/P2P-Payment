@@ -35,6 +35,9 @@ interface P2PRepository {
     suspend fun searchNewNumberRequest(@Field("phone")phone :String ,@Field("countryCode") countryCode :String,@Field("apiType") apiType :String
     ) :Flow<NetworkResult<NewNumberModel>>
 
+    suspend fun searchNewNumberUserMerchantRequest(@Field("phone")phone :String ,@Field("countryCode") countryCode :String,@Field("apiType") apiType :String
+    ) :Flow<NetworkResult<NewNumberModel>>
+
     suspend fun sendSecretCodeRequest(@Field("countryCode")countryCode :String ,
                                       @Field("phone") phone :String,
                                       @Field("apiType") apiType :String,
@@ -69,7 +72,7 @@ interface P2PRepository {
         mobile: String,
         currentTime: String,
         currentDate: String
-    ):Flow<NetworkResult<ReceiptModel>>
+    ):Flow<NetworkResult<Transaction>>
 
 
     suspend fun register(

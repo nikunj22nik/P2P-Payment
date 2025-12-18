@@ -62,17 +62,12 @@ class TransactionFragment : Fragment() {
     ): View {
 
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
-
         sessionManager = SessionManager(requireContext())
-
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
-
         selectedType = sessionManager.getLoginType().orEmpty()
-
         lifecycleScope.launch {
             binding.itemRcy.visibility = View.VISIBLE
         }
-
         if (selectedType.equals(AppConstant.MASTER_AGENT, true)) {
             binding.layShow.visibility = View.GONE
             binding.imgQuestion.visibility = View.VISIBLE
@@ -83,9 +78,7 @@ class TransactionFragment : Fragment() {
             binding.imgQuestion.visibility = View.GONE
             binding.layHide.visibility = View.VISIBLE
         }
-
         val items = mutableListOf<HistoryItem>()
-
         adapter = TransactionAdapter(items) {
             userId, userName, userNumber, userProfile, paymentId ->
             val bundle = Bundle()
@@ -95,17 +88,13 @@ class TransactionFragment : Fragment() {
             bundle.putString("userProfile", userProfile)
             findNavController().navigate(R.id.individualTransactionFragment, bundle)
         }
-
         binding.itemRcy.adapter = adapter
-
         binding.edSearch.addTextChangedListener(object : TextWatcher {
             private var searchJob: Job? = null
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString().orEmpty()
-
                   if(!viewModel.filter) {
                       searchJob?.cancel()
                       searchJob = lifecycleScope.launch {

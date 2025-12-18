@@ -190,18 +190,18 @@
             android:textAlignment="center"
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_medium"
-            android:textSize="@dimen/_13sdp"
+            android:textSize="@dimen/_12sdp"
             android:textColor="#0F0D1C"
             />
             <TextView
                 android:id="@+id/fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" 200 Fcs"
+                android:text=" "
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:fontFamily="@font/satoshi_medium"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_12sdp"
                 android:textColor="#0F0D1C"
                 />
         </LinearLayout>
@@ -217,9 +217,7 @@
             android:textSize="@dimen/_12sdp"
             android:textColor="#FF0000"
             android:visibility="gone"
-            android:textStyle="bold"
-
-            />
+            android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/btnSend"

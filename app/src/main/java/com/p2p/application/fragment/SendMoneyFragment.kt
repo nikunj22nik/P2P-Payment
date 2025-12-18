@@ -35,6 +35,7 @@ import java.util.Locale
 import androidx.core.view.isVisible
 import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
+import com.p2p.application.util.LoadingUtils.Companion.showErrorDialog
 
 @AndroidEntryPoint
 class SendMoneyFragment : Fragment() {
@@ -69,6 +70,7 @@ class SendMoneyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.imgBack.setOnClickListener {
             if (binding.layoutSendMoney.isVisible) {
                 if (backType.equals("Qr", true)) {
@@ -93,17 +95,14 @@ class SendMoneyFragment : Fragment() {
                 if(balance >= enteredAmount){
                     binding.layoutSecretCode.visibility = View.VISIBLE
                     binding.layoutSendMoney.visibility = View.GONE
-                }
-                else{
+                } else{
                     binding.insufficientTv.visibility = View.VISIBLE
                 }
-            }
-            else if (binding.confirmAmount.length() > 0) {
+            } else if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
-            }
-            else {
-                LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
+            } else {
+                showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
 
         }
@@ -112,12 +111,10 @@ class SendMoneyFragment : Fragment() {
         }
         val receiver = getReceiverArg()
         viewModel.receiver = receiver
-
         if (receiver?.amount != null) {
             binding.layoutSendMoney.visibility = View.GONE
             binding.layoutSecretCode.visibility = View.VISIBLE
             binding.amnt.setText(receiver.amount)
-
             val number = receiver.amount.toDoubleOrNull()
             if (number != null) {
                 val result = number * 1.01
@@ -389,7 +386,7 @@ class SendMoneyFragment : Fragment() {
 
     private fun callingPaymentApi() {
         if (!isOnline(requireContext())) {
-            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             return
         }
         lifecycleScope.launch {
@@ -426,7 +423,7 @@ class SendMoneyFragment : Fragment() {
 
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
-                            LoadingUtils.showErrorDialog(
+                            showErrorDialog(
                                 requireContext(),
                                 result.message.toString()
                             )
@@ -440,7 +437,7 @@ class SendMoneyFragment : Fragment() {
             } else {
                 binding.layoutSendMoney.visibility = View.VISIBLE
                 binding.layoutSecretCode.visibility = View.GONE
-                LoadingUtils.showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
+                showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
             }
         }
     }

@@ -154,7 +154,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-    
+
 
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
@@ -165,8 +165,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
-
-
 
     private fun recentMerchant(){
         show(requireActivity())
@@ -327,6 +325,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 }
             }
         } else {
+            binding.swipeRefresh.isRefreshing = false
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
@@ -399,7 +398,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         btnTransfer?.setOnClickListener {
             dialogPay.dismiss()
-            findNavController().navigate(R.id.newNumberFragment)
+            val bundle = Bundle()
+            bundle.putString("apiType","merchant")
+            findNavController().navigate(R.id.newNumberFragment,bundle)
         }
         dialogPay.show()
     }
@@ -425,7 +426,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         layNumber?.setOnClickListener {
             dialogSend?.dismiss()
-            findNavController().navigate(R.id.newNumberFragment)
+            val bundle = Bundle()
+            bundle.putString("apiType","user")
+            findNavController().navigate(R.id.newNumberFragment,bundle)
         }
         dialogSend?.show()
     }
