@@ -618,11 +618,11 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                     if (isSuccessful) {
                         body()?.let { resp ->
                             if (resp.has("success") && resp.get("success").asBoolean) {
-                                val dataObject = resp.get("data").asJsonObject
-                                val list = dataObject.getAsJsonArray("data").map { element ->
-                                val obj = element.asJsonObject
 
-                                    TransactionItem(
+                                    val dataObject = resp.get("data").asJsonObject
+                                    val list = dataObject.getAsJsonArray("data").map { element ->
+                                    val obj = element.asJsonObject
+                                        TransactionItem(
                                         id = obj.get("id").asInt,
                                         amount = obj.get("amount").asString,
                                         currency = obj.get("currency").asString,
@@ -643,7 +643,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                                             )
                                         }
                                     )
-                                }
+                                    }
 
                                 val finalData = TransactionHistoryResponse(
                                     page = dataObject.get("page").asInt,
