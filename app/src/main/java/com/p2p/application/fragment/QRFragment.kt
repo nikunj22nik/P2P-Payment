@@ -50,7 +50,8 @@ class QRFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ) : View {
+
         binding = FragmentQRBinding.inflate(layoutInflater, container, false)
         viewModel = ViewModelProvider(this)[QrCodeViewModel::class.java]
         sessionManager= SessionManager(requireContext())
@@ -58,14 +59,15 @@ class QRFragment : Fragment() {
         installGoogleScanner()
         initVars()
         binding.qrCodeImage.visibility =View.INVISIBLE
+        registerUiListener()
 
 //        if (selectedType.equals(AppConstant.MERCHANT,true)){
 //            binding.bottomTabs.visibility  = View.INVISIBLE
 //        }
-        registerUiListener()
-
         return binding.root
     }
+
+
     private fun installGoogleScanner() {
         val moduleInstall = ModuleInstall.getClient(requireContext())
         val moduleInstallRequest = ModuleInstallRequest.newBuilder()
@@ -79,6 +81,8 @@ class QRFragment : Fragment() {
         }
         gettingMyQrCode()
     }
+
+
     private fun gettingMyQrCode(){
         lifecycleScope.launch{
             LoadingUtils.show(requireActivity())
@@ -103,6 +107,7 @@ class QRFragment : Fragment() {
             }
         }
     }
+
     private fun initVars() {
 
         scanQrBtn = binding.tvScanner
@@ -114,26 +119,32 @@ class QRFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         scanQrBtn.background = null
         scanQrBtn.setTextColor("#ffffff".toColorInt())
         binding.myCard.setTextColor("#1B1B1B".toColorInt())
         binding.myCard.setBackgroundResource(R.drawable.active)
 
     }
+
     private fun initializeGoogleScanner(): GmsBarcodeScannerOptions {
+
         return GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .enableAutoZoom().build()
-    }
-    private fun registerUiListener() {
 
-        scanQrBtn.setOnClickListener {
+    }
+
+    private fun registerUiListener() {
+            scanQrBtn.setOnClickListener {
             scanQrBtn.setBackgroundResource(R.drawable.active)
             binding.myCard.background = null
             scanQrBtn.setTextColor("#1B1B1B".toColorInt())
             binding.myCard.setTextColor("#ffffff".toColorInt())
+
             if (isScannerInstalled) {
                 startScanning()
-            } else {
+            }
+            else {
                 Toast.makeText(requireContext(), "Please try again...", Toast.LENGTH_SHORT).show()
             }
         }
@@ -151,8 +162,7 @@ class QRFragment : Fragment() {
     }
 
     private fun startScanning() {
-        scanner.startScan()
-            .addOnSuccessListener { barcode ->
+        scanner.startScan().addOnSuccessListener { barcode ->
                 val result = barcode.rawValue
                 try {
                     val receiver = Gson().fromJson(result, Receiver::class.java)
@@ -162,6 +172,7 @@ class QRFragment : Fragment() {
                             val json = Gson().toJson(receiver)
                             val bundle = Bundle()
                             bundle.putString("receiver_json", json)
+
                             if(SessionManager(requireContext()).getLoginType().
                                 equals(AppConstant.MERCHANT,true)){
 
@@ -223,11 +234,9 @@ class QRFragment : Fragment() {
 
                 }
 
-            }
-            .addOnCanceledListener {
+            }.addOnCanceledListener {
 
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 Toast.makeText(
                     requireContext(),
                     "Oops! We couldn’t locate a merchant account with that ID.",
@@ -235,8 +244,6 @@ class QRFragment : Fragment() {
                 ).show()
             }
     }
-
-
 
 }
 

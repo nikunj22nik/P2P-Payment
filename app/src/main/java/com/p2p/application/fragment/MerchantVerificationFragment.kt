@@ -178,6 +178,7 @@ class MerchantVerificationFragment : Fragment() {
                         binding.mainImage.setImageURI(uri)
                         binding.businessLogo.visibility =View.VISIBLE
                     }
+
                 }
             }
 

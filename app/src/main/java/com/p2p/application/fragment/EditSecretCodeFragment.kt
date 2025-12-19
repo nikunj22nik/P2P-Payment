@@ -50,14 +50,21 @@ class EditSecretCodeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentEditSecretCodeBinding.inflate(layoutInflater, container, false)
+
         sessionManager= SessionManager(requireContext())
+
         viewModel = ViewModelProvider(requireActivity())[SendOtpForgotSecretViewModel::class.java]
 
         screenType=arguments?.getString("screenType","")?:""
-        setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4,binding.etOtp11)
+
+        setupOtpFields(binding.etOtp1,
+            binding.etOtp2, binding.etOtp3, binding.etOtp4, binding.etOtp11)
+
         setupOtpFields(binding.etOtp11, binding.etOtp22, binding.etOtp33, binding.etOtp44)
-          makeAstrict()
+
+        makeAstrict()
 
         return binding.root
     }
@@ -201,17 +208,21 @@ class EditSecretCodeFragment : Fragment() {
     }
 
     private fun getOtp(): String {
+
         return binding.etOtp1.text.toString() +
                 binding.etOtp2.text.toString() +
                 binding.etOtp3.text.toString() +
                 binding.etOtp4.text.toString()
+
     }
 
     private fun getOtpRe(): String {
+
         return binding.etOtp11.text.toString() +
                 binding.etOtp22.text.toString() +
                 binding.etOtp33.text.toString() +
                 binding.etOtp44.text.toString()
+
     }
 
 

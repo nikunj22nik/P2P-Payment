@@ -31,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 @AndroidEntryPoint
 class IndividualTransactionHistoryFragment : Fragment() {
 
@@ -45,23 +44,24 @@ class IndividualTransactionHistoryFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+         super.onCreate(savedInstanceState)
          userId = requireArguments().getInt("userId")
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentIndividualTransactionHistoryBinding.inflate(layoutInflater,container,false)
         sessionManager= SessionManager(requireContext())
-
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+
         val userName = requireArguments().getString("userName")
         val userNumber = requireArguments().getString("userNumber")
         val userProfile = requireArguments().getString("userProfile")
+
         selectedType = sessionManager.getLoginType().orEmpty()
 
         lifecycleScope.launch {
@@ -69,6 +69,7 @@ class IndividualTransactionHistoryFragment : Fragment() {
         }
 
         val items = mutableListOf<HistoryItem>()
+
         adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile, paymentId ->
             val bundle = Bundle()
             bundle.putString("receiptId", paymentId)

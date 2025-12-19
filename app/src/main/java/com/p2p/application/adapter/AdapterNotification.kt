@@ -17,8 +17,7 @@ class AdapterNotification(private var requireActivity: Context,private var list 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: ItemNotificationBinding =
-            ItemNotificationBinding.inflate(inflater, parent, false);
+        val binding: ItemNotificationBinding = ItemNotificationBinding.inflate(inflater, parent, false);
         return ViewHolder(binding)
     }
 
@@ -42,6 +41,5 @@ class AdapterNotification(private var requireActivity: Context,private var list 
 
     class ViewHolder(var binding: ItemNotificationBinding) : RecyclerView.ViewHolder(binding.root) {
 
+      }
     }
-
-}

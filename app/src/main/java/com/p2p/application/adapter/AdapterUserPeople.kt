@@ -20,23 +20,28 @@ class AdapterUserPeople(private var requireActivity: Context, var peopleList: Mu
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: ItemPeopleBinding =
-            ItemPeopleBinding.inflate(inflater, parent, false);
+        val binding: ItemPeopleBinding = ItemPeopleBinding.inflate(inflater, parent, false);
+
         return ViewHolder(binding)
     }
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val data= peopleList[position]
+
         holder.binding.tvName.text = data.first_name + "\n"+data.last_name
+
         Glide.with(requireActivity)
             .load(BuildConfig.MEDIA_URL + (data.business_logo?:""))
             .placeholder(R.drawable.usericon)
             .error(R.drawable.usericon)
             .into(holder.binding.imageProfile)
+
         holder.itemView.setOnClickListener {
             itemClickListenerType.onItemClick(data.id.toString(),"people")
         }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")

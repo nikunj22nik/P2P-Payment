@@ -6,12 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.NewNumberFragment">
+
     <RelativeLayout
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_15sdp"
         android:layout_height="@dimen/_40sdp">
+
         <LinearLayout
             android:id="@+id/imgBack"
             android:layout_width="wrap_content"
@@ -19,10 +21,12 @@
             android:layout_alignParentStart="true"
             android:padding="@dimen/_5sdp"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:src="@drawable/backicon"
                 android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
         <TextView
@@ -36,6 +40,7 @@
             android:layout_centerInParent="true"
             android:text="@string/new_number"/>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layScan"
         android:layout_width="match_parent"
@@ -77,6 +82,7 @@
             android:contentDescription="@string/todo"
             android:src="@drawable/scannicon"/>
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:background="@drawable/bottom_layout"
@@ -84,6 +90,7 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:orientation="vertical"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
@@ -118,7 +125,7 @@
                 android:id="@+id/edUser"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_14sdp"
                 android:hint="@string/phone_numbers"
                 android:background="@null"
                 android:inputType="number"
