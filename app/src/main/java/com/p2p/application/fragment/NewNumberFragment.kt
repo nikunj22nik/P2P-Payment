@@ -84,19 +84,15 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         super.onViewCreated(view, savedInstanceState)
 
         loadRecentPeople()
-
         binding.imgBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
         binding.imgScan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
-
         binding.layTransaction.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
-
         binding.layCountry.setOnClickListener {
             if (isOnline(requireContext())){
                 if (countryList.isNotEmpty()){
@@ -109,7 +105,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             }
 
         }
-
         textListener = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -160,7 +155,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
             }
         }
-
+        
     }
     private fun searchNumber(){
 
@@ -262,7 +257,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         }
 
     }
-
     private fun countryListApi() {
 
         show(requireActivity())
@@ -306,7 +300,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             popupWindow?.showAsDropDown(anchorView)
         }
     }
-
     @SuppressLint("SetTextI18n")
     override fun onItemClick(data: String) {
         popupWindow?.dismiss()
@@ -326,7 +319,6 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                 )
             }
         }
-
     }
 
     override fun onItemClick(data: String, type: String) {

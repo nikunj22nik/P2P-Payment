@@ -73,7 +73,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     private var originalBalance="0"
     private var transactionsList: MutableList<Transaction> = mutableListOf()
     private var merchantList: MutableList<Merchant> = mutableListOf()
-
     private var itemSelect : String = ""
 
     @SuppressLint("SetTextI18n")
@@ -95,17 +94,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSetting.setOnClickListener {
             findNavController().navigate(R.id.settingFragment)
         }
-
         binding.btnNotification.setOnClickListener {
             findNavController().navigate(R.id.notificationListFragment)
         }
-
         binding.imgPay.setOnClickListener {
             if (isOnline(requireContext())) {
                 recentMerchant()
@@ -113,11 +109,9 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             }
         }
-
         binding.imgscan.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
-
         binding.imgSend.setOnClickListener {
             showAlertSend()
         }
@@ -125,18 +119,15 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             itemSelect="Rebalancing"
             askContactPermission()
         }
-
         binding.btnScanCode.setOnClickListener {
             findNavController().navigate(R.id.QRFragment)
         }
         binding.btnSeeAll.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
-
         binding.swipeRefresh.setOnRefreshListener {
             homeApi()
         }
-
         binding.imgHide.setOnClickListener {
             if (binding.tvBalance.text.toString().contains("*")){
                 binding.tvBalance.text = originalBalance
@@ -153,9 +144,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 showStart()
             }
         }
+
     }
-
-
     private fun showStart(){
         val originalText = binding.tvBalance.text.toString()
         originalBalance=originalText
@@ -165,7 +155,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.tvBalance.text = masked
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
-
     private fun recentMerchant(){
         show(requireActivity())
         lifecycleScope.launch {
@@ -191,7 +180,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     @SuppressLint("SetTextI18n")
     private fun handleWelComeScreen(){
         if (sessionManager.getIsWelcome()){
@@ -300,7 +288,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     private fun homeApi(){
         if (isOnline(requireContext())) {
             show(requireActivity())
@@ -329,7 +316,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
     }
-
     @SuppressLint("SetTextI18n")
     private fun showUIData(){
         dataHome?.let { data ->
@@ -349,7 +335,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     private fun showNoData(){
         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)) {
             binding.noData.setBackgroundResource(R.drawable.rafikiicon)
@@ -359,7 +344,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         binding.layTransaction.visibility = View.GONE
         binding.noData.visibility = View.VISIBLE
     }
-
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -370,7 +354,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         )
     }
-
     fun showAlertPay(){
         dialogPay = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogPay.setContentView(R.layout.choosemerchent_alert)
@@ -404,7 +387,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogPay.show()
     }
-
     fun showAlertSend(){
         dialogSend = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         dialogSend?.setContentView(R.layout.send_alert)
@@ -432,7 +414,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         dialogSend?.show()
     }
-
     private fun askContactPermission() {
         if (checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(
@@ -449,7 +430,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
-
     @SuppressLint("SetTextI18n")
     fun showAlertPayMerchant(data: String) {
         val dialogWeight = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
@@ -532,7 +512,6 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
 
     }
-
     private fun showAlertContact() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

@@ -23,7 +23,7 @@ class AdapterMerchant(private var requireActivity: Context, var merchantList: Mu
         return ViewHolder(binding)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = merchantList[position]
         Log.d("image","****"+BuildConfig.MEDIA_URL+(data.business_logo?:""))
