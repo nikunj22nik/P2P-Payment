@@ -143,6 +143,11 @@ class SendMoneyFragment : Fragment() {
     }
 
     fun callingBalanceApi() {
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+
         lifecycleScope.launch {
             viewModel.getBalance().collect {
                 when (it) {
@@ -152,9 +157,8 @@ class SendMoneyFragment : Fragment() {
                         binding.fee.text = monthlyLimit+" "+currency
                     }
                     is NetworkResult.Error -> {
-
+                        LoadingUtils.showErrorDialog(requireContext(),it.message.toString())
                     }
-
                     else -> {
                     }
                 }
@@ -210,6 +214,10 @@ class SendMoneyFragment : Fragment() {
     }
 
     private fun callingGetAmountApi(receive: Receiver?) {
+        if (!isOnline(requireContext())) {
+            LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
         receive?.let {
             lifecycleScope.launch {
                 LoadingUtils.show(requireActivity())

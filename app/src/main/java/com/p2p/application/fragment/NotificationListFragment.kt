@@ -84,6 +84,8 @@ class NotificationListFragment : Fragment() {
                         }
                         LoadingUtils.hide(requireActivity())
                         adapter.updateAdapter(updated)
+                        adapter.clearAdapter()
+
                     }
                     is NetworkResult.Error ->{
                         binding.noDataView.visibility =View.VISIBLE

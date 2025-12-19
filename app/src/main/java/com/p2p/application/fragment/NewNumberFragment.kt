@@ -46,17 +46,17 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
-    private lateinit var binding: FragmentNewNumberBinding
+    private lateinit var binding   : FragmentNewNumberBinding
     private lateinit var viewModel : NumberViewModel
-    private lateinit var sessionManager: SessionManager
-    private var selectedType: String = ""
-    private var popupWindow: PopupWindow?=null
-    private lateinit var adapter: AdapterCountry
-    private lateinit var adapterPeople: AdapterRecentPeople
-    private lateinit var adapterUserPeople: AdapterUserPeople
-    private var countryList: MutableList<Country> = mutableListOf()
-    private var peopleList: MutableList<RecentPeople> = mutableListOf()
-    private var userList: MutableList<com.p2p.application.model.newnumber.Data> = mutableListOf()
+    private lateinit var sessionManager : SessionManager
+    private var selectedType : String = ""
+    private var popupWindow : PopupWindow?=null
+    private lateinit var adapter : AdapterCountry
+    private lateinit var adapterPeople : AdapterRecentPeople
+    private lateinit var adapterUserPeople : AdapterUserPeople
+    private var countryList : MutableList<Country> = mutableListOf()
+    private var peopleList : MutableList<RecentPeople> = mutableListOf()
+    private var userList : MutableList<com.p2p.application.model.newnumber.Data> = mutableListOf()
     private lateinit var textListener: TextWatcher
     private var textChangedJob: Job? = null
     private var searchFor = ""
@@ -71,17 +71,17 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
         sessionManager = SessionManager(requireContext())
         apiType = arguments?.getString("apiType")?:"user"
         Log.d("apiType", "*******$apiType")
-        adapterPeople = AdapterRecentPeople(requireContext(),peopleList,this)
+        adapterPeople     =  AdapterRecentPeople(requireContext(),peopleList,this)
         adapterUserPeople = AdapterUserPeople(requireContext(),userList,this)
         binding.rcyRecentPeople.adapter = adapterPeople
         binding.rcyPeople.adapter = adapterUserPeople
         selectedType = sessionManager.getLoginType().orEmpty()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         loadRecentPeople()
 
@@ -123,6 +123,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                         binding.layLoader.visibility = View.VISIBLE
                         searchFor = searchText
                         textChangedJob?.cancel()
+
                         // Only start debounce if text length >= 8
                         if (searchText.length >= 8) {
                             textChangedJob = lifecycleScope.launch {
@@ -162,11 +163,16 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
     }
     private fun searchNumber(){
+
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
         val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
+
         lifecycleScope.launch {
+
             viewModel.searchNewNumberUserMerchantRequest(binding.edUser.text.toString(),countryCode,type).collect {
+
                 binding.layLoader.visibility = View.GONE
+
                 when(it){
                     is NetworkResult.Success ->{
                         userList.clear()
@@ -196,6 +202,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                             binding.layPeople.visibility = View.GONE
                         }
                     }
+
                     is NetworkResult.Error ->{
                         userList.clear()
                         binding.layInfo.visibility = View.VISIBLE
@@ -226,6 +233,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                                 peopleList.removeAll {
                                     it.role.equals("merchant", true)
                                 }
+
                             }else{
                                 peopleList.removeAll {
                                     it.role.equals("user", true)
@@ -248,13 +256,17 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                     }
                 }
             }
-        }else{
+        }
+        else{
             LoadingUtils.showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
+
     }
 
     private fun countryListApi() {
+
         show(requireActivity())
+
         lifecycleScope.launch {
             viewModel.countryRequest().collect { result ->
                 hide(requireActivity())
@@ -277,6 +289,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
             }
         }
     }
+
     @SuppressLint("InflateParams")
     fun showCountry() {
         val anchorView = binding.layCountry
