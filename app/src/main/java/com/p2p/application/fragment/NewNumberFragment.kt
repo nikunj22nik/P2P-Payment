@@ -153,7 +153,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
             }
         }
-        
+
     }
     private fun searchNumber(){
         val type =AppConstant.mapperType( SessionManager(requireContext()).getLoginType())
