@@ -70,14 +70,14 @@ class TransactionFragment : Fragment() {
         }
         if (selectedType.equals(AppConstant.MASTER_AGENT, true)) {
             binding.layShow.visibility = View.GONE
-            binding.imgQuestion.visibility = View.VISIBLE
+            binding.imgQuestion.visibility = View.GONE
             binding.layHide.visibility = View.VISIBLE
-        }
-        else {
+        } else {
             binding.layShow.visibility = View.VISIBLE
             binding.imgQuestion.visibility = View.GONE
             binding.layHide.visibility = View.VISIBLE
         }
+
         val items = mutableListOf<HistoryItem>()
         adapter = TransactionAdapter(items) {
             userId, userName, userNumber, userProfile, paymentId ->

@@ -155,7 +155,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
 
             }
         }
-        
+
     }
     private fun searchNumber(){
 
