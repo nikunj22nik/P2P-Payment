@@ -35,6 +35,7 @@ import com.p2p.application.model.Receiver
 import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -202,7 +203,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                     hide(requireActivity())
                     when (result) {
                         is NetworkResult.Success -> {
-                            binding.tvBalance.text = result.data.toString()
+                            binding.tvBalance.text = formatAmount(result.data.toString())
                         }
                         is NetworkResult.Error -> {
                             binding.tvBalance.text = "0"

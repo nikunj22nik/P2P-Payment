@@ -2,8 +2,10 @@ package com.p2p.application.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,6 +14,7 @@ import com.p2p.application.R
 import com.p2p.application.databinding.ItemHomeTransactionBinding
 import com.p2p.application.listener.ItemClickListenerType
 import com.p2p.application.model.homemodel.Transaction
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.formatDateOnly
 import com.p2p.application.util.MessageError
 
@@ -29,6 +32,7 @@ class AdapterHomeTransaction(
             ItemHomeTransactionBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("NotifyDataSetChanged", "DefaultLocale", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = transactionsList[position]
@@ -72,7 +76,8 @@ class AdapterHomeTransaction(
                         }else{
                             holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                         }
-                        holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+//                        holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.text = "-"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                         holder.binding.price.setTextColor("#F90B1B".toColorInt())
                         data.user?.business_logo?.let { url->
                             holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
@@ -96,7 +101,8 @@ class AdapterHomeTransaction(
                             holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                         }
                         holder.binding.price.setTextColor("#03B961".toColorInt())
-                        holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+//                        holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.text = "+"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                         data.user?.business_logo?.let { url->
                             holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
                             Glide.with(requireActivity)
@@ -119,7 +125,8 @@ class AdapterHomeTransaction(
                     }else{
                         holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                     }
-                    holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+//                    holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                    holder.binding.price.text = "-"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                     holder.binding.price.setTextColor("#F90B1B".toColorInt())
                     data.user?.business_logo?.let { url->
                         holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
@@ -139,7 +146,8 @@ class AdapterHomeTransaction(
                         holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                     }
                     holder.binding.price.setTextColor("#03B961".toColorInt())
-                    holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+//                    holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                    holder.binding.price.text = "+"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                     data.user?.business_logo?.let { url->
                         holder.binding.tvName.text = (data.user.first_name ?:"") +" "+ (data.user.last_name ?:"")
                         Glide.with(requireActivity)

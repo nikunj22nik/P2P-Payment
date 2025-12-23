@@ -18,6 +18,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.NavController
 import com.p2p.application.R
+import java.text.NumberFormat
+import java.util.Locale
+import kotlin.math.roundToLong
 
 class LoadingUtils {
 
@@ -107,6 +110,17 @@ class LoadingUtils {
             }
         }
 
+
+        fun formatAmount(amount: String): String {
+            val cleanAmount = amount
+                .replace(" ", "")
+                .replace(",", "")
+            val number = cleanAmount.toDoubleOrNull()?.roundToLong()
+                ?: return amount
+            val formatter = NumberFormat.getInstance(Locale("en", "IN"))
+
+            return formatter.format(number).replace(",", " ")
+        }
 
         fun isOnline(context: Context?): Boolean {
             val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

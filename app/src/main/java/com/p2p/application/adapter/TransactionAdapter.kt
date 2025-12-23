@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import androidx.core.graphics.toColorInt
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 
 
 class TransactionAdapter(
@@ -156,7 +157,8 @@ class TransactionAdapter(
         fun bind(data: HistoryItem.Transaction) {
             if (data.amount < 0) {
                 title.setTextColor("#0F0D1C".toColorInt())
-                val formatted = String.format("%.2f", data.amount)
+//                val formatted = String.format("%.2f", data.amount)
+                val formatted = formatAmount(data.amount.toString())
                 amount.text = formatted+" "+ data.currency
                 if(data.rebalance.equals("normal",true)){
                     title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
@@ -165,7 +167,8 @@ class TransactionAdapter(
                 }
             }
             else {
-                val formatted = String.format("%.2f", data.amount)
+//                val formatted = String.format("%.2f", data.amount)
+                val formatted = formatAmount(data.amount.toString())
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
                 if(data.rebalance.equals("normal",true)){
@@ -181,7 +184,7 @@ class TransactionAdapter(
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
              Log.d("TESTING_REBALANCE",data.rebalance)
             if (type.equals("list", true)) {
-                if(data.rebalance.equals("normal")) {
+                if(data.rebalance.equals("normal",true)) {
                     Glide.with(itemView.context)
                         .load(url.ifEmpty { null })
                         .placeholder(R.drawable.transfericon)
@@ -251,7 +254,7 @@ class TransactionAdapter(
             when (item) {
                 is HistoryItem.Header -> {
                     if (lastHeader != null && headerHasItems) {
-                        cleanedList.add(lastHeader!!)
+                        cleanedList.add(lastHeader)
                     }
                     lastHeader = item
                     headerHasItems = false
@@ -268,7 +271,7 @@ class TransactionAdapter(
 
         // Add final valid header
         if (lastHeader != null && headerHasItems) {
-            cleanedList.add(0, lastHeader!!)
+            cleanedList.add(0, lastHeader)
         }
 
         // Update adapter
@@ -277,6 +280,7 @@ class TransactionAdapter(
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateAdapter(newItems: List<HistoryItem>) {
         this.items = newItems
         this.fullList = newItems
