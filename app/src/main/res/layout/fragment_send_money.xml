@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bgimg"
     tools:context=".fragment.NewNumberFragment">
+
    <RelativeLayout
        android:id="@+id/layout_send_money"
        android:layout_width="match_parent"

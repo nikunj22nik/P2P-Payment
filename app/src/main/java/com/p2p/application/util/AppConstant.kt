@@ -1,5 +1,7 @@
 package com.p2p.application.util
 
+import kotlin.math.floor
+
 class AppConstant {
 
     companion object {
@@ -38,6 +40,18 @@ class AppConstant {
             }
         }
 
+        fun roundHalfUp(value: Double?): Int {
+            return value?.let {
+                floor(it + 0.5).toInt()
+            } ?: 0
+        }
+
+        fun roundHalfUpStr(value: String?): Int {
+            return value
+                ?.toDoubleOrNull()
+                ?.let { floor(it + 0.5).toInt() }
+                ?: 0
+        }
 
     }
 }

@@ -135,12 +135,17 @@ class SendMoneyFragment : Fragment() {
             binding.amnt.setText(receiver.amount)
             val number = receiver.amount.toDoubleOrNull()
             if (number != null) {
-                val result = number * 1.01
+                var result = number * 1.01
+                if(receiver?.user_type.equals(AppConstant.MERCHANT,true)){
+                    result = number * 0.99
+                }
+
                 val finalValue = String.format("%.2f", result).toDouble()
-                binding.confirmAmount.setText(finalValue.toString())
+                val finalIntValue = AppConstant.roundHalfUp(finalValue)
+                binding.confirmAmount.setText(finalIntValue.toString())
             }
             else{
-                binding.confirmAmount.setText(receiver.amount)
+                binding.confirmAmount.setText(AppConstant.roundHalfUpStr(receiver.amount))
             }
         }
 
@@ -215,15 +220,15 @@ class SendMoneyFragment : Fragment() {
                     val finalValue = String.format("%.2f", result).toDouble()
                     if (SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
                         if(viewModel.receiver?.user_type.equals(AppConstant.USER,true) ){
-                            binding.confirmAmount.setText(finalValue.toString())
+                            binding.confirmAmount.setText(AppConstant.roundHalfUp(finalValue).toString())
                         }
                         else{
                             val percentage = 0.99
                             val result = number * percentage
-                            binding.confirmAmount.setText(result.toString())
+                            binding.confirmAmount.setText(AppConstant.roundHalfUp(result).toString())
                         }
                     } else {
-                        binding.confirmAmount.setText(number.toString())
+                        binding.confirmAmount.setText(AppConstant.roundHalfUp(number).toString())
                     }
                 } else {
                     binding.confirmAmount.setText("")
