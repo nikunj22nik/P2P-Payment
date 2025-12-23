@@ -204,6 +204,7 @@ tools:context=".fragment.TransferStatusFragment">
                         android:text="ALKS-9928-HGJD-1134"/>
                 </RelativeLayout>
                 <RelativeLayout
+                    android:id="@+id/lay_fee"
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_height="wrap_content">

@@ -182,6 +182,15 @@ class ReceiptFragment : Fragment() {
             binding.tvReference.text = userData.data?.reference_no?:""
             binding.tvFree.text = userData.data?.transaction_fee?:""
 
+            if (userData.data?.transaction_fee.isNullOrBlank() ||
+                userData.data?.transaction_fee == "0.00" ||
+                userData. data?.transaction_fee == "0.0"
+            ) {
+                binding.layFee.visibility = View.GONE
+                 binding.lay2.visibility =View.GONE
+            }
+
+
             //  show Data share receipt
             binding.layPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
             binding.tvPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")

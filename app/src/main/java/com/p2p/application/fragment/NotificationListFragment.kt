@@ -84,7 +84,6 @@ class NotificationListFragment : Fragment() {
                         }
                         LoadingUtils.hide(requireActivity())
                         adapter.updateAdapter(updated)
-                        adapter.clearAdapter()
 
                     }
                     is NetworkResult.Error ->{
@@ -92,9 +91,7 @@ class NotificationListFragment : Fragment() {
                         LoadingUtils.hide(requireActivity())
                         LoadingUtils.showErrorDialog(requireActivity(),it.message.toString())
                     }
-                    else ->{
-
-                    }
+                    else ->{  }
                 }
             }
         }
@@ -112,16 +109,16 @@ class NotificationListFragment : Fragment() {
             }?.toMutableList()?:mutableListOf()
         }
     }
+
     fun formatDate(input: String): String {
         val zonedDateTime = ZonedDateTime.parse(input)
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return zonedDateTime.format(outputFormatter)
     }
 
-    private val notificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            loadPermission()
-        }
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        isGranted -> loadPermission()
+    }
 
     fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -155,7 +152,8 @@ class NotificationListFragment : Fragment() {
     private fun loadPermission(){
         if (checkNotificationPermission()){
             binding.imgToggle.setImageResource(R.drawable.toggle_on)
-        }else{
+        }
+        else{
             binding.imgToggle.setImageResource(R.drawable.toggle_off)
         }
     }

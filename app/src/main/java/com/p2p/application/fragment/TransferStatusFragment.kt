@@ -104,6 +104,12 @@ class TransferStatusFragment : Fragment() {
                             binding.time.text = data?.time?:""
                             binding.tvReference.text = data?.reference_no?:""
                             binding.tvFees.text = data?.transaction_fee?:""
+                            if (data?.transaction_fee.isNullOrBlank() ||
+                                data?.transaction_fee == "0.00" ||
+                                data?.transaction_fee == "0.0"
+                            ) {
+                                binding.layFee.visibility = View.GONE
+                            }
                             binding.card.visibility=View.VISIBLE
                             if (it.data?.data?.receiver?.role?.equals("merchant", ignoreCase = true) == true) {
                                 binding.rlTotalPayment.visibility =View.VISIBLE

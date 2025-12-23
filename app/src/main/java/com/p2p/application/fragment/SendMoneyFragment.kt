@@ -53,11 +53,17 @@ class SendMoneyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
+
         sessionManager = SessionManager(requireContext())
+
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
+
         backType = arguments?.getString("backType", "Qr") ?: "Qr"
+
         makeAstrict()
+
         callingBalanceApi()
+
         return binding.root
     }
 
@@ -72,13 +78,15 @@ class SendMoneyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.imgBack.setOnClickListener {
+
             if (binding.layoutSendMoney.isVisible) {
                 if (backType.equals("Qr", true)) {
                     findNavController().navigate(R.id.userWelcomeFragment)
                 } else {
                     findNavController().navigateUp()
                 }
-            } else {
+            }
+            else {
                 binding.layoutSecretCode.visibility = View.GONE
                 binding.layoutSendMoney.visibility = View.VISIBLE
                 binding.etOtp1.setText("")
@@ -95,22 +103,30 @@ class SendMoneyFragment : Fragment() {
                 if(balance >= enteredAmount){
                     binding.layoutSecretCode.visibility = View.VISIBLE
                     binding.layoutSendMoney.visibility = View.GONE
-                } else{
+                }
+                else{
                     binding.insufficientTv.visibility = View.VISIBLE
                 }
-            } else if (binding.confirmAmount.length() > 0) {
+
+            }
+            else if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
-            } else {
+            }
+            else {
                 showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
 
         }
+
         if (requireArguments().containsKey(AppConstant.SCREEN_TYPE)) {
             previousScreenType = requireArguments().getString(AppConstant.SCREEN_TYPE, "")
         }
+
         val receiver = getReceiverArg()
+
         viewModel.receiver = receiver
+
         if (receiver?.amount != null) {
             binding.layoutSendMoney.visibility = View.GONE
             binding.layoutSecretCode.visibility = View.VISIBLE
@@ -120,7 +136,8 @@ class SendMoneyFragment : Fragment() {
                 val result = number * 1.01
                 val finalValue = String.format("%.2f", result).toDouble()
                 binding.confirmAmount.setText(finalValue.toString())
-            }else{
+            }
+            else{
                 binding.confirmAmount.setText(receiver.amount)
             }
         }
@@ -140,6 +157,7 @@ class SendMoneyFragment : Fragment() {
         }
 
         handleBackPress()
+
     }
 
     fun callingBalanceApi() {
@@ -194,11 +212,15 @@ class SendMoneyFragment : Fragment() {
                     val result = number * 1.01
                     val finalValue = String.format("%.2f", result).toDouble()
                     if (SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
-                        binding.confirmAmount.setText(finalValue.toString())
+                        if(viewModel.receiver?.user_type.equals(AppConstant.USER,true) ){
+                            binding.confirmAmount.setText(finalValue.toString())
+                        }
+                        else{
+                            binding.confirmAmount.setText(number.toString())
+                        }
                     } else {
                         binding.confirmAmount.setText(number.toString())
                     }
-
                 } else {
                     binding.confirmAmount.setText("")
                 }
