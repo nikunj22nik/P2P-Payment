@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.core.view.isVisible
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import com.p2p.application.util.EditTextUtils
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.showErrorDialog
@@ -94,6 +95,7 @@ class SendMoneyFragment : Fragment() {
                 binding.etOtp3.setText("")
                 binding.etOtp4.setText("")
             }
+
         }
 
         binding.btnSend.setOnClickListener {
@@ -107,12 +109,12 @@ class SendMoneyFragment : Fragment() {
                 else{
                     binding.insufficientTv.visibility = View.VISIBLE
                 }
-
             }
             else if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
             }
+
             else {
                 showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
@@ -216,7 +218,9 @@ class SendMoneyFragment : Fragment() {
                             binding.confirmAmount.setText(finalValue.toString())
                         }
                         else{
-                            binding.confirmAmount.setText(number.toString())
+                            val percentage = 0.99
+                            val result = number * percentage
+                            binding.confirmAmount.setText(result.toString())
                         }
                     } else {
                         binding.confirmAmount.setText(number.toString())
@@ -255,6 +259,7 @@ class SendMoneyFragment : Fragment() {
                                 }
                                 if (SessionManager(requireContext()).getLoginType()
                                         .equals(AppConstant.USER)
+                                    && viewModel.receiver?.user_type.equals(AppConstant.USER,true)
                                 ) {
                                     binding.tv1.visibility = View.VISIBLE
                                     binding.l2.visibility = View.VISIBLE
@@ -265,13 +270,12 @@ class SendMoneyFragment : Fragment() {
                             }
 
                         }
-
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
                         }
-
                         else -> {
                         }
+
                     }
                 }
             }

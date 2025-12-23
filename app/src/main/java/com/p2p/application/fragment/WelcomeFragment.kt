@@ -180,8 +180,10 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             }
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun handleWelComeScreen(){
+
         if (sessionManager.getIsWelcome()){
             if (selectedType.equals(MessageError.USER,true)){
                 binding.layTitle.visibility = View.VISIBLE
@@ -216,8 +218,10 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 }
                 if (selectedType.equals(MessageError.MASTER_AGENT,true)){
                     binding.tvHeader.text = "Welcome Master Agent"
-                    binding.tvHSubHeader.text = "Handle transfers and Rebalancing from BBS \nefficiently."
+                    binding.tvHSubHeader.text = "Handle transfers and Rebalancing from ID Many \nefficiently."
                 }
+                binding.layTitle.visibility = View.VISIBLE
+                binding.layBalance.visibility = View.GONE
                 binding.btnSetting.setColorFilter("#FFFFFF".toColorInt())
                 binding.imgHide.setColorFilter("#FFFFFF".toColorInt())
                 binding.btnNotification.setColorFilter("#FFFFFF".toColorInt())

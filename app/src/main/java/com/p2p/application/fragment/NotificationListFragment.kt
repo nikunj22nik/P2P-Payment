@@ -71,6 +71,7 @@ class NotificationListFragment : Fragment() {
         callingNotificationApi()
 
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun callingNotificationApi(){
         lifecycleScope.launch {
@@ -97,6 +98,7 @@ class NotificationListFragment : Fragment() {
             }
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updateListInBackground(
         list: MutableList<TransactionNotification>?
@@ -112,7 +114,6 @@ class NotificationListFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-
     fun formatDate(input: String): String {
         val zonedDateTime = ZonedDateTime.parse(input)
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -134,6 +135,7 @@ class NotificationListFragment : Fragment() {
             }
         }
     }
+
     fun openNotificationSettings() {
         val intent = Intent().apply {
             action = "android.settings.APP_NOTIFICATION_SETTINGS"
@@ -141,21 +143,26 @@ class NotificationListFragment : Fragment() {
         }
         startActivity(intent)
     }
+
     fun checkNotificationPermission(): Boolean {
+
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
         } else {
             // Android 12 and below: permission is always granted
             true
         }
+
     }
     private fun loadPermission(){
+
         if (checkNotificationPermission()){
             binding.imgToggle.setImageResource(R.drawable.toggle_on)
         }
         else{
             binding.imgToggle.setImageResource(R.drawable.toggle_off)
         }
+
     }
 
     override fun onResume() {
