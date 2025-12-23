@@ -195,6 +195,7 @@ class OTPFragment : Fragment() {
                 if (buttonContent.equals(AppConstant.BACK_TO_HOME,true)) {
                     Log.d("typeSelect","****"+sessionManager.getScreenType())
 //                    if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
+                    SessionManager(requireContext()).setIsWelcome(true)
                         if (sessionManager.getIsPin()){
                             findNavController().navigate(R.id.userWelcomeFragment)
                         }else{
@@ -337,13 +338,10 @@ class OTPFragment : Fragment() {
                                     if(response.user.verification_docs_upload_status ==1 ){
                                          findNavController().navigate(R.id.merchantVerificationFragment)
                                     }else {
-
                                             handleVerificationStatus(
                                                 status = user.verification_status,
                                                 role = AppConstant.MERCHANT
                                             )
-
-
                                     }
                                 }
                                 AppConstant.AGENT -> {

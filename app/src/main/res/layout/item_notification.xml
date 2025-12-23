@@ -38,7 +38,7 @@
                 android:textSize="@dimen/_13sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
-                android:text="@string/lorem_ipsum_is_simply_dummy_text" />
+                android:text="" />
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 android:textSize="@dimen/_12sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
-                android:text="8/27/2022" />
+                android:text="" />
         </LinearLayout>
     </RelativeLayout>
     <View

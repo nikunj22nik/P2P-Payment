@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -51,7 +52,7 @@ class NotificationListFragment : Fragment() {
         return binding.root
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,8 +69,9 @@ class NotificationListFragment : Fragment() {
         }
 
         callingNotificationApi()
-    }
 
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun callingNotificationApi(){
         lifecycleScope.launch {
             LoadingUtils.show(requireActivity())
@@ -78,14 +80,11 @@ class NotificationListFragment : Fragment() {
                     is NetworkResult.Success ->{
                         val list = it.data
                         val updated = updateListInBackground(list)
-
                         if(list?.size ==0){
                             binding.noDataView.visibility =View.VISIBLE
                         }
                         LoadingUtils.hide(requireActivity())
                         adapter.updateAdapter(updated)
-                        adapter.clearAdapter()
-
                     }
                     is NetworkResult.Error ->{
                         binding.noDataView.visibility =View.VISIBLE
@@ -99,7 +98,7 @@ class NotificationListFragment : Fragment() {
             }
         }
     }
-
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updateListInBackground(
         list: MutableList<TransactionNotification>?
     ): MutableList<TransactionNotification> {
@@ -112,17 +111,15 @@ class NotificationListFragment : Fragment() {
             }?.toMutableList()?:mutableListOf()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     fun formatDate(input: String): String {
         val zonedDateTime = ZonedDateTime.parse(input)
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return zonedDateTime.format(outputFormatter)
     }
-
-    private val notificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             loadPermission()
         }
-
     fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -132,7 +129,6 @@ class NotificationListFragment : Fragment() {
             }
         }
     }
-
     fun openNotificationSettings() {
         val intent = Intent().apply {
             action = "android.settings.APP_NOTIFICATION_SETTINGS"
@@ -140,9 +136,6 @@ class NotificationListFragment : Fragment() {
         }
         startActivity(intent)
     }
-
-
-
     fun checkNotificationPermission(): Boolean {
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
@@ -151,7 +144,6 @@ class NotificationListFragment : Fragment() {
             true
         }
     }
-
     private fun loadPermission(){
         if (checkNotificationPermission()){
             binding.imgToggle.setImageResource(R.drawable.toggle_on)
@@ -159,7 +151,6 @@ class NotificationListFragment : Fragment() {
             binding.imgToggle.setImageResource(R.drawable.toggle_off)
         }
     }
-
 
     override fun onResume() {
         super.onResume()
