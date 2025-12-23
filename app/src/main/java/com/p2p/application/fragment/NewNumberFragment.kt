@@ -32,6 +32,7 @@ import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.model.recentpepole.RecentPeople
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -240,7 +241,7 @@ class NewNumberFragment : Fragment(),ItemClickListener, ItemClickListenerType {
                             }else{
                                 binding.layRecentPeople.visibility = View.GONE
                             }
-                            binding.tvBalance.text = (result.data?.data?.wallet?.balance?:"")+" "+(result.data?.data?.wallet?.currency?:"")
+                            binding.tvBalance.text = (formatAmount(result.data?.data?.wallet?.balance?:"0"))+" "+(result.data?.data?.wallet?.currency?:"")
                         }
                         is NetworkResult.Error -> {
                             binding.layRecentPeople.visibility = View.GONE

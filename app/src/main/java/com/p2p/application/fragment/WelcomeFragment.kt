@@ -46,6 +46,7 @@ import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.model.recentmerchant.Merchant
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -323,7 +324,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     @SuppressLint("SetTextI18n")
     private fun showUIData(){
         dataHome?.let { data ->
-            binding.tvBalance.text = (data.wallet?.balance?:"0")
+            binding.tvBalance.text = (formatAmount(data.wallet?.balance?:"0"))
             binding.tvCurancy.text = (data.wallet?.currency?:"")
             showStart()
             transactionsList.clear()

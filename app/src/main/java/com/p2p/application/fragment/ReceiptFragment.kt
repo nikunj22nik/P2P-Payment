@@ -25,6 +25,7 @@ import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.receiptmodel.ReceiptModel
 import com.p2p.application.util.DownloadWorker
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.getBitmapFromView
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -173,33 +174,34 @@ class ReceiptFragment : Fragment() {
                 binding.tvText1.text = "Your transaction has been failed."
             }
 
-            binding.layPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
-            binding.tvPrice.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
+            binding.layPrice.text = formatAmount((userData.data?.amount?:"0")) + " "+(userData.data?.currency?:"")
+            binding.tvPrice.text = formatAmount((userData.data?.amount?:"0")) + " "+(userData.data?.currency?:"")
             binding.tvName.text = (userData.data?.receiver?.first_name?:"") + " " + (userData.data?.receiver?.last_name?:"")
             binding.tvPhone.text = userData.data?.receiver?.phone?:""
             binding.tvDate.text = userData.data?.date?:""
             binding.tvTime.text = userData.data?.time?:""
             binding.tvReference.text = userData.data?.reference_no?:""
-            binding.tvFree.text = userData.data?.transaction_fee?:""
-
-            if (userData.data?.transaction_fee.isNullOrBlank() ||
-                userData.data?.transaction_fee == "0.00" ||
-                userData. data?.transaction_fee == "0.0"
-            ) {
-                binding.layFee.visibility = View.GONE
-                 binding.lay2.visibility =View.GONE
-            }
+            binding.tvFree.text = formatAmount(userData.data?.transaction_fee?:"0")
 
 
             //  show Data share receipt
-            binding.layPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
-            binding.tvPrice1.text = (userData.data?.amount?:"") + " "+(userData.data?.currency?:"")
+            binding.layPrice1.text = formatAmount((userData.data?.amount?:"0")) + " "+(userData.data?.currency?:"")
+            binding.tvPrice1.text = formatAmount((userData.data?.amount?:"0")) + " "+(userData.data?.currency?:"")
             binding.tvName1.text = (userData.data?.receiver?.first_name?:"") + " " + (userData.data?.receiver?.last_name?:"")
             binding.tvPhone1.text = userData.data?.receiver?.phone?:""
             binding.tvDate1.text = userData.data?.date?:""
             binding.tvTime1.text = userData.data?.time?:""
             binding.tvReference1.text = userData.data?.reference_no?:""
-            binding.tvFree1.text = userData.data?.transaction_fee?:""
+            binding.tvFree1.text = formatAmount(userData.data?.transaction_fee?:"0")
+
+
+            if (binding.tvFree1.text.toString().equals("0",true)) {
+                binding.layFee.visibility = View.GONE
+                binding.lay2.visibility =View.GONE
+            }
+
+
+
         }?:run {
             binding.layDownload.visibility = View.GONE
         }
