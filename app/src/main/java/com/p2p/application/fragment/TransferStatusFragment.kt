@@ -22,6 +22,7 @@ import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Transaction
 import com.p2p.application.util.DownloadWorker
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.getBitmapFromView
 import com.p2p.application.util.SessionManager
 import com.p2p.application.view.applyExactGradient
@@ -97,17 +98,15 @@ class TransferStatusFragment : Fragment() {
                         is NetworkResult.Success ->{
                             LoadingUtils.hide(requireActivity())
                             val data = it.data?.data
-                            binding.layPrice.text = data?.amount +" "+data?.currency
+                            binding.layPrice.text = formatAmount(data?.amount?:"0") +" "+data?.currency
                             binding.nameNumber.text = data?.receiver?.first_name +" "+data?.receiver?.last_name+" "+data?.receiver?.phone
-                            binding.amnt.text = data?.amount+" "+data?.currency
+                            binding.amnt.text = formatAmount(data?.amount?:"0")+" "+data?.currency
                             binding.date.text = data?.date?:""
                             binding.time.text = data?.time?:""
                             binding.tvReference.text = data?.reference_no?:""
-                            binding.tvFees.text = data?.transaction_fee?:""
-                            if (data?.transaction_fee.isNullOrBlank() ||
-                                data?.transaction_fee == "0.00" ||
-                                data?.transaction_fee == "0.0"
-                            ) {
+                            binding.tvFees.text = formatAmount(data?.transaction_fee?:"0")
+
+                            if ( binding.tvFees.text.toString().equals("0",true)) {
                                 binding.layFee.visibility = View.GONE
                             }
                             binding.card.visibility=View.VISIBLE
@@ -115,7 +114,7 @@ class TransferStatusFragment : Fragment() {
                                 binding.rlTotalPayment.visibility =View.VISIBLE
                                 val total = getValidAmountString(data.amount).toDouble() +
                                         getValidAmountString(data.transaction_fee).toDouble()
-                                binding.tvFeesTotal.text = total.toString()+" "+ (data.currency?:"")
+                                binding.tvFeesTotal.text = formatAmount(total.toString())+" "+ (data.currency?:"")
                             }
 
                         }

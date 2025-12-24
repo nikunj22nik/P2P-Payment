@@ -137,7 +137,7 @@ class SendMoneyFragment : Fragment() {
             if (number != null) {
                 var result = number * 1.01
                 if(receiver?.user_type.equals(AppConstant.MERCHANT,true)){
-                    result = number * 0.99
+                    result = number * 1
                 }
 
                 val finalValue = String.format("%.2f", result).toDouble()
@@ -223,7 +223,7 @@ class SendMoneyFragment : Fragment() {
                             binding.confirmAmount.setText(AppConstant.roundHalfUp(finalValue).toString())
                         }
                         else{
-                            val percentage = 0.99
+                            val percentage = 1
                             val result = number * percentage
                             binding.confirmAmount.setText(AppConstant.roundHalfUp(result).toString())
                         }
@@ -399,9 +399,7 @@ class SendMoneyFragment : Fragment() {
     }
 
     private fun handleBackPress() {
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (binding.layoutSendMoney.isVisible) {

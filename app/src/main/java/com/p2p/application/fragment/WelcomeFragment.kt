@@ -455,8 +455,11 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 val input = s.toString().trim()
                 val number = input.toDoubleOrNull()
                 if (number != null) {
-                    val result = number * 1.01
-                    edAmount?.setText(result.toString())
+
+                    val result = number * 1
+
+                    edAmount?.setText(AppConstant.roundHalfUp(result).toString())
+
                 } else {
                     edAmount?.setText("")
                 }

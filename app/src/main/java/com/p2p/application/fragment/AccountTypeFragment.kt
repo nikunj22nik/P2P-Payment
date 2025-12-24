@@ -29,11 +29,17 @@ class AccountTypeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentAccountTypeBinding.inflate(inflater, container, false)
+
         sessionManager = SessionManager(requireContext())
+
         selectType = sessionManager.getLoginType() ?: MessageError.USER
+
         handleBackPress()
+
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +74,7 @@ class AccountTypeFragment : Fragment() {
         // Reset all items to inactive
         listOf(
             Triple(binding.user, binding.imgUser, binding.tvUser),
-            Triple(binding.merchant, binding.imgMerchant, binding.tvmerchant), // fixed tvMerchant
+            Triple(binding.merchant, binding.imgMerchant, binding.tvmerchant),
             Triple(binding.agent, binding.imgAgent, binding.tvAgent),
             Triple(binding.masterAgent, binding.imgMasterAgent, binding.tvMasterAgent)
         ).forEach { (layout, img, tv) ->
@@ -100,17 +106,13 @@ class AccountTypeFragment : Fragment() {
     }
 
 
-    private fun updateItem(
-        layout: View,
-        textView: View,
-        imageView: android.widget.ImageView,
-        color: Int
-    ) {
+    private fun updateItem(layout: View, textView: View, imageView: android.widget.ImageView, color: Int) {
         layout.setBackgroundResource(R.drawable.user_select_active)
 
-        if (textView is android.widget.TextView)
-            textView.setTextColor(color)
+        if (textView is android.widget.TextView) textView.setTextColor(color)
 
         imageView.setColorFilter(color)
     }
+
+
 }
