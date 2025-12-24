@@ -203,7 +203,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
                     hide(requireActivity())
                     when (result) {
                         is NetworkResult.Success -> {
-                            binding.tvBalance.text = formatAmount(result.data.toString())
+                            binding.tvBalance.text = result.data.toString()
                         }
                         is NetworkResult.Error -> {
                             binding.tvBalance.text = "0"
@@ -272,8 +272,7 @@ class ToContactFragment : Fragment(), ItemClickListener,ItemClickListenerType {
         val amountText = binding.tvBalance.text.toString()
         userInputNumber = number
         val cleanAmount = amountText.replace(Regex("[^0-9.]"), "")
-        val amount = cleanAmount.toDoubleOrNull() ?: 0.0
-        if (amount == 0.0) {
+        if (cleanAmount.equals("0", true)) {
             showErrorDialog(requireContext(), MessageError.AMOUNT_ERROR)
             return
         }

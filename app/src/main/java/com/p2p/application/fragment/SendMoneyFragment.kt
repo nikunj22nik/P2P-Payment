@@ -113,9 +113,7 @@ class SendMoneyFragment : Fragment() {
             else if (binding.confirmAmount.length() > 0) {
                 binding.layoutSecretCode.visibility = View.VISIBLE
                 binding.layoutSendMoney.visibility = View.GONE
-            }
-
-            else {
+            } else {
                 showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
 

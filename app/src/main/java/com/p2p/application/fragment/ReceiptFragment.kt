@@ -161,7 +161,7 @@ class ReceiptFragment : Fragment() {
                 binding.tvStatus.text = "Transfer successful!"
                 binding.tvStatus.setTextColor("#03B961".toColorInt())
                 binding.tvText.text = "Your transaction has been completed successfully."
-                binding.tvStatus1.text = "Transfer successful!"
+                binding.tvStatus1.text = "Transaction successful!"
                 binding.tvStatus1.setTextColor("#03B961".toColorInt())
                 binding.tvText1.text = "Your transaction has been completed successfully."
             }
@@ -169,7 +169,7 @@ class ReceiptFragment : Fragment() {
                 binding.tvStatus.text = "Transfer Failed!"
                 binding.tvStatus.setTextColor("#F90B1B".toColorInt())
                 binding.tvText.text = "Your transaction has been failed."
-                binding.tvStatus1.text = "Transfer Failed!"
+                binding.tvStatus1.text = "Transaction Failed!"
                 binding.tvStatus1.setTextColor("#F90B1B".toColorInt())
                 binding.tvText1.text = "Your transaction has been failed."
             }
@@ -194,6 +194,16 @@ class ReceiptFragment : Fragment() {
             binding.tvReference1.text = userData.data?.reference_no?:""
             binding.tvFree1.text = formatAmount(userData.data?.transaction_fee?:"0")
 
+
+            userData.data?.transaction_type?.let { userTransactionType->
+                if (userTransactionType.equals("credit", ignoreCase = true)) {
+                    binding.titlename.text = "Sender"
+                    binding.titlePhoneNumber.text = "Sender Phone Number"
+                } else {
+                    binding.titlename.text = "Recipient"
+                    binding.titlePhoneNumber.text = "Recipient Phone Number"
+                }
+            }
 
             if (binding.tvFree1.text.toString().equals("0",true)) {
                 binding.layFee.visibility = View.GONE

@@ -19,6 +19,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
@@ -50,6 +51,7 @@ import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
+import com.p2p.application.util.LoadingUtils.Companion.showErrorDialog
 import com.p2p.application.util.MessageError
 import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.HomeViewModel
@@ -478,15 +480,26 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED // Fully expand
             behavior.skipCollapsed = true
         }
+
+        fun isValidation(): Boolean{
+            if (edUserAmount?.text.toString().trim().isEmpty()){
+                Toast.makeText(requireContext(),MessageError.INVALID_AMOUNT, Toast.LENGTH_SHORT).show()
+                return false
+            }
+            return true
+        }
         btnContinue?.setOnClickListener {
-            dialogWeight.dismiss()
-            val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
-                merchantData.id,merchantData.phone,merchantData.role,amount=edUserAmount?.text.toString())
-            val json = Gson().toJson(receiver)
-            val bundle = Bundle()
-            bundle.putString("receiver_json", json)
-            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
-            findNavController().navigate(R.id.sendMoneyFragment, bundle)
+            if (isValidation()){
+                dialogWeight.dismiss()
+                val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
+                    merchantData.id,merchantData.phone,merchantData.role,amount=edUserAmount?.text.toString())
+                val json = Gson().toJson(receiver)
+                val bundle = Bundle()
+                bundle.putString("receiver_json", json)
+                bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+                findNavController().navigate(R.id.sendMoneyFragment, bundle)
+            }
+
         }
         dialogWeight.show()
     }

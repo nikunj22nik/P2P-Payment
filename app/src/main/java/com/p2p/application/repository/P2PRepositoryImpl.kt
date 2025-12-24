@@ -25,6 +25,7 @@ import com.p2p.application.model.recentpepole.RecentPeopleModel
 import com.p2p.application.model.switchmodel.SwitchUserModel
 import com.p2p.application.remote.P2PApi
 import com.p2p.application.util.AppConstant
+import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -305,7 +306,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                             ""
                         }
                         val balance = if (data.has("balance") && !data.get("balance").isJsonNull) {
-                            data.get("balance").asString +" "+ currency
+                            formatAmount(data.get("balance").asString) +" "+ currency
                         } else {
                             "0"
                         }

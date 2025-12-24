@@ -12,5 +12,6 @@ data class Data(
     val reference_no: String?,
     val status: String?,
     val time: String?,
-    val transaction_fee:String?
+    val transaction_fee:String?,
+    val transaction_type:String?
 )

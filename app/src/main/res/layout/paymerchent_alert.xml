@@ -30,6 +30,7 @@
                 android:textColor="#0F0D1C"
                 android:textSize="@dimen/_15sdp"
                 android:gravity="center"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"
