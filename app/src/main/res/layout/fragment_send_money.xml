@@ -192,6 +192,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_medium"
             android:textSize="@dimen/_12sdp"
+            android:visibility="gone"
             android:textColor="#0F0D1C"
             />
             <TextView
@@ -204,6 +205,7 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:textSize="@dimen/_12sdp"
                 android:textColor="#0F0D1C"
+                android:visibility="gone"
                 />
         </LinearLayout>
 

@@ -26,9 +26,8 @@ class AccountTypeFragment : Fragment() {
     private var selectType: String = ""
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ) : View {
 
         binding = FragmentAccountTypeBinding.inflate(inflater, container, false)
 
@@ -46,18 +45,25 @@ class AccountTypeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnProceed.setOnClickListener {
+
             if (selectType.isEmpty()) {
                 Toast.makeText(requireContext(), SELECT_TYPE, Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            else {
                 sessionManager.setLoginType(selectType)
                 findNavController().navigate(R.id.loginFragment)
             }
+
         }
+
         updateSelection(selectType)
 
         binding.user.setOnClickListener { updateSelection(AppConstant.USER) }
+
         binding.merchant.setOnClickListener { updateSelection(AppConstant.MERCHANT) }
+
         binding.agent.setOnClickListener { updateSelection(AppConstant.AGENT) }
+
         binding.masterAgent.setOnClickListener { updateSelection(AppConstant.MASTER_AGENT) }
 
         // Restore previous selection if exist
@@ -71,19 +77,17 @@ class AccountTypeFragment : Fragment() {
         val activeColor = "#B13A7E".toColorInt()
         val inactiveColor = "#FFFFFF".toColorInt()
 
-        // Reset all items to inactive
         listOf(
             Triple(binding.user, binding.imgUser, binding.tvUser),
             Triple(binding.merchant, binding.imgMerchant, binding.tvmerchant),
             Triple(binding.agent, binding.imgAgent, binding.tvAgent),
             Triple(binding.masterAgent, binding.imgMasterAgent, binding.tvMasterAgent)
-        ).forEach { (layout, img, tv) ->
-            layout.setBackgroundResource(R.drawable.user_select_inactive)
-            img.setColorFilter(inactiveColor)
-            tv.setTextColor(inactiveColor)
+        ).forEach {
+            (layout, img, tv) ->  layout.setBackgroundResource(R.drawable.user_select_inactive)
+                                  img.setColorFilter(inactiveColor)
+                                  tv.setTextColor(inactiveColor)
         }
 
-        // Apply active UI to the selected type
         when (type) {
             MessageError.USER -> updateItem(binding.user, binding.tvUser, binding.imgUser, activeColor)
             MessageError.MERCHANT -> updateItem(binding.merchant, binding.tvmerchant, binding.imgMerchant, activeColor)
@@ -95,18 +99,20 @@ class AccountTypeFragment : Fragment() {
 
 
     private fun handleBackPress() {
+
         requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
+            viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     requireActivity().finish()
                 }
             }
         )
+
     }
 
 
     private fun updateItem(layout: View, textView: View, imageView: android.widget.ImageView, color: Int) {
+
         layout.setBackgroundResource(R.drawable.user_select_active)
 
         if (textView is android.widget.TextView) textView.setTextColor(color)

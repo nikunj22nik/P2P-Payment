@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,9 @@ import com.p2p.application.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class WelcomeFragment : Fragment(), ItemClickListenerType {
@@ -490,19 +494,78 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         }
         btnContinue?.setOnClickListener {
             if (isValidation()){
-                dialogWeight.dismiss()
+
                 val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
                     merchantData.id,merchantData.phone,merchantData.role,amount=edUserAmount?.text.toString())
                 val json = Gson().toJson(receiver)
                 val bundle = Bundle()
                 bundle.putString("receiver_json", json)
                 bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
-                findNavController().navigate(R.id.sendMoneyFragment, bundle)
+               // findNavController().navigate(R.id.sendMoneyFragment, bundle)
+            callingPaymentApi(receiver,edUserAmount?.text.toString(), dialogWeight)
             }
 
         }
         dialogWeight.show()
     }
+
+    private fun callingPaymentApi(
+        receiver: Receiver,
+        amount1: String,
+        dialogWeight: BottomSheetDialog
+    ) {
+        if (!isOnline(requireContext())) {
+            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+        lifecycleScope.launch {
+            val loginType = SessionManager(requireContext()).getLoginType()
+            val type = AppConstant.mapperType(loginType)
+            val amount = amount1
+            val confirmAccount = amount1
+            if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
+                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
+                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                LoadingUtils.show(requireActivity())
+                viewModel.sendMoney(
+                    senderType = type,
+                    receiver_id = receiver.user_id,
+                    receiverType = receiver.user_type,
+                    amount = amount,
+                    confirmAccount ?: "",
+                    currentTime,
+                    currentDate
+                ).collect { result ->
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            LoadingUtils.hide(requireActivity())
+                            dialogWeight.dismiss()
+                            val data = result.data
+                            val json = Gson().toJson(result.data)
+                            val bundle = Bundle()
+                            Log.d("TESTING_T_ID", "Transaction id" + data?.transaction_id)
+                            data?.id?.let {
+                                bundle.putLong("transaction_id", data.id.toLong())
+                            }
+                            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+                            findNavController().navigate(R.id.transferStatusFragment, bundle)
+                        }
+
+                        is NetworkResult.Error -> {
+                            LoadingUtils.hide(requireActivity())
+                            showErrorDialog(requireContext(), result.message.toString())
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+            } else {
+                showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
+            }
+        }
+    }
+
 
     override fun onItemClick(data: String,type: String) {
         if (type.equals("receiptFragment",true)){

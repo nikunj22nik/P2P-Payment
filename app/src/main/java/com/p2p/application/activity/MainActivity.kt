@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                     navGraph.setStartDestination(R.id.userWelcomeFragment)
                 }*/
                 if (sessionManager.getIsPin()){
-                    navGraph.setStartDestination(R.id.userWelcomeFragment)
+
+                    navGraph.setStartDestination(R.id.checkSecretCodeFragment)
                 }else{
                     navGraph.setStartDestination(R.id.secretCodeFragment)
                 }

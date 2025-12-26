@@ -2,6 +2,7 @@ package com.p2p.application.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.p2p.application.di.NetworkResult
+import com.p2p.application.model.Transaction
 import com.p2p.application.model.countrymodel.CountryModel
 import com.p2p.application.model.homemodel.HomeModel
 import com.p2p.application.model.recentmerchant.RecentMerchantModel
@@ -24,6 +25,20 @@ class HomeViewModel @Inject constructor(private var repository: P2PRepository): 
     suspend fun homeMerchantRequest() : Flow<NetworkResult<RecentMerchantModel>>{
         return repository.homeMerchantRequest()
     }
+    suspend fun sendMoney(
+        senderType: String,
+        receiver_id: Int,
+        receiverType: String,
+        amount: String,
+        confirmAmount: String,
+        currentTime: String,
+        currentDate: String
+    ): Flow<NetworkResult<Transaction>>{
+        return repository.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount,
+            currentTime,currentDate
+        ).onEach {
 
+        }
+    }
 
 }

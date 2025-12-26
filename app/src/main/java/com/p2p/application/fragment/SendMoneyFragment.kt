@@ -103,20 +103,21 @@ class SendMoneyFragment : Fragment() {
                 val balance: Double = availableBalance.toDouble()
                 val enteredAmount : Double = binding.confirmAmount.text.toString().toDouble()
                 if(balance >= enteredAmount){
-                    binding.layoutSecretCode.visibility = View.VISIBLE
-                    binding.layoutSendMoney.visibility = View.GONE
+//                    binding.layoutSecretCode.visibility = View.VISIBLE
+//                    binding.layoutSendMoney.visibility = View.GONE
+                    callingPaymentApi()
                 }
                 else{
                     binding.insufficientTv.visibility = View.VISIBLE
                 }
             }
             else if (binding.confirmAmount.length() > 0) {
-                binding.layoutSecretCode.visibility = View.VISIBLE
-                binding.layoutSendMoney.visibility = View.GONE
+//                binding.layoutSecretCode.visibility = View.VISIBLE
+//                binding.layoutSendMoney.visibility = View.GONE
+                callingPaymentApi()
             } else {
                 showErrorDialog(requireContext(), MessageError.INVALID_AMOUNT)
             }
-
         }
 
         if (requireArguments().containsKey(AppConstant.SCREEN_TYPE)) {
@@ -433,6 +434,7 @@ class SendMoneyFragment : Fragment() {
             if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
                 val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
                 val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                LoadingUtils.show(requireActivity())
                 viewModel.sendMoney(
                     senderType = type,
                     receiver_id = receiver.user_id,
@@ -458,12 +460,8 @@ class SendMoneyFragment : Fragment() {
 
                         is NetworkResult.Error -> {
                             LoadingUtils.hide(requireActivity())
-                            showErrorDialog(
-                                requireContext(),
-                                result.message.toString()
-                            )
+                            showErrorDialog(requireContext(), result.message.toString())
                         }
-
                         else -> {
 
                         }

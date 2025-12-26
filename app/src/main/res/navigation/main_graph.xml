@@ -109,6 +109,13 @@
         android:name="com.p2p.application.fragment.MerchantFragment"
         android:label="fragment_merchant"
         tools:layout="@layout/fragment_merchant" />
+
+    <fragment
+        android:id="@+id/checkSecretCodeFragment"
+        android:name="com.p2p.application.fragment.CheckSecretCodeFragment"
+        android:label="fragment_merchant"
+         />
+
     <fragment
         android:id="@+id/forgotCodeOtpVerifyFragment"
         android:name="com.p2p.application.fragment.ForgotCodeOtpVerifyFragment"

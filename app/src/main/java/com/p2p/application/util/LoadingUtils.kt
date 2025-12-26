@@ -30,43 +30,73 @@ class LoadingUtils {
         private var dialogLoader: Dialog? = null
 
         fun showErrorDialog(context: Context?, text: String) {
+
             if (context == null) return
+
             val dialog= Dialog(context, R.style.BottomSheetDialog)
+
             dialog.setCancelable(false)
+
             dialog.setContentView(R.layout.error_alert)
+
             val layoutParams = WindowManager.LayoutParams()
+
             layoutParams.copyFrom(dialog.window!!.attributes)
+
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+
             layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+
             dialog.window!!.attributes = layoutParams
+
             val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
+
             val tvSubHeader: TextView =dialog.findViewById(R.id.tvSms)
+
             tvSubHeader.text=ensurePeriod(text)
+
             btnOk.setOnClickListener {
                 dialog.dismiss()
             }
+
             dialog.show()
+
         }
 
         fun showSessionDialog(context: Context?, text: String, navController: NavController) {
+
             if (context == null) return
+
             val dialog= Dialog(context, R.style.BottomSheetDialog)
+
             dialog.setCancelable(false)
+
             dialog.setContentView(R.layout.error_alert)
+
             val layoutParams = WindowManager.LayoutParams()
+
             layoutParams.copyFrom(dialog.window!!.attributes)
+
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+
             layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+
             dialog.window!!.attributes = layoutParams
+
             val btnOk: LinearLayout =dialog.findViewById(R.id.btnOk)
+
             val tvSubHeader: TextView =dialog.findViewById(R.id.tvSms)
+
             tvSubHeader.text=ensurePeriod(text)
+
             btnOk.setOnClickListener {
                 dialog.dismiss()
                 SessionManager(context).clearSession()
                 navController.navigate(R.id.accountTypeFragment)
             }
+
             dialog.show()
+
         }
         private const val LOADER_TAG = "APP_GLOBAL_LOADER"
 
