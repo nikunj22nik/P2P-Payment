@@ -32,7 +32,7 @@
             android:layout_marginBottom="@dimen/_20sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="User Registration"/>
+            android:text="@string/user_registration"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_13sdp"
-                android:text="Create an account"
+                android:text="@string/create_an_account"
                 android:textColor="#FFFFFF"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"/>

@@ -49,7 +49,7 @@ class AdapterHomeTransaction(
                         }else{
                             holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                         }
-                        holder.binding.price.text = "-"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.text = "-"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                         holder.binding.price.setTextColor("#F90B1B".toColorInt())
                         holder.binding.tvName.text = "Rebalancing"+" To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }else{
@@ -59,7 +59,7 @@ class AdapterHomeTransaction(
                             holder.binding.tvName.setTextColor("#0F0D1C".toColorInt())
                         }
                         holder.binding.price.setTextColor("#03B961".toColorInt())
-                        holder.binding.price.text = "+"+(String.format("%.2f", (data.amount ?: "0.0").toDouble()))+" "+ (data.currency?:"")
+                        holder.binding.price.text = "+"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                         holder.binding.tvName.text = "Rebalancing"+" From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }
 
@@ -68,7 +68,11 @@ class AdapterHomeTransaction(
                         .error(R.drawable.icon_rebalancing)
                         .into(holder.binding.imageProfile)
                 }
-            }else{
+            }
+
+
+
+            else{
                 data.transaction_type?.let { type->
                     if (type.equals("debit",true)){
                         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
@@ -88,11 +92,18 @@ class AdapterHomeTransaction(
                                 .into(holder.binding.imageProfile)
                         }?:run {
                             holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                            Glide.with(requireActivity)
-                                .load(R.drawable.transfericon)
-                                .placeholder(R.drawable.transfericon)
-                                .error(R.drawable.transfericon)
-                                .into(holder.binding.imageProfile)
+                            if(data.transaction_mode.equals("admin",true)&& !data.transaction_category.equals("commission",true)){
+                                Glide.with(requireActivity)
+                                    .load(R.drawable.icon_rebalancing)
+                                    .error(R.drawable.icon_rebalancing)
+                                    .into(holder.binding.imageProfile)
+                            }else {
+                                Glide.with(requireActivity)
+                                    .load(R.drawable.transfericon)
+                                    .placeholder(R.drawable.transfericon)
+                                    .error(R.drawable.transfericon)
+                                    .into(holder.binding.imageProfile)
+                            }
                         }
                     }else{
                         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
@@ -110,9 +121,19 @@ class AdapterHomeTransaction(
                                 .into(holder.binding.imageProfile)
                         }?:run {
                             holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                            Glide.with(requireActivity)
-                                .load(R.drawable.transfericon)
-                                .into(holder.binding.imageProfile)
+
+                            if(data.transaction_mode.equals("admin",true)&& !data.transaction_category.equals("commission",true)){
+                                Glide.with(requireActivity)
+                                    .load(R.drawable.icon_rebalancing)
+                                    .error(R.drawable.icon_rebalancing)
+                                    .into(holder.binding.imageProfile)
+                            }else {
+                                Glide.with(requireActivity)
+                                    .load(R.drawable.transfericon)
+                                    .placeholder(R.drawable.transfericon)
+                                    .error(R.drawable.transfericon)
+                                    .into(holder.binding.imageProfile)
+                            }
                         }
                     }
                 }
@@ -135,9 +156,19 @@ class AdapterHomeTransaction(
                             .into(holder.binding.imageProfile)
                     }?:run {
                         holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                        Glide.with(requireActivity)
-                            .load(R.drawable.transfericon)
-                            .into(holder.binding.imageProfile)
+
+                        if(data.transaction_mode.equals("admin",true) && !data.transaction_category.equals("commission",true)){
+                            Glide.with(requireActivity)
+                                .load(R.drawable.icon_rebalancing)
+                                .error(R.drawable.icon_rebalancing)
+                                .into(holder.binding.imageProfile)
+                        }else {
+                            Glide.with(requireActivity)
+                                .load(R.drawable.transfericon)
+                                .placeholder(R.drawable.transfericon)
+                                .error(R.drawable.transfericon)
+                                .into(holder.binding.imageProfile)
+                        }
                     }
                 }else{
                     if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
@@ -155,25 +186,41 @@ class AdapterHomeTransaction(
                             .into(holder.binding.imageProfile)
                     }?:run {
                         holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
-                        Glide.with(requireActivity)
-                            .load(R.drawable.transfericon)
-                            .into(holder.binding.imageProfile)
+
+
+                        if(data.transaction_mode.equals("admin",true) && !data.transaction_category.equals("commission",true)){
+                            Glide.with(requireActivity)
+                                .load(R.drawable.icon_rebalancing)
+                                .error(R.drawable.icon_rebalancing)
+                                .into(holder.binding.imageProfile)
+                        }else {
+                            Glide.with(requireActivity)
+                                .load(R.drawable.transfericon)
+                                .placeholder(R.drawable.transfericon)
+                                .error(R.drawable.transfericon)
+                                .into(holder.binding.imageProfile)
+                        }
                     }
                 }
             }
         }
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(data.id.toString(),"receiptFragment")
+            itemClickListener.onItemClick(data.id.toString() +"**"+data.transaction_mode,"receiptFragment")
         }
     }
+
     override fun getItemCount(): Int {
         return transactionsList.size
     }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: MutableList<Transaction>) {
         transactionsList = list
         notifyDataSetChanged()
     }
+
     class ViewHolder(var binding: ItemHomeTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
     }
+
+
 }

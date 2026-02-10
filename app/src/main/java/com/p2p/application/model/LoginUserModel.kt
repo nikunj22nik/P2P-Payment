@@ -20,5 +20,6 @@ data class LoginUserModel(
     val created_at: String?,
     val updated_at: String?,
     val deleted_at: String?,
-    val verification_docs_upload_status:Int
+    val verification_docs_upload_status:Int,
+    val reject_reason:String =""
 )

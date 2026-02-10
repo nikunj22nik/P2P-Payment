@@ -454,7 +454,7 @@
                                 android:textSize="@dimen/_14sdp"
                                 android:fontFamily="@font/satoshi_bold"
                                 android:gravity="center"
-                                android:text="Transaction Details"/>
+                                android:text="@string/transaction_detail"/>
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_marginTop="@dimen/_5sdp"
@@ -470,7 +470,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Recipient"/>
+                                    android:text="@string/recipt"/>
                                 <TextView
                                     android:id="@+id/tvName1"
                                     android:layout_width="wrap_content"
@@ -484,10 +484,13 @@
                                     android:gravity="center"
                                     android:text=""/>
                             </RelativeLayout>
+
                             <RelativeLayout
+                                android:id="@+id/phone_number"
                                 android:layout_width="match_parent"
                                 android:layout_marginTop="@dimen/_5sdp"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                >
                                 <TextView
                                     android:id="@+id/titlePhoneNumber"
                                     android:layout_width="wrap_content"
@@ -499,7 +502,8 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Recipient Phone Number"/>
+                                    android:text="@string/recipent_phone_number"/>
+
                                 <TextView
                                     android:id="@+id/tvPhone1"
                                     android:layout_width="wrap_content"
@@ -513,6 +517,7 @@
                                     android:gravity="center"
                                     android:text=""/>
                             </RelativeLayout>
+
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_marginTop="@dimen/_5sdp"
@@ -527,7 +532,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Amount"/>
+                                    android:text="@string/amount"/>
                                 <TextView
                                     android:id="@+id/tvPrice1"
                                     android:layout_width="wrap_content"
@@ -555,7 +560,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Date"/>
+                                    android:text="@string/date"/>
                                 <TextView
                                     android:id="@+id/tvDate1"
                                     android:layout_width="wrap_content"
@@ -583,7 +588,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Time"/>
+                                    android:text="@string/time"/>
                                 <TextView
                                     android:id="@+id/tvTime1"
                                     android:layout_width="wrap_content"
@@ -611,7 +616,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Reference"/>
+                                    android:text="@string/refernce"/>
                                 <TextView
                                     android:id="@+id/tvReference1"
                                     android:layout_width="wrap_content"
@@ -640,7 +645,7 @@
                                     android:gravity="center"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerInParent="true"
-                                    android:text="Fees"/>
+                                    android:text="@string/fees"/>
                                 <TextView
                                     android:id="@+id/tvFree1"
                                     android:layout_width="wrap_content"

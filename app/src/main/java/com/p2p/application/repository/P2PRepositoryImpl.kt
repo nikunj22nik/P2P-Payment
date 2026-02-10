@@ -435,9 +435,9 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
-    override suspend fun receiptRequest(id: String): Flow<NetworkResult<ReceiptModel>> = flow {
+    override suspend fun receiptRequest(id: String,type:String): Flow<NetworkResult<ReceiptModel>> = flow {
         try {
-            val response = api.receiptRequest(id)
+            val response = api.receiptRequest(id,type)
             if (response.isSuccessful) {
                 val respBody = response.body()
                 if (respBody != null) {
@@ -485,6 +485,40 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
             e.printStackTrace()
             emit(NetworkResult.Error(AppConstant.serverError))
         }
+    }
+
+    override suspend fun withDraw(
+        senderId: String,
+        senderType: String,
+        amount: String,
+        time: String,
+        date: String
+    ): Flow<NetworkResult<String>> =flow{
+
+        try {
+            val response =  api.withDraw(senderId,senderType,amount,time,date)
+            if (response.isSuccessful) {
+                val respBody = response.body()
+                if (respBody != null) {
+                    if (respBody.has("success") && respBody.get("success").asBoolean) {
+                       val data = respBody.get("data").asJsonObject
+                        if(data.has("id") && data.get("id").isJsonNull == false) {
+                            emit(NetworkResult.Success(data.get("id").asLong.toString()))
+                        }
+                    } else {
+                        emit(NetworkResult.Error(respBody.get("message").asString))
+                    }
+                } else {
+                    emit(NetworkResult.Error(AppConstant.unKnownError))
+                }
+            } else {
+                emit(NetworkResult.Error(AppConstant.serverError))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(AppConstant.serverError))
+        }
+
     }
 
     override suspend fun register(
@@ -581,7 +615,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         pdfList: ArrayList<MultipartBody.Part>?,
         profileImage: MultipartBody.Part?,
         userType: RequestBody
-    ): Flow<NetworkResult<String>> = flow {
+    ) : Flow<NetworkResult<String>> = flow {
         try {
             api.merchantVerification(businessIdList, list,pdfList, profileImage, userType).apply {
                 if (isSuccessful) {
@@ -637,7 +671,7 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         limit: Int, searchTxt:String
     ): Flow<NetworkResult<TransactionHistoryResponse>>
         = flow {
-            try {
+          //  try {
                 Log.d("TESTING_SEARCH",searchTxt.toString())
                 api.getTransactionHistory(page, 20, searchTxt).apply {
                     if (isSuccessful) {
@@ -656,7 +690,8 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                                         time = obj.get("time").asString,
                                         transaction_mode =  if(obj.has("transaction_mode") && obj.get("transaction_mode").isJsonNull == false)obj.get("transaction_mode").asString else null
                                         ,transaction_type = obj.get("transaction_type").asString,
-                                        user = obj.get("user").asJsonObject.let { u ->
+                                        transaction_category = obj.get("transaction_category").asString,
+                                            user = obj.get("user").asJsonObject.let { u ->
                                             UserInfo(
                                                 id = u.get("id").asInt,
                                                 first_name = u.get("first_name").asString,
@@ -690,16 +725,18 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
                         emit(NetworkResult.Error(AppConstant.serverError))
                     }
                 }
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-                emit(NetworkResult.Error(AppConstant.serverError))
-            }
+//            }
+//            catch (e: Exception) {
+//                e.printStackTrace()
+//                emit(NetworkResult.Error(AppConstant.serverError))
+//            }
         }
 
-    override suspend fun genOneToOneTransactionHistory(userId: Int): Flow<NetworkResult<TransactionHistoryResponse>> =flow{
+    override suspend fun genOneToOneTransactionHistory(userId: Int,type:String): Flow<NetworkResult<TransactionHistoryResponse>> =flow{
         try {
-            api.genOneToOneTransactionHistory(userId).apply {
+
+
+            api.genOneToOneTransactionHistory(userId,type).apply {
                 if (isSuccessful) {
                     body()?.let { resp ->
                         if (resp.has("success") && resp.get("success").asBoolean) {
@@ -852,9 +889,9 @@ class P2PRepositoryImpl @Inject constructor(private val api: P2PApi) :P2PReposit
         }
     }
 
-    override suspend fun generateTransactionPdf(transactionId: String): Flow<NetworkResult<String>> =flow {
+    override suspend fun generateTransactionPdf(transactionId: String,transactionType:String): Flow<NetworkResult<String>> =flow {
         try {
-            api.generateTransactionPdf(transactionId).apply {
+            api.generateTransactionPdf(transactionId,transactionType).apply {
                 if (isSuccessful) {
                     body()?.let { resp ->
                         if (resp.has("success") && resp.get("success").asBoolean) {

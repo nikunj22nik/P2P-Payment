@@ -40,9 +40,9 @@ class TransactionViewModel @Inject constructor(private var repository: P2PReposi
     }
 
     suspend fun genOneToOneTransactionHistory(
-        @Field("user_id") userId :Int
+        @Field("user_id") userId :Int,transactionType :String
     ) : Flow<NetworkResult<TransactionHistoryResponse>>{
-        return repository.genOneToOneTransactionHistory(userId).onEach {  }
+        return repository.genOneToOneTransactionHistory(userId,transactionType).onEach {  }
     }
 
     fun nextPage() {

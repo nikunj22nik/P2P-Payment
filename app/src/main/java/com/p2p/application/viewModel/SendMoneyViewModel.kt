@@ -1,6 +1,7 @@
 package com.p2p.application.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.google.gson.JsonObject
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.Receiver
 import com.p2p.application.model.ReceiverInfo
@@ -10,6 +11,10 @@ import com.p2p.application.repository.P2PRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
+import retrofit2.Response
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 import javax.inject.Inject
 
 
@@ -51,6 +56,21 @@ class SendMoneyViewModel @Inject constructor(private var repository: P2PReposito
     }
     suspend fun checkSecretCode(secretCode: String): Flow<NetworkResult<Boolean>>{
         return repository.checkSecretCode(secretCode).onEach {
+
+        }
+    }
+
+
+    suspend fun withDraw(
+        @Field("sender_id") senderId :String,
+        @Field("sender_type") senderType :String,
+        @Field("amount") amount :String,
+        @Field("time") time :String,
+        @Field("date") date :String
+    ) : Flow<NetworkResult<String>>{
+        return repository.withDraw(
+            senderId,senderType,amount,time,date
+        ).onEach {
 
         }
     }

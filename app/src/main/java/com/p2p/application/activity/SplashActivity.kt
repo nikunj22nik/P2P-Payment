@@ -21,11 +21,9 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplaceBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-      //  startShimmer()
+
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
-          //  stopShimmer()
-            // Check login session and navigate accordingly
             val intent = Intent(this@SplashActivity, MainActivity::class.java)
             startActivity(intent)
             finish()

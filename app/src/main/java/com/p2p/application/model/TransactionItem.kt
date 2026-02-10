@@ -8,4 +8,6 @@ data class TransactionItem( val id: Int,
                             val time:String?,
                             val transaction_type: String,
                             val transaction_mode:String?=null,
-                            val user: UserInfo)
+                            val user: UserInfo,
+                            val transaction_category:String =""
+    )

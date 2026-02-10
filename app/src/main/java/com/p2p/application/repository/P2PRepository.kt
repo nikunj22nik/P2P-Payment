@@ -64,7 +64,7 @@ interface P2PRepository {
 
     suspend fun switchUserApiRequest(id: String,phone: String,loginType: String,fcmToken: String):Flow<NetworkResult<LoginModel>>
     suspend fun userAccountList():Flow<NetworkResult<SwitchUserModel>>
-    suspend fun receiptRequest(id: String):Flow<NetworkResult<ReceiptModel>>
+    suspend fun receiptRequest(id: String,type:String):Flow<NetworkResult<ReceiptModel>>
 
     suspend fun rebalancingRequest(
         amount: String,
@@ -74,7 +74,13 @@ interface P2PRepository {
         currentDate: String
     ):Flow<NetworkResult<Transaction>>
 
-
+    suspend fun withDraw(
+        @Field("sender_id") senderId :String,
+        @Field("sender_type") senderType :String,
+        @Field("amount") amount :String,
+        @Field("time") time :String,
+        @Field("date") date :String
+    ) : Flow<NetworkResult<String>>
     suspend fun register(
         @Field("firstName") firstName :String,
         @Field("lastName") lastName :String,
@@ -115,8 +121,8 @@ interface P2PRepository {
     ): Flow<NetworkResult<TransactionHistoryResponse>>
 
     suspend fun genOneToOneTransactionHistory(
-        @Field("user_id") userId :Int
-    ) :Flow<NetworkResult<TransactionHistoryResponse>>
+        @Field("user_id") userId :Int,  transactionType :String
+    ) : Flow<NetworkResult<TransactionHistoryResponse>>
 
     suspend fun getQrCode() :Flow<NetworkResult<String>>
 
@@ -135,7 +141,9 @@ interface P2PRepository {
     ) :Flow<NetworkResult<ReceiverInfo>>
 
     suspend fun checkSecretCode(secret_code:String) : Flow<NetworkResult<Boolean>>
-    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) :Flow<NetworkResult<String>>
+    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String,
+                                       transactionType:String
+                                       ) :Flow<NetworkResult<String>>
     suspend fun getAllNotification() :Flow<NetworkResult<MutableList<TransactionNotification>>>
 
     suspend fun getBalance() : Flow<NetworkResult<Pair<String,String>>>

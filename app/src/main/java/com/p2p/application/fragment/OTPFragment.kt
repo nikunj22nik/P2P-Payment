@@ -55,6 +55,7 @@ class OTPFragment : Fragment() {
     private var fcmToken: String = ""
     private lateinit var viewModel : OtpViewModel
     private var showDialogToHome :Boolean  = false
+    private var rejectReason :String =""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +69,7 @@ class OTPFragment : Fragment() {
         selectedType = sessionManager.getLoginType().orEmpty()
         viewModel.screenType = screenType
          extractingParameter()
-        callingResendTask()
+         callingResendTask()
        // makeAstrict()
         return binding.root
     }
@@ -197,8 +198,12 @@ class OTPFragment : Fragment() {
 //                    if (selectedType.equals(AppConstant.AGENT,true) || selectedType.equals(AppConstant.MASTER_AGENT,true)){
                     SessionManager(requireContext()).setIsWelcome(true)
                         if (sessionManager.getIsPin()){
-                            findNavController().navigate(R.id.userWelcomeFragment)
-                        }else{
+
+                        //    findNavController().navigate(R.id.userWelcomeFragment)
+                            findNavController().navigate(R.id.checkSecretCodeFragment)
+
+                        }
+                        else{
                             findNavController().navigate(R.id.secretCodeFragment)
                         }
 //                    }else{
@@ -209,7 +214,8 @@ class OTPFragment : Fragment() {
                 } else if (buttonContent.equals(AppConstant.TRY_AGAIN,true)) {
                     if(selectedType.equals(AppConstant.MERCHANT,true)){
                         findNavController().navigate(R.id.merchantVerificationFragment)
-                    }else {
+                    }
+                    else {
                         findNavController().navigate(R.id.createAccountFragment)
                     }
                 }
@@ -316,6 +322,7 @@ class OTPFragment : Fragment() {
                             val response = result.data ?: return@collect
                             val user = response.user
 
+                            rejectReason = response.user.reject_reason
                             when (selectedType) {
                                 AppConstant.USER -> handleUserLogin(response)
                                 AppConstant.MERCHANT -> {
@@ -413,7 +420,10 @@ class OTPFragment : Fragment() {
             }
         }
         if (sessionManager.getIsPin()){
-            findNavController().navigate(R.id.userWelcomeFragment)
+           // findNavController().navigate(R.id.userWelcomeFragment)
+
+            findNavController().navigate(R.id.checkSecretCodeFragment)
+
         }else{
             findNavController().navigate(R.id.secretCodeFragment)
         }
@@ -421,6 +431,7 @@ class OTPFragment : Fragment() {
 
 
     private fun handleVerificationStatus(status: Int, role: String) {
+        Log.d("TESTING_REJECT","Reject Reason "+rejectReason)
         when (role) {
             AppConstant.MERCHANT -> {
                 when (status) {
@@ -434,7 +445,8 @@ class OTPFragment : Fragment() {
                     1 -> {
                         if(!showDialogToHome){
                             if (sessionManager.getIsPin()){
-                                findNavController().navigate(R.id.userWelcomeFragment)
+                                findNavController().navigate(R.id.checkSecretCodeFragment)
+                            //  findNavController().navigate(R.id.userWelcomeFragment)
                             }else{
                                 findNavController().navigate(R.id.secretCodeFragment)
                             }
@@ -452,7 +464,7 @@ class OTPFragment : Fragment() {
                     2 -> showAlertDialog(
                         header = "Documents Rejected",
                         subheader = "",
-                        content = "Verification failed. Please re-upload valid documents.",
+                        content = "Reject Reason :"+rejectReason,
                         buttonContent = AppConstant.TRY_AGAIN,
                         iconRes = R.drawable.ic_document_rejected
                     )
@@ -470,7 +482,9 @@ class OTPFragment : Fragment() {
                     1 -> {
                         if(!showDialogToHome){
                             if (sessionManager.getIsPin()){
-                                findNavController().navigate(R.id.userWelcomeFragment)
+                                findNavController().navigate(R.id.checkSecretCodeFragment)
+
+                                //   findNavController().navigate(R.id.userWelcomeFragment)
                             }else{
                                 findNavController().navigate(R.id.secretCodeFragment)
                             }
@@ -487,7 +501,7 @@ class OTPFragment : Fragment() {
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subheader = "",
-                        content = "Verification failed. Please re-upload valid documents.",
+                        content = "Reject Reason :"+rejectReason,
                         buttonContent = AppConstant.TRY_AGAIN,
                         iconRes = R.drawable.ic_document_rejected
                     )
@@ -505,7 +519,8 @@ class OTPFragment : Fragment() {
                     1 -> {
                         if(!showDialogToHome){
                             if (sessionManager.getIsPin()){
-                                findNavController().navigate(R.id.userWelcomeFragment)
+                             //   findNavController().navigate(R.id.userWelcomeFragment)
+                                 findNavController().navigate(R.id.checkSecretCodeFragment)
                             }else{
                                 findNavController().navigate(R.id.secretCodeFragment)
                             }
@@ -522,7 +537,7 @@ class OTPFragment : Fragment() {
                     2 -> showAlertDialog(
                         header = "Verification Rejected",
                         subheader = "",
-                        content = "Verification failed.",
+                        content ="Reject Reason :"+ rejectReason,
                         buttonContent = AppConstant.TRY_AGAIN,
                         iconRes = R.drawable.ic_document_rejected
                     )
@@ -620,8 +635,8 @@ class OTPFragment : Fragment() {
 
     private fun fetchToken() {
         FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
+            .addOnCompleteListener {
+                task -> if (task.isSuccessful) {
                     fcmToken = task.result
                     Log.d("FCM", "FCM Token: ${task.result}")
                 } else {
@@ -637,3 +652,5 @@ class OTPFragment : Fragment() {
     }
 
 }
+
+

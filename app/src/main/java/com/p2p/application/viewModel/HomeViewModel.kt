@@ -25,6 +25,7 @@ class HomeViewModel @Inject constructor(private var repository: P2PRepository): 
     suspend fun homeMerchantRequest() : Flow<NetworkResult<RecentMerchantModel>>{
         return repository.homeMerchantRequest()
     }
+
     suspend fun sendMoney(
         senderType: String,
         receiver_id: Int,
@@ -33,12 +34,14 @@ class HomeViewModel @Inject constructor(private var repository: P2PRepository): 
         confirmAmount: String,
         currentTime: String,
         currentDate: String
-    ): Flow<NetworkResult<Transaction>>{
+    ): Flow<NetworkResult<Transaction>> {
+
         return repository.sendMoney(senderType,receiver_id,receiverType,amount,confirmAmount,
             currentTime,currentDate
         ).onEach {
 
         }
+
     }
 
 }

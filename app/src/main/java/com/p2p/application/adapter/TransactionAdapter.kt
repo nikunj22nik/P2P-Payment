@@ -22,9 +22,8 @@ import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 
 
 class TransactionAdapter(
-    private var items: List<HistoryItem>,
-    var type: String = "list",
-    private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?) -> Unit
+    private var items: List<HistoryItem>, var type: String = "list",
+    private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?,transactionType:String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var fullList: List<HistoryItem> = items   // store original list
@@ -138,7 +137,7 @@ class TransactionAdapter(
 
     class TransactionViewHolder(
         itemView: View,
-        private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?) -> Unit,
+        private val onTransactionClick: (userId: Int, userName: String, userNumber: String, userProfile: String?,paymentId:String?,type:String) -> Unit,
         private val type: String
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -157,7 +156,6 @@ class TransactionAdapter(
         fun bind(data: HistoryItem.Transaction) {
             if (data.amount < 0) {
                 title.setTextColor("#0F0D1C".toColorInt())
-//                val formatted = String.format("%.2f", data.amount)
                 val formatted = formatAmount(data.amount.toString())
                 amount.text = formatted+" "+ data.currency
                 if(data.rebalance.equals("normal",true)){
@@ -171,9 +169,11 @@ class TransactionAdapter(
                 val formatted = formatAmount(data.amount.toString())
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
-                if(data.rebalance.equals("normal",true)){
+                if(data.rebalance.equals("normal",true) || data.rebalance.equals("admin",true)){
                     title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
-                }else{
+                }
+
+                else{
                     title.text =  "Rebalancing From ${data.title}"
                 }
             }
@@ -182,7 +182,7 @@ class TransactionAdapter(
             amount.setTextColor(if (data.amount > 0) "#03B961".toColorInt() else "#E74C3C".toColorInt())
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")
-             Log.d("TESTING_REBALANCE",data.rebalance)
+             Log.d("TESTING_REBALANCE",data.rebalance+" type is"+ data.rebalance +" transaction_category"+data.transaction_category)
             if (type.equals("list", true)) {
                 if(data.rebalance.equals("normal",true)) {
                     Glide.with(itemView.context)
@@ -192,10 +192,31 @@ class TransactionAdapter(
                         .into(image)
                 }
                 else{
-                    Glide.with(itemView.context)
-                        .load(url.ifEmpty { null })
-                        .placeholder(R.drawable.rebalancingicon).error(R.drawable.rebalancingicon)
-                        .into(image)
+                    if(data.rebalance.equals("admin",true)) {
+                        if (data.rebalance.equals(
+                                "admin",
+                                true
+                            ) && !data.transaction_category.equals("commission", true)
+                        ) {
+                            Glide.with(itemView.context)
+                                .load(R.drawable.icon_rebalancing)
+                                .error(R.drawable.icon_rebalancing)
+                                .into(image)
+                        } else {
+                            Glide.with(itemView.context)
+                                .load(R.drawable.transfericon)
+                                .placeholder(R.drawable.transfericon)
+                                .error(R.drawable.transfericon)
+                                .into(image)
+                        }
+                    }
+                    else {
+                        Glide.with(itemView.context)
+                            .load(url.ifEmpty { null })
+                            .placeholder(R.drawable.rebalancingicon)
+                            .error(R.drawable.rebalancingicon)
+                            .into(image)
+                    }
                 }
             } else {
                 if (data.amount < 0) {
@@ -214,7 +235,7 @@ class TransactionAdapter(
             }
 
             lay.setOnClickListener {
-                onTransactionClick(data.id.toInt(), data.title, data.phone, data.profile,data.id)
+                onTransactionClick(data.id.toInt(), data.title, data.phone, data.profile,data.id,data.rebalance)
             }
         }
 
@@ -274,7 +295,6 @@ class TransactionAdapter(
             cleanedList.add(0, lastHeader)
         }
 
-        // Update adapter
         items = cleanedList
         notifyDataSetChanged()
     }

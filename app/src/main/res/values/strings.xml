@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ID Many</string>
+    <string name="app_name">Many</string>
     <string name="todo">TODO</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_account_type">Choose Account Type</string>
@@ -23,6 +23,7 @@
     <string name="limit_text">Want to increase your account limit?\nComplete a quick verification by submitting \nyour valid ID document.</string>
     <string name="didn_t_receive_a_code">Didn\'t receive a code?</string>
     <string name="resend">Resend</string>
+    <string name="resend_in">Resend in</string>
     <string name="acceptedLimit">Accepted Documents:</string>
     <string name="Passport">Passport</string>
     <string name="or">or</string>
@@ -80,7 +81,7 @@
     <string name="new_transfers">New Transfers</string>
     <string name="benin_electric_power_company">Benin Electric Power Company</string>
     <string name="reference_de_accountur">Reference de Accountur</string>
-    <string name="welcome_to_nmany_mobile_money">Welcome to \nMany Mobile Money</string>
+    <string name="welcome_to_nmany_mobile_money">Welcome to Many.</string>
     <string name="send_and_receive_money_instantly_with_just_a_few_ntaps">Send and receive money instantly with just a few \ntaps.</string>
     <string name="your_balance">Your Balance</string>
     <string name="_24_900_fcfa">24 900 fcfa</string>
@@ -95,7 +96,7 @@
     <string name="submit_documents">Submit Documents</string>
     <string name="business_id">Business ID</string>
     <string name="upload_your_business_registration_document">Upload your business registration document</string>
-    <string name="tax_id">Tax ID</string>
+    <string name="tax_id">Contract</string>
     <string name="upload_your_tax_identification_document">Upload your tax identification document</string>
     <string name="upload_your_business_registration_certificate">Upload your business registration certificate</string>
     <string name="business_registration_number">Business Registration Number</string>
@@ -119,7 +120,7 @@
     <string name="we_couldn_t_find_a_user_with_this_number_try_searching_with_another_number">We couldn’t find a user with this number. Try searching with another number.</string>
     <string name="mobile_fees">Fee = 1%</string>
     <string name="maximum_fees">Maximum monthly volume : </string>
-    <string name="star">*</string>
+    <string name="star">****</string>
     <string name="your_transaction_has_been_completed_successfully">Your transaction has been completed successfully.</string>
     <string name="upload_icon">Upload Icon</string>
     <string name="enter_a_new_phone_number">Enter a new phone number</string>
@@ -130,4 +131,18 @@
     <string name="_0_fcfa">0 FCFA</string>
     <string name="received">Received</string>
     <string name="all_trans">All Transactions</string>
+    <string name="user_registration">User Registration</string>
+    <string name="reenter_secret">Re-enter secret code</string>
+    <string name="verify_now">Verify Your Number</string>
+    <string name="send_4_digit_code">We’ve sent a 4-digit code </string>
+    <string name="transaction_complete">Your transaction has been completed successfully.</string>
+    <string name="transaction_detail">Transaction Details</string>
+    <string name="amount">Amount</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="refernce">Reference</string>
+    <string name="fees">Fees</string>
+    <string name="recipt">Recipient</string>
+    <string name="recipent_phone_number">Recipient Phone Number</string>
+    <string name="invite_many">Invite friends to Many.</string>
 </resources>

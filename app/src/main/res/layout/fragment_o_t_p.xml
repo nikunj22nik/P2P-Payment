@@ -128,7 +128,7 @@ tools:context=".fragment.OTPFragment">
             android:textSize="@dimen/_13sdp"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:text="Resend in "/>
+            android:text="@string/resend_in"/>
     </LinearLayout>
 </LinearLayout>
 

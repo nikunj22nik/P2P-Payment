@@ -38,6 +38,8 @@ import com.p2p.application.model.contactmodel.ContactModel
 import com.p2p.application.model.countrymodel.Country
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.EditTextUtils
+import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.addThousandSeparator
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.show
@@ -80,6 +82,9 @@ class RebalancingFragment : Fragment(),ItemClickListener {
         sessionManager = SessionManager(requireContext())
         contactsList.clear()
         makeAstrict()
+
+        binding.edAmount.addThousandSeparator()
+        binding.edCnfAmount.addThousandSeparator()
         askContactPermission()
         return binding.root
     }
@@ -145,10 +150,12 @@ class RebalancingFragment : Fragment(),ItemClickListener {
             binding.layDone.setOnClickListener {
                 if (isOnline(requireContext())){
                     if (isValidation()){
-                        binding.layoutSecretCode.visibility = View.VISIBLE
-                        binding.layoutSendMoney.visibility = View.GONE
+//                        binding.layoutSecretCode.visibility = View.VISIBLE
+//                        binding.layoutSendMoney.visibility = View.GONE
+                        rebalancingRequest()
                     }
-                }else{
+                }
+                else{
                     showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
                 }
             }
@@ -226,7 +233,7 @@ class RebalancingFragment : Fragment(),ItemClickListener {
                 when (it) {
                     is NetworkResult.Success -> {
                         if (it.data == true) {
-                            rebalancingRequest()
+
                         } else {
                             hide(requireActivity())
                             showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
@@ -264,10 +271,9 @@ class RebalancingFragment : Fragment(),ItemClickListener {
             val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
             val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
             val countryCode  = binding.tvCountryCode.text.replace("[()]".toRegex(), "")
-            viewModel.rebalancingRequest(binding.edCnfAmount.text.toString(),
-                countryCode,
-                binding.edSearchAuto.text.toString(),currentTime,currentDate).collect { result ->
-                hide(requireActivity())
+            viewModel.rebalancingRequest(LoadingUtils.getPlainNumber(binding.edCnfAmount.text.toString()),
+                countryCode, binding.edSearchAuto.text.toString(), currentTime, currentDate ).collect {
+                    result -> hide(requireActivity())
                 when (result) {
                     is NetworkResult.Success -> {
                         val data = result.data

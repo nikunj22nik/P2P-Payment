@@ -16,14 +16,13 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
         FirebaseInstallations.getInstance().id
             .addOnCompleteListener { task: Task<String> ->
                 if (!task.isSuccessful) {
-                    Log.w("FIS", "getId failed", task.exception)
-                    return@addOnCompleteListener
+                     Log.w("FIS", "getId failed", task.exception)
+                   return@addOnCompleteListener
                 }
                 Log.d("FIS", "Installation ID: " + task.result)
             }

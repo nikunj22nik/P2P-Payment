@@ -38,6 +38,7 @@ class CheckSecretCodeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
         binding = FragmentCheckSecretCodeBinding.inflate(LayoutInflater.from(requireContext()))
         binding.btnForgot.setOnClickListener {

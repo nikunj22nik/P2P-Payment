@@ -92,8 +92,8 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="center"
                             android:text="@string/send_and_receive_money_instantly_with_just_a_few_ntaps" />
-
                     </LinearLayout>
+
 
                     <LinearLayout
                         android:id="@+id/layBalance"
@@ -114,9 +114,12 @@
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_bold"
                             android:layout_gravity="center"
-                            android:text="@string/your_balance" />
+                            android:text="@string/your_balance"
+                            android:visibility="gone"
+                            />
 
                         <LinearLayout
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"

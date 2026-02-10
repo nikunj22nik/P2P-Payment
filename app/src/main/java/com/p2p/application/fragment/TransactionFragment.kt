@@ -1,7 +1,6 @@
 package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,8 +12,6 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,14 +19,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.p2p.application.R
-import com.p2p.application.adapter.AdapterCountry
 import com.p2p.application.adapter.TransactionAdapter
 import com.p2p.application.databinding.FragmentTransactionBinding
 import com.p2p.application.di.NetworkResult
 import com.p2p.application.model.HistoryItem
 import com.p2p.application.model.TransactionItem
 import com.p2p.application.util.AppConstant
-import com.p2p.application.util.CommonFunction.Companion.SPLASH_DELAY
 import com.p2p.application.util.LoadingUtils
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.MessageError
@@ -39,7 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -61,13 +55,19 @@ class TransactionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
+
         binding = FragmentTransactionBinding.inflate(layoutInflater, container, false)
+
         sessionManager = SessionManager(requireContext())
+
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+
         selectedType = sessionManager.getLoginType().orEmpty()
+
         lifecycleScope.launch {
             binding.itemRcy.visibility = View.VISIBLE
         }
+
         if (selectedType.equals(AppConstant.MASTER_AGENT, true)) {
             binding.layShow.visibility = View.GONE
             binding.imgQuestion.visibility = View.GONE
@@ -79,16 +79,20 @@ class TransactionFragment : Fragment() {
         }
 
         val items = mutableListOf<HistoryItem>()
+
         adapter = TransactionAdapter(items) {
-            userId, userName, userNumber, userProfile, paymentId ->
+            userId, userName, userNumber, userProfile, paymentId,type ->
             val bundle = Bundle()
             bundle.putInt("userId", userId)
             bundle.putString("userName", userName)
             bundle.putString("userNumber", userNumber)
             bundle.putString("userProfile", userProfile)
+            bundle.putString("type",type)
             findNavController().navigate(R.id.individualTransactionFragment, bundle)
         }
+
         binding.itemRcy.adapter = adapter
+
         binding.edSearch.addTextChangedListener(object : TextWatcher {
             private var searchJob: Job? = null
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -116,6 +120,7 @@ class TransactionFragment : Fragment() {
         callingRecyclerSetupPagination()
 
         callingTransactionHistoryApi()
+
         return binding.root
     }
 
@@ -276,6 +281,7 @@ class TransactionFragment : Fragment() {
                         val response = it.data
                         val list = withContext(Dispatchers.Default) {
                             response?.data?.let { data ->
+
                                 buildHistoryList(data).toMutableList()
                             } ?: mutableListOf()
                         }
@@ -398,6 +404,10 @@ class TransactionFragment : Fragment() {
 
         val historyList = mutableListOf<HistoryItem>()
 
+
+
+
+
         val grouped = transactions.groupBy { item ->
             val dateStr = item.date ?: "Unknown"  // Handle null
             val parts = dateStr.split(" ")
@@ -421,6 +431,8 @@ class TransactionFragment : Fragment() {
             historyList.add(HistoryItem.Header(monthYear))
 
             list.forEach { item ->
+                Log.d("TESTING_CATEGORY",item.transaction_category)
+
                 historyList.add(
                     HistoryItem.Transaction(
                         title = "${item.user.first_name} ${item.user.last_name}",
@@ -434,11 +446,19 @@ class TransactionFragment : Fragment() {
                         profile = item.user.business_logo,
                         id = item.user.id.toString(),
                         item.currency,
-                        rebalance = if(item.transaction_mode != null) item.transaction_mode else "normal"
+                        rebalance = if (item.transaction_mode == null) "normal"
+                        else
+                            if (item.transaction_mode.equals("rebalancing"))
+                                "rebalancing"
+                            else
+                                item.transaction_mode
+                        ,
+                        transaction_category = item.transaction_category
                     )
                 )
             }
         }
+
 
         return historyList
     }
@@ -494,46 +514,7 @@ class TransactionFragment : Fragment() {
         existingHistory: MutableList<HistoryItem>,
         newTransactions: List<TransactionItem>
     ): MutableList<HistoryItem> {
-//        val allTransactions = mutableListOf<HistoryItem.Transaction>()
-//
-//        existingHistory.forEach {
-//            if (it is HistoryItem.Transaction) {
-//                allTransactions.add(it)
-//            }
-//        }
-//
-//        val convertedNew = newTransactions.map { item ->
-//            HistoryItem.Transaction(
-//                title = "${item.user.first_name} ${item.user.last_name}",
-//                phone = item.user.phone,
-//                date = "${item.date} ${item.time}",
-//                amount = if (item.transaction_type.equals("debit", true))
-//                    -item.amount.toDouble() else item.amount.toDouble(),
-//                profile = item.user.business_logo,
-//                id = item.user.id.toString(),
-//                currency = item.currency
-//            )
-//        }
-//
-//        allTransactions.addAll(convertedNew)
-//
-//        val sortedTransactions = allTransactions.sortedByDescending {
-//            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm",   Locale.ENGLISH)
-//            formatter.parse(it.date)?.time ?: 0L
-//        }
-//
-//        val result = mutableListOf<HistoryItem>()
-//        var currentHeader: String? = null
-//        sortedTransactions.forEach { txn ->
-//            val parts = txn.date.split(" ")
-//            val monthYear = "${parts[1]} ${parts[2]}"
-//            if (currentHeader != monthYear) {
-//                currentHeader = monthYear
-//                result.add(HistoryItem.Header(monthYear))
-//            }
-//            result.add(txn)
-//        }
-//        return result
+
         val allTransactions = mutableListOf<HistoryItem.Transaction>()
 
 
@@ -543,7 +524,10 @@ class TransactionFragment : Fragment() {
 
 
         val convertedNew = newTransactions.map {
-            item -> HistoryItem.Transaction(
+            item ->
+            Log.d("TESTING_CATEGORY",item.transaction_category)
+
+            HistoryItem.Transaction(
                 title = "${item.user.first_name} ${item.user.last_name}",
                 phone = item.user.phone,
                 date = "${item.date} ${item.time}", // can be Today HH:mm or dd MMM yyyy
@@ -551,7 +535,14 @@ class TransactionFragment : Fragment() {
                 profile = item.user.business_logo,
                 id = item.user.id.toString(),
                 currency = item.currency,
-                rebalance = if(item.transaction_mode != null) item.transaction_mode else "normal"
+                rebalance = if (item.transaction_mode == null)
+                    "normal"
+                else
+                    if (item.transaction_mode.equals("rebalancing",true))
+                        "rebalancing"
+                    else
+                        item.transaction_mode,
+                transaction_category = item.transaction_category
             )
         }
 

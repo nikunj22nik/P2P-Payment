@@ -47,6 +47,7 @@ class ReceiptFragment : Fragment() {
     private lateinit var sessionManager: SessionManager
     private var selectType: String = ""
     private var receiptId: String = ""
+    private var transactionType :String =""
     private lateinit var viewModel: ReceiptViewModel
 
     override fun onCreateView(
@@ -59,7 +60,12 @@ class ReceiptFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         selectType = sessionManager.getLoginType() ?: ""
         receiptId=arguments?.getString("receiptId","")?:""
-
+        if(arguments?.containsKey("transactionType") == true){
+            transactionType = arguments?.getString("transactionType").toString()
+            if(transactionType.equals("admin",true)){
+                binding.phoneNumber.visibility = View.GONE
+            }
+        }
         loadApi()
 
         return binding.root
@@ -103,7 +109,12 @@ class ReceiptFragment : Fragment() {
         if (isOnline(requireContext())) {
             show(requireActivity())
             lifecycleScope.launch {
-                viewModel.receiptRequest(receiptId).collect {
+
+                if(transactionType.equals("rebalancing")){
+                    transactionType = "normal"
+                }
+
+                viewModel.receiptRequest(receiptId,transactionType).collect {
                     hide(requireActivity())
                     binding.pullToRefresh.isRefreshing = false
                     when(it){
@@ -129,7 +140,7 @@ class ReceiptFragment : Fragment() {
     private fun callingReceiptDownload(){
         lifecycleScope.launch {
             show(requireActivity())
-            viewModel.generateTransactionPdf(transactionId = receiptId).collect {
+            viewModel.generateTransactionPdf(transactionId = receiptId,transactionType).collect {
                 when(it){
                     is NetworkResult.Success ->{
                         hide(requireActivity())

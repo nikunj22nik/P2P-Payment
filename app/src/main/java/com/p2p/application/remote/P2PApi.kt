@@ -1,5 +1,6 @@
 package com.p2p.application.remote
 
+import com.bumptech.glide.load.engine.Resource
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -57,7 +58,9 @@ interface P2PApi {
 
     @POST("get_single_transaction_detail")
     @FormUrlEncoded
-    suspend fun receiptRequest(@Field("transaction_id")userId :String) :Response<JsonObject>
+    suspend fun receiptRequest(@Field("transaction_id")userId :String,
+                               @Field("transaction_type") type:String
+                               ) :Response<JsonObject>
 
     @POST("rebalancing")
     @FormUrlEncoded
@@ -170,7 +173,8 @@ interface P2PApi {
     @POST("get_one_to_one_transaction_history")
     @FormUrlEncoded
     suspend fun genOneToOneTransactionHistory(
-        @Field("user_id") userId :Int
+        @Field("user_id") userId :Int,
+        @Field("transaction_type") transactionType:String
     ) : Response<JsonObject>
 
     @POST("get_qr_code")
@@ -188,6 +192,18 @@ interface P2PApi {
         @Field("date") date :String
     ) : Response<JsonObject>
 
+    @POST("withdrawal")
+    @FormUrlEncoded
+    suspend fun withDraw(
+        @Field("sender_id") senderId :String,
+        @Field("sender_type") senderType :String,
+        @Field("amount") amount :String,
+        @Field("time") time :String,
+        @Field("date") date :String
+    ) : Response<JsonObject>
+
+
+
     @POST("receiver_profile_image")
     @FormUrlEncoded
     suspend fun receiverProfileImage(
@@ -200,7 +216,9 @@ interface P2PApi {
 
     @POST("generate_transaction_detail_pdf")
     @FormUrlEncoded
-    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String) : Response<JsonObject>
+    suspend fun generateTransactionPdf(@Field("transaction_id") transactionId :String,
+                                       @Field("transaction_type") transactionType:String
+                                       ) : Response<JsonObject>
 
     @POST("get_all_notifications")
     suspend fun getAllNotification() :Response<JsonObject>

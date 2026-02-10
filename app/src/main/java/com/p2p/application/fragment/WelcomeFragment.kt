@@ -48,6 +48,7 @@ import com.p2p.application.model.homemodel.Transaction
 import com.p2p.application.model.recentmerchant.Merchant
 import com.p2p.application.util.AppConstant
 import com.p2p.application.util.LoadingUtils
+import com.p2p.application.util.LoadingUtils.Companion.addThousandSeparator
 import com.p2p.application.util.LoadingUtils.Companion.formatAmount
 import com.p2p.application.util.LoadingUtils.Companion.hide
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
@@ -159,7 +160,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         val masked = originalText.map { ch ->
             if (ch == ' ') ' ' else '*'
         }.joinToString("")
-        binding.tvBalance.text = masked
+       // masked ="*****"
+        binding.tvBalance.text = "****"
         binding.imgHide.setImageResource(R.drawable.eye_on)
     }
     private fun recentMerchant(){
@@ -202,7 +204,7 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.imgPay.visibility = View.VISIBLE
                 binding.imgSend.visibility = View.VISIBLE
                 binding.imgText.visibility = View.INVISIBLE
-                binding.tvHeader.text = "Welcome to \nMany Mobile Money"
+                binding.tvHeader.text = "Welcome to Many \n"
                 binding.tvHSubHeader.text = "Send and receive money instantly with just a few \ntaps."
             }
             if (selectedType.equals(MessageError.MERCHANT,true)){
@@ -248,7 +250,8 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
                 binding.btnRebalancing.setBackgroundResource(R.drawable.button_custom_border)
                 binding.imgLogo.setBackgroundResource(R.drawable.agentlogo)
             }
-        } else{
+        }
+        else{
             if (selectedType.equals(MessageError.USER,true)){
                 binding.layTitle.visibility = View.GONE
                 binding.layBalance.visibility = View.VISIBLE
@@ -454,11 +457,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
         val imageProfile: CircleImageView? = dialogWeight.findViewById(R.id.imageProfile)
         val edUserAmount: EditText? = dialogWeight.findViewById(R.id.edUserAmount)
         val edAmount: EditText? = dialogWeight.findViewById(R.id.edAmount)
+
+        edUserAmount?.addThousandSeparator()
+        edAmount?.addThousandSeparator()
         edUserAmount?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val input = s.toString().trim()
+                val input = LoadingUtils.getPlainNumber(s.toString().trim())
                 val number = input.toDoubleOrNull()
                 if (number != null) {
 
@@ -496,13 +502,14 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
             if (isValidation()){
 
                 val receiver = Receiver(((merchantData.first_name?:"")+" " + (merchantData.last_name?:"")),
-                    merchantData.id,merchantData.phone,merchantData.role,amount=edUserAmount?.text.toString())
+                    merchantData.id,merchantData.phone,merchantData.role,amount=
+                        LoadingUtils.getPlainNumber(edUserAmount?.text.toString()))
                 val json = Gson().toJson(receiver)
                 val bundle = Bundle()
                 bundle.putString("receiver_json", json)
                 bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
                // findNavController().navigate(R.id.sendMoneyFragment, bundle)
-            callingPaymentApi(receiver,edUserAmount?.text.toString(), dialogWeight)
+            callingPaymentApi(receiver, LoadingUtils.getPlainNumber(edUserAmount?.text.toString()), dialogWeight)
             }
 
         }
@@ -570,11 +577,24 @@ class WelcomeFragment : Fragment(), ItemClickListenerType {
     override fun onItemClick(data: String,type: String) {
         if (type.equals("receiptFragment",true)){
             val bundle = Bundle()
-            bundle.putString("receiptId", data)
+            val parts = data.split("**")
+
+            val id = parts[0]
+            var transactionMode = parts[1]
+            bundle.putString("receiptId", id)
+            if(transactionMode.equals("rebalancing")){
+                transactionMode = "normal"
+            }
+            bundle.putString("transactionType",transactionMode)
+
             findNavController().navigate(R.id.receiptFragment,bundle)
-        }else{
+
+        }
+        else{
+
             dialogPay.dismiss()
             showAlertPayMerchant(data)
+
         }
 
     }

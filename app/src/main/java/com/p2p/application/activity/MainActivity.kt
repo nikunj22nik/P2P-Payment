@@ -57,17 +57,8 @@ class MainActivity : AppCompatActivity() {
             navGraph.setStartDestination(R.id.developerFragment)
         }else{
             if (sessionManager.getIsLogin()?:false){
-                /*if (selectedType.equals(AppConstant.USER,true) || selectedType.equals(AppConstant.AGENT,true)|| selectedType.equals(AppConstant.MASTER_AGENT,true)) {
-                    if (sessionManager.getIsPin()){
-                        navGraph.setStartDestination(R.id.userWelcomeFragment)
-                    }else{
-                        navGraph.setStartDestination(R.id.secretCodeFragment)
-                    }
-                }else{
-                    navGraph.setStartDestination(R.id.userWelcomeFragment)
-                }*/
-                if (sessionManager.getIsPin()){
 
+                if (sessionManager.getIsPin()){
                     navGraph.setStartDestination(R.id.checkSecretCodeFragment)
                 }else{
                     navGraph.setStartDestination(R.id.secretCodeFragment)

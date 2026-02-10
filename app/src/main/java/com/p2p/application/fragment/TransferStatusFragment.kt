@@ -93,7 +93,7 @@ class TransferStatusFragment : Fragment() {
         lifecycleScope.launch {
             transactionId?.let {
                 LoadingUtils.show(requireActivity())
-                viewModel.receiptRequest(transactionId.toString()).collect {
+                viewModel.receiptRequest(transactionId.toString(),"normal").collect {
                     when(it){
                         is NetworkResult.Success ->{
                             LoadingUtils.hide(requireActivity())

@@ -1,5 +1,6 @@
 package com.p2p.application.fragment
 
+
 import android.os.Bundle
 import android.view.Choreographer
 import androidx.fragment.app.Fragment
@@ -38,14 +39,16 @@ class IndividualTransactionHistoryFragment : Fragment() {
     private lateinit var adapter: TransactionAdapter
     private lateinit var sessionManager: SessionManager
     private var selectedType: String = ""
-    private var popupWindow: PopupWindow?=null
+    private var popupWindow: PopupWindow?= null
     private lateinit var viewModel : TransactionViewModel
     private  var userId :Int =0
+    private var type :String =""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
          userId = requireArguments().getInt("userId")
+         type = requireArguments().getString("type").toString()
     }
 
     override fun onCreateView(
@@ -58,6 +61,9 @@ class IndividualTransactionHistoryFragment : Fragment() {
         sessionManager= SessionManager(requireContext())
         viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
 
+        if(type.equals("admin",true)){
+             binding.tvPhoneNumber.visibility =View.GONE
+        }
         val userName = requireArguments().getString("userName")
         val userNumber = requireArguments().getString("userNumber")
         val userProfile = requireArguments().getString("userProfile")
@@ -70,9 +76,10 @@ class IndividualTransactionHistoryFragment : Fragment() {
 
         val items = mutableListOf<HistoryItem>()
 
-        adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile, paymentId ->
+        adapter = TransactionAdapter(items,"individual"){ userId, userName, userNumber, userProfile, paymentId ,type->
             val bundle = Bundle()
             bundle.putString("receiptId", paymentId)
+            bundle.putString("transactionType",type)
             findNavController().navigate(R.id.receiptFragment,bundle)
         }
 
@@ -89,11 +96,13 @@ class IndividualTransactionHistoryFragment : Fragment() {
         callingRecyclerSetupPagination()
         callingTransactionHistoryApi()
         handleBackPress()
+
         binding.ivBackArrow.setOnClickListener {
             findNavController().navigate(R.id.transactionFragment)
         }
 
         return binding.root
+
     }
 
 
@@ -154,7 +163,8 @@ class IndividualTransactionHistoryFragment : Fragment() {
     private fun callingTransactionHistoryApi(){
         lifecycleScope.launch {
             LoadingUtils.show(requireActivity())
-            viewModel.genOneToOneTransactionHistory(userId).collect { result ->
+            if(type.equals("rebalancing",true)) type = "normal"
+            viewModel.genOneToOneTransactionHistory(userId,type).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         val response = result.data
@@ -221,7 +231,15 @@ class IndividualTransactionHistoryFragment : Fragment() {
                         amount = if(item.transaction_type.equals("debit",true)) -1*item.amount.toDouble() else item.amount.toDouble()
                         , profile = item.user.business_logo,
                         id = item.id.toString(),
-                        currency = item.currency
+                        currency = item.currency,
+                        rebalance = if (item.transaction_mode == null)
+                            "normal"
+                        else
+                            if (item.transaction_mode.equals("rebalancing"))
+                                "normal"
+                            else
+                                item.transaction_mode,
+                        transaction_category = item.transaction_category
 
                     )
                 )

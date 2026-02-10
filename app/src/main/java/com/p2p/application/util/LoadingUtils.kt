@@ -10,8 +10,10 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.text.Editable
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -21,7 +23,10 @@ import com.p2p.application.R
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.roundToLong
+import android.text.TextWatcher
+import android.util.Log
 
+import java.text.DecimalFormat
 class LoadingUtils {
 
 
@@ -139,17 +144,173 @@ class LoadingUtils {
                 dialogLoader?.dismiss()
             }
         }
+        fun getPlainNumber(amount: String): String {
 
+            return amount.replace(" ", "").replace(",", "")
+        }
+
+        fun EditText.addThousandSeparator() {
+//            this.addTextChangedListener(object : TextWatcher {
+//                private var current = ""
+//
+//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//
+//                override fun afterTextChanged(s: Editable?) {
+//                    if (s.toString() != current) {
+//                        this@addThousandSeparator.removeTextChangedListener(this)
+//
+//                        val cleanString = s.toString().replace(" ", "")
+//
+//                        if (cleanString.isNotEmpty()) {
+//                            try {
+//                                // Format using Indian numbering system
+//                                val formatted = formatAmount(cleanString)
+//
+//                                current = formatted
+//                                this@addThousandSeparator.setText(formatted)
+//
+//                                // Cursor at the end
+//                                this@addThousandSeparator.setSelection(formatted.length)
+//                            } catch (e: NumberFormatException) {
+//                                // Fallback if number too big
+//                                current = ""
+//                                this@addThousandSeparator.setText("")
+//                                this@addThousandSeparator.setSelection(0)
+//                            }
+//                        } else {
+//                            current = ""
+//                            this@addThousandSeparator.setText("")
+//                            this@addThousandSeparator.setSelection(0)
+//                        }
+//
+//                        this@addThousandSeparator.addTextChangedListener(this)
+//                    }
+//                }
+//            })
+
+
+            this.addTextChangedListener(object : TextWatcher {
+
+                private var current = ""
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val newText = s?.toString() ?: return
+
+                    if (newText == current) return
+
+                    this@addThousandSeparator.removeTextChangedListener(this)
+
+                    // 🔥 Step 1: clean input
+                    val clean = newText
+                        .replace(" ", "")
+                        .replace("\u00A0", "")
+                        .replace(",", "")
+
+                    if (clean.isEmpty()) {
+                        current = ""
+                        this@addThousandSeparator.setText("")
+                        this@addThousandSeparator.addTextChangedListener(this)
+                        return
+                    }
+
+                    // 🔥 Step 2: handle decimal (200000.00)
+                    val parts = clean.split(".")
+                    val integerPart = parts[0]
+                    val decimalPart = if (parts.size > 1) parts[1] else null
+
+                    // 🔥 Step 3: manual 3-3 grouping
+                    val formattedInt = integerPart
+                        .reversed()
+                        .chunked(3)
+                        .joinToString(" ")
+                        .reversed()
+
+                    // 🔥 Step 4: attach decimal back
+                    val formatted = if (decimalPart != null) {
+                        "$formattedInt.$decimalPart"
+                    } else {
+                        formattedInt
+                    }
+
+                    current = formatted
+                    this@addThousandSeparator.setText(formatted)
+
+                    // cursor end par
+                    this@addThousandSeparator.setSelection(formatted.length)
+
+                    this@addThousandSeparator.addTextChangedListener(this)
+                }
+            })
+
+        }
 
         fun formatAmount(amount: String): String {
-            val cleanAmount = amount
-                .replace(" ", "")
-                .replace(",", "")
-            val number = cleanAmount.toDoubleOrNull()?.roundToLong()
-                ?: return amount
-            val formatter = NumberFormat.getInstance(Locale("en", "IN"))
 
-            return formatter.format(number).replace(",", " ")
+//            val cleanAmount = amount.replace(" ", "").replace(",", "")
+//            val number = cleanAmount.toDoubleOrNull()?.roundToLong() ?: return amount
+//            val formatter = NumberFormat.getInstance(Locale("en", "IN"))
+//            return formatter.format(number).replace(",", " ")
+//
+//            val cleanAmount = amount.replace(" ", "").replace(",", "")
+//            val number = cleanAmount.toLongOrNull() ?: return amount
+//
+//            val formatter = NumberFormat.getInstance(Locale.FRANCE).apply {
+//                isGroupingUsed = true
+//                maximumFractionDigits = 0
+//            }
+//
+//            return formatter.format(number)
+
+
+//            val cleanAmount = amount.replace(" ", "").replace(",", "")
+//            val number = cleanAmount.toLongOrNull() ?: return amount
+//
+//            val formatter = NumberFormat.getInstance(Locale.FRANCE).apply {
+//                isGroupingUsed = true
+//                maximumFractionDigits = 0
+//            }
+//
+//            return formatter.format(number)
+
+            if (amount.isEmpty()) return ""
+
+            // 🔥 Step 1: remove separators
+            val clean = amount
+                .replace(" ", "")
+                .replace("\u00A0", "")
+                .replace(",", "")
+
+            if (clean.isEmpty()) return ""
+
+            // 🔥 Step 2: handle decimal input like 200000.00
+            val parts = clean.split(".")
+            val integerPart = parts[0]
+
+            if (integerPart.isEmpty()) return amount
+
+            // 🔥 Step 3: manual 3-3 grouping
+            val formattedInt = integerPart
+                .reversed()
+                .chunked(3)
+                .joinToString(" ")
+                .reversed()
+
+            // 🔥 Step 4: attach decimal back (if any)
+            val output = if (parts.size > 1) {
+                "$formattedInt.${parts[1]}"
+            } else {
+                formattedInt
+            }
+
+            Log.d("TESTING_NUMBERS", "Output is $output")
+
+            return output
         }
 
         fun isOnline(context: Context?): Boolean {

@@ -147,7 +147,7 @@
             android:textSize="@dimen/_13sdp"
             android:hint="0"
             android:background="@null"
-            android:inputType="none"
+            android:inputType="number"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:cursorVisible="false"
@@ -242,88 +242,176 @@
     </LinearLayout>
    </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_secret_code"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/transferTypeContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/_20sdp"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:orientation="vertical"
-        tools:ignore="UseCompoundDrawables,UselessParent">
-        <ImageView
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_60sdp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/todo"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:src="@drawable/agentlogo"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#EEEEEE"
-            android:textSize="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_gravity="center"
-            android:text="@string/enter_your_secret_code"/>
-        <LinearLayout
-            android:id="@+id/otp_enter"
+        android:layout_height="match_parent"
+        android:background="@drawable/bgimg"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_45sdp"
-            android:layout_marginVertical="@dimen/_20sdp"
-            android:layout_marginHorizontal="@dimen/_20sdp"
-            android:elevation="4dp"
+            android:layout_height="100dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-            android:orientation="horizontal"
-            android:weightSum="4">
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:padding="12dp"
+                android:src="@drawable/backicon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transfer Type"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_top_rounded_white"
+            android:padding="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/layoutDeposit"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_purple_rounded"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvDepositIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+"
+                        android:textColor="@color/white"
+                        android:textSize="32sp" />
+                    <TextView
+                        android:id="@+id/tvDepositText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Deposit"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutWithdrawal"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_orange_outline"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvWithdrawIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="—"
+                        android:textColor="#E67E22"
+                        android:textSize="32sp" />
+                    <TextView
+                        android:id="@+id/tvWithdrawText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Withdrawal"
+                        android:textColor="#E67E22" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/lblAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="160dp"
+                android:text="Amount deposit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <EditText
-                android:id="@+id/etOtp1"
-                style="@style/OtpDigitStyleSecret"
-                android:hint="-"
-                android:inputType="numberPassword"
+                android:id="@+id/etAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@null"
+                android:hint="0"
+                android:inputType="number"
+                android:paddingVertical="12dp"
+                app:layout_constraintTop_toBottomOf="@id/lblAmount" />
 
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:textColorHint="#FFFFFF"/>
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                app:layout_constraintTop_toBottomOf="@id/etAmount"
+                />
+
+            <TextView
+                android:id="@+id/lblConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Confirm the Amount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line1" />
 
             <EditText
-                android:id="@+id/etOtp2"
-                style="@style/OtpDigitStyleSecret"
-                android:hint="-"
-                android:inputType="numberPassword"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:textColorHint="#FFFFFF"/>
+                android:id="@+id/etConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@null"
+                android:hint="0"
+                android:enabled="true"
+                android:inputType="number"
+                android:paddingVertical="12dp"
+                app:layout_constraintTop_toBottomOf="@id/lblConfirm" />
 
-            <EditText
-                android:id="@+id/etOtp3"
-                style="@style/OtpDigitStyleSecret"
-                android:hint="-"
-                android:inputType="numberPassword"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:textColorHint="#FFFFFF"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                app:layout_constraintTop_toBottomOf="@id/etConfirm" />
 
-            <EditText
-                android:id="@+id/etOtp4"
-                style="@style/OtpDigitStyleSecret"
-                android:hint="-"
-                android:inputType="numberPassword"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:textColorHint="#FFFFFF"/>
-        </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#B03E7E"
+                android:text="Deposit"
+                android:textColor="@color/white"
+                app:cornerRadius="12dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-        <TextView
-            android:id="@+id/btnForgot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#EEEEEE"
-            android:textSize="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_gravity="center"
-            android:text="Forgot Your Code?"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-   </RelativeLayout>
+</RelativeLayout>

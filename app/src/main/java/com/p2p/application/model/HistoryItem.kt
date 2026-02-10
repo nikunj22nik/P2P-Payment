@@ -10,6 +10,7 @@ sealed class HistoryItem {
         val profile:String?=null,
         val id :String ="",
         var currency :String ="FCFA",
-        var rebalance:String ="normal"
+        var rebalance:String ="normal",
+        var transaction_category:String =""
     ) : HistoryItem()
 }

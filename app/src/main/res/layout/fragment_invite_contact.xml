@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_13sdp"
-            android:text="Invite to Many Mobile Money"
+            android:text="@string/invite_many"
             android:textColor="#FFFFFF"
             android:drawableStart="@drawable/navigation"
             android:drawablePadding="@dimen/_10sdp"

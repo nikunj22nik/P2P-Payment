@@ -9,5 +9,6 @@ data class Transaction(
     val status: String?,
     val transaction_type: String?,
     val transaction_mode: String?,
-    val user: User?
+    val user: User?,
+    val transaction_category:String=""
 )

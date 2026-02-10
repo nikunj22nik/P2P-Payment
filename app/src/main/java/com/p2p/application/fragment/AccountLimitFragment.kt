@@ -1,6 +1,7 @@
 package com.p2p.application.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,9 @@ import com.p2p.application.util.SessionManager
 import com.p2p.application.viewModel.AccountLimitViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.Locale
+import kotlin.math.roundToLong
 
 
 @AndroidEntryPoint
@@ -86,10 +90,10 @@ class AccountLimitFragment : Fragment() {
                             val dataUser=result.data?.data
                             dataUser?.let {
                                 binding.layHide.visibility = View.VISIBLE
-                                binding.tvMaxBalance.text = (it.monthly_limit?:"0") +" "+ it.currency
-                                binding.tvMaxVolume.text = (it.wallet_limit?:"0") +" "+ it.currency
-                                if (it.user_kyc_status == 0){
-                                    binding.layPassport.visibility = View.VISIBLE
+                                binding.tvMaxBalance.text = formatAmount(it.monthly_limit?:"0") +" "+ it.currency
+                                binding.tvMaxVolume.text = formatAmount(it.wallet_limit?:"0") +" "+ it.currency
+                                 if (it.user_kyc_status == 0){
+                                   binding.layPassport.visibility = View.VISIBLE
                                     binding.btnVerifyStatus.visibility = View.GONE
                                     binding.btnVerify.isClickable =  true
                                     binding.tvHeader.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
@@ -143,6 +147,43 @@ class AccountLimitFragment : Fragment() {
             showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
         }
 
+    }
+    fun formatAmount(amount: String): String {
+
+        Log.d("TESTING_NUMBERS", "Input is $amount")
+
+        if (amount.isEmpty()) return ""
+
+        // 🔥 Step 1: remove separators
+        val clean = amount
+            .replace(" ", "")
+            .replace("\u00A0", "")
+            .replace(",", "")
+
+        if (clean.isEmpty()) return ""
+
+        // 🔥 Step 2: handle decimal input like 200000.00
+        val parts = clean.split(".")
+        val integerPart = parts[0]
+
+        if (integerPart.isEmpty()) return amount
+
+        // 🔥 Step 3: manual 3-3 grouping
+        val formattedInt = integerPart
+            .reversed()
+            .chunked(3)
+            .joinToString(" ")
+            .reversed()
+
+        // 🔥 Step 4: attach decimal back (if any)
+        val output = if (parts.size > 1) {
+            "$formattedInt.${parts[1]}"
+        } else {
+            formattedInt
+        }
+
+        Log.d("TESTING_NUMBERS", "Output is $output")
+        return output
     }
 
 }

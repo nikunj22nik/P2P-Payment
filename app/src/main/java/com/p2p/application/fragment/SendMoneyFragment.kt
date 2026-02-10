@@ -1,16 +1,17 @@
 package com.p2p.application.fragment
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -33,8 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.core.view.isVisible
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
-import com.p2p.application.util.EditTextUtils
+import com.p2p.application.util.LoadingUtils.Companion.addThousandSeparator
 import com.p2p.application.util.LoadingUtils.Companion.isOnline
 import com.p2p.application.util.LoadingUtils.Companion.showErrorDialog
 
@@ -49,31 +49,43 @@ class SendMoneyFragment : Fragment() {
     private var availableBalance: String = ""
     private var currency :String =""
     private var monthlyLimit :String =""
-
+    var loginType :String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSendMoneyBinding.inflate(layoutInflater, container, false)
-
         sessionManager = SessionManager(requireContext())
-
         viewModel = ViewModelProvider(this)[SendMoneyViewModel::class.java]
-
         backType = arguments?.getString("backType", "Qr") ?: "Qr"
 
-        makeAstrict()
-
         callingBalanceApi()
+
+
+
+        settingUpWithDrawDeposit()
+
+        binding.etAmount.addThousandSeparator()
+        binding.etConfirm.addThousandSeparator()
+        binding.amnt.addThousandSeparator()
+        binding.confirmAmount.addThousandSeparator()
+         loginType  = SessionManager(requireContext()).getLoginType().toString()
+
+        if(loginType.equals("Agent",true) || loginType.equals("Master Agent",true)) {
+            Log.d("TESTING_MONEY","INSIDE LOGIN TYPE"+ loginType)
+
+            binding.confirmAmount.apply {
+                isEnabled = true
+                isFocusable = true
+                isFocusableInTouchMode = true
+                isCursorVisible = true
+            }
+        }
+
 
         return binding.root
     }
 
-    fun makeAstrict() {
-        EditTextUtils.setNumericAsteriskPassword(binding.etOtp1)
-        EditTextUtils.setNumericAsteriskPassword(binding.etOtp2)
-        EditTextUtils.setNumericAsteriskPassword(binding.etOtp3)
-        EditTextUtils.setNumericAsteriskPassword(binding.etOtp4)
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,21 +99,15 @@ class SendMoneyFragment : Fragment() {
                     findNavController().navigateUp()
                 }
             }
-            else {
-                binding.layoutSecretCode.visibility = View.GONE
-                binding.layoutSendMoney.visibility = View.VISIBLE
-                binding.etOtp1.setText("")
-                binding.etOtp2.setText("")
-                binding.etOtp3.setText("")
-                binding.etOtp4.setText("")
-            }
+
 
         }
 
         binding.btnSend.setOnClickListener {
+
             if(availableBalance != null && !availableBalance.isEmpty() && binding.confirmAmount.length() > 0){
-                val balance: Double = availableBalance.toDouble()
-                val enteredAmount : Double = binding.confirmAmount.text.toString().toDouble()
+                val balance: Double = LoadingUtils.getPlainNumber(availableBalance).toDouble()
+                val enteredAmount : Double = LoadingUtils.getPlainNumber(binding.confirmAmount.text.toString()).toDouble()
                 if(balance >= enteredAmount){
 //                    binding.layoutSecretCode.visibility = View.VISIBLE
 //                    binding.layoutSendMoney.visibility = View.GONE
@@ -128,41 +134,108 @@ class SendMoneyFragment : Fragment() {
 
         viewModel.receiver = receiver
 
+        val loggedInUserType = SessionManager(requireContext()).getLoginType()
+        Log.d("TESTING_USER","Logged in user is"+loggedInUserType)
+
+        if(loggedInUserType.equals(MessageError.MASTER_AGENT,true) || loggedInUserType.equals(MessageError.AGENT,true)){
+            Log.d("TESTING_USER","Logged in user is"+receiver?.user_type)
+
+            if(receiver?.user_type.equals(MessageError.USER,true) || receiver?.user_type.equals(MessageError.MERCHANT,true)){
+                   binding.transferTypeContainer.visibility = View.VISIBLE
+                   binding.layoutSendMoney.visibility= View.GONE
+               }
+        }
+
         if (receiver?.amount != null) {
+
             binding.layoutSendMoney.visibility = View.GONE
-            binding.layoutSecretCode.visibility = View.VISIBLE
+
             binding.amnt.setText(receiver.amount)
+
             val number = receiver.amount.toDoubleOrNull()
+
             if (number != null) {
                 var result = number * 1.01
                 if(receiver?.user_type.equals(AppConstant.MERCHANT,true)){
                     result = number * 1
                 }
 
-                val finalValue = String.format("%.2f", result).toDouble()
+                val finalValue = LoadingUtils.getPlainNumber(String.format("%.2f", result)).toDouble()
+
                 val finalIntValue = AppConstant.roundHalfUp(finalValue)
                 binding.confirmAmount.setText(finalIntValue.toString())
+
             }
+
             else{
                 binding.confirmAmount.setText(AppConstant.roundHalfUpStr(receiver.amount))
             }
+
         }
 
         settingData(viewModel.receiver)
-
         callingGetAmountApi(viewModel.receiver)
-
         callingTextWatcher()
+        handleBackPress()
+    }
 
-        setupOtpFields(binding.etOtp1, binding.etOtp2, binding.etOtp3, binding.etOtp4)
+    private fun settingUpWithDrawDeposit(){
 
-        binding.btnForgot.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("screenType", "loginCode")
-            findNavController().navigate(R.id.forgotCodeFragment, bundle)
+        val btnDepositLayout = binding.layoutDeposit
+        val btnWithdrawLayout = binding.layoutWithdrawal
+        val btnSubmit = binding.btnSubmit
+        val lblAmount = binding.lblAmount
+
+        val tvDepositIcon = binding.tvDepositIcon
+        val tvDepositText = binding.tvDepositText
+        val tvWithdrawIcon = binding.tvWithdrawIcon
+        val tvWithdrawText = binding.tvWithdrawText
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.userWelcomeFragment)
         }
 
-        handleBackPress()
+        btnDepositLayout.setOnClickListener {
+
+            btnDepositLayout.setBackgroundResource(R.drawable.bg_purple_rounded)
+            tvDepositIcon.setTextColor(Color.WHITE)
+            tvDepositText.setTextColor(Color.WHITE)
+
+            // Deselect Withdrawal
+            btnWithdrawLayout.setBackgroundResource(R.drawable.bg_orange_outline)
+            tvWithdrawIcon.setTextColor(Color.parseColor("#E67E22"))
+            tvWithdrawText.setTextColor(Color.parseColor("#E67E22"))
+
+            // Update Submit Button
+            btnSubmit.text = "Deposit"
+            btnSubmit.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#B03E7E"))
+            lblAmount.text = "Amount deposit"
+        }
+
+        btnWithdrawLayout.setOnClickListener {
+            // Select Withdrawal
+            btnWithdrawLayout.setBackgroundResource(R.drawable.bg_orange_rounded)
+            tvWithdrawIcon.setTextColor(Color.WHITE)
+            tvWithdrawText.setTextColor(Color.WHITE)
+
+            // Deselect Deposit
+            btnDepositLayout.setBackgroundResource(R.drawable.bg_purple_outline)
+            tvDepositIcon.setTextColor(Color.parseColor("#B03E7E"))
+            tvDepositText.setTextColor(Color.parseColor("#B03E7E"))
+
+            // Update Submit Button
+            btnSubmit.text = "Withdrawal"
+            btnSubmit.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E67E22"))
+            lblAmount.text = "Amount withdrawal"
+        }
+        btnSubmit.setOnClickListener {
+            if(btnSubmit.text.equals("Deposit")){
+                callingPaymentApiAgentMasterAgent()
+            }else{
+                withDrawPaymentApi()
+            }
+        }
+
 
     }
 
@@ -212,11 +285,11 @@ class SendMoneyFragment : Fragment() {
 
             @SuppressLint("DefaultLocale")
             override fun afterTextChanged(s: Editable?) {
-                val input = s.toString().trim()
+                val input = LoadingUtils.getPlainNumber(s.toString().trim())
                 val number = input.toDoubleOrNull()
                 if (number != null) {
                     val result = number * 1.01
-                    val finalValue = String.format("%.2f", result).toDouble()
+                    val finalValue = LoadingUtils.getPlainNumber(String.format("%.2f", result)).toDouble()
                     if (SessionManager(requireContext()).getLoginType().equals(AppConstant.USER)) {
                         if(viewModel.receiver?.user_type.equals(AppConstant.USER,true) ){
                             binding.confirmAmount.setText(AppConstant.roundHalfUp(finalValue).toString())
@@ -227,13 +300,44 @@ class SendMoneyFragment : Fragment() {
                             binding.confirmAmount.setText(AppConstant.roundHalfUp(result).toString())
                         }
                     } else {
-                        binding.confirmAmount.setText(AppConstant.roundHalfUp(number).toString())
+                     //   binding.confirmAmount.setText(AppConstant.roundHalfUp(number).toString())
                     }
                 } else {
                     binding.confirmAmount.setText("")
                 }
             }
         })
+
+        binding.etAmount.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(
+                p0: CharSequence?,
+                p1: Int,
+                p2: Int,
+                p3: Int
+            ) {
+
+            }
+
+            override fun onTextChanged(
+                p0: CharSequence?,
+                p1: Int,
+                p2: Int,
+                p3: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val input = p0.toString().trim()
+                val number = input.toDoubleOrNull()
+                if (number != null) {
+                  //  binding.etConfirm.setText(AppConstant.roundHalfUp(number).toString())
+                }
+            }
+
+        })
+
+
     }
 
     private fun settingData(receive: Receiver?) {
@@ -286,47 +390,7 @@ class SendMoneyFragment : Fragment() {
         }
     }
 
-    private fun setupOtpFields(vararg fields: EditText) {
 
-        fields.forEachIndexed { index, editText ->
-
-            val next = fields.getOrNull(index + 1)
-            val prev = fields.getOrNull(index - 1)
-
-            // Detect BACKSPACE (DEL key)
-            editText.setOnKeyListener { _, keyCode, event ->
-                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
-                    if (editText.text.isEmpty()) {
-                        prev?.requestFocus()
-                        prev?.setSelection(prev.text.length)
-                    }
-                }
-                false
-            }
-
-            // Detect input change (typing)
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    when {
-                        s?.length == 1 -> {
-                            next?.requestFocus()
-                            if (index == fields.lastIndex) {
-                                val otp = getOtp()
-                                if (otp.length == fields.size) {
-                                    callingCheckSecretCodeApi(getOtp())
-                                }
-                            }
-                        }
-
-                        s?.isEmpty() == true -> prev?.requestFocus()
-                    }
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-        }
-    }
 
 
 //    private fun setupOtpFields(vararg fields: EditText) {
@@ -379,19 +443,16 @@ class SendMoneyFragment : Fragment() {
                             callingPaymentApi()
                         } else {
                             LoadingUtils.hide(requireActivity())
-                            LoadingUtils.showErrorDialog(
-                                requireContext(),
-                                MessageError.INVALID_SECRET
-                            )
+                   LoadingUtils.showErrorDialog(requireContext(), MessageError.INVALID_SECRET)
                         }
                     }
 
                     is NetworkResult.Error -> {
                         LoadingUtils.hide(requireActivity())
-                        LoadingUtils.showErrorDialog(requireContext(), it.message.toString())
-                    }
+                      }
+                    else -> {
 
-                    else -> {}
+                    }
                 }
             }
         }
@@ -401,19 +462,15 @@ class SendMoneyFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.userWelcomeFragment)
                     if (binding.layoutSendMoney.isVisible) {
-                        if (backType.equals("Qr", true)) {
-                            findNavController().navigate(R.id.userWelcomeFragment)
-                        } else {
-                            findNavController().navigateUp()
-                        }
-                    } else {
-                        binding.layoutSecretCode.visibility = View.GONE
-                        binding.layoutSendMoney.visibility = View.VISIBLE
-                        binding.etOtp1.setText("")
-                        binding.etOtp2.setText("")
-                        binding.etOtp3.setText("")
-                        binding.etOtp4.setText("")
+                     //   findNavController().navigateUp()
+//
+//                        if (backType.equals("Qr", true)) {
+//                            findNavController().navigate(R.id.userWelcomeFragment)
+//                        } else {
+//                            findNavController().navigateUp()
+//                        }
                     }
                 }
             }
@@ -425,12 +482,22 @@ class SendMoneyFragment : Fragment() {
             showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
             return
         }
+
+        val amount = binding.amnt.text?.toString()
+        val confirmAccount = binding.confirmAmount.text?.toString()
+        val loginType = SessionManager(requireContext()).getLoginType()
+
+        if(loginType.equals("Agent",true) || loginType.equals("Master Agent",true)) {
+            if(!amount.equals(confirmAccount)){
+                showErrorDialog(requireContext(), "The amount and the confirmation amount should be the same.")
+                return
+            }
+        }
+
         lifecycleScope.launch {
-            val loginType = SessionManager(requireContext()).getLoginType()
             val type = AppConstant.mapperType(loginType)
             val receiver = viewModel.receiver
-            val amount = binding.amnt.text?.toString()
-            val confirmAccount = binding.confirmAmount.text?.toString()
+
             if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
                 val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
                 val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
@@ -439,8 +506,84 @@ class SendMoneyFragment : Fragment() {
                     senderType = type,
                     receiver_id = receiver.user_id,
                     receiverType = receiver.user_type,
-                    amount = amount,
-                    confirmAccount ?: "",
+                    amount = LoadingUtils.getPlainNumber(amount),
+                    LoadingUtils.getPlainNumber(confirmAccount?:"0") ?: "",
+                    currentTime,
+                    currentDate
+                ).collect { result ->
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            LoadingUtils.hide(requireActivity())
+                            val data = result.data
+                            val json = Gson().toJson(result.data)
+                            val bundle = Bundle()
+                            Log.d("TESTING_T_ID", "Transaction id" + data?.transaction_id)
+                            data?.id?.let {
+                                bundle.putLong("transaction_id", data.id.toLong())
+
+                            }
+                            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+                            findNavController().navigate(R.id.transferStatusFragment, bundle)
+                        }
+                        is NetworkResult.Error -> {
+                            LoadingUtils.hide(requireActivity())
+                            showErrorDialog(requireContext(), result.message.toString())
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+            } else {
+                binding.layoutSendMoney.visibility = View.VISIBLE
+            //    binding.layoutSecretCode.visibility = View.GONE
+
+                showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
+
+            }
+
+        }
+
+    }
+
+
+    private fun callingPaymentApiAgentMasterAgent() {
+        if (!isOnline(requireContext())) {
+            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+
+        val amount = binding.etAmount.text?.toString()
+        val confirmAccount = binding.etConfirm.text?.toString()
+         val loginType = sessionManager.getLoginType()
+        Log.d("TESTING_TYPE_USER",loginType.toString())
+
+
+
+        if(!confirmAccount.equals(amount)){
+            showErrorDialog(requireContext(), "The amount and the confirmation amount should be the same.")
+
+            return
+        }
+
+        lifecycleScope.launch {
+            val loginType = SessionManager(requireContext()).getLoginType()
+            val type = AppConstant.mapperType(loginType)
+            val receiver = viewModel.receiver
+
+
+
+
+            if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
+                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
+                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                LoadingUtils.show(requireActivity())
+                viewModel.sendMoney(
+                    senderType = type,
+                    receiver_id = receiver.user_id,
+                    receiverType = receiver.user_type,
+                    amount = LoadingUtils.getPlainNumber(amount),
+                    LoadingUtils.getPlainNumber(confirmAccount?:"0") ?: "",
                     currentTime,
                     currentDate
                 ).collect { result ->
@@ -469,17 +612,75 @@ class SendMoneyFragment : Fragment() {
                 }
             } else {
                 binding.layoutSendMoney.visibility = View.VISIBLE
-                binding.layoutSecretCode.visibility = View.GONE
+                //    binding.layoutSecretCode.visibility = View.GONE
                 showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
             }
         }
     }
 
-    private fun getOtp(): String {
-        return binding.etOtp1.text.toString() +
-                binding.etOtp2.text.toString() +
-                binding.etOtp3.text.toString() +
-                binding.etOtp4.text.toString()
+    private fun withDrawPaymentApi(){
+        if (!isOnline(requireContext())) {
+            showErrorDialog(requireContext(), MessageError.NETWORK_ERROR)
+            return
+        }
+        val amount = binding.etAmount.text?.toString()
+        val confirmAccount = binding.etConfirm.text?.toString()
+
+        if(!confirmAccount.equals(amount)){
+            showErrorDialog(requireContext(), "The amount and the confirmation amount should be the same.")
+            return
+        }
+
+        lifecycleScope.launch {
+            val loginType = SessionManager(requireContext()).getLoginType()
+            Log.d("TESTING_TYPE_USER",loginType.toString())
+
+            val type = AppConstant.mapperType(loginType)
+            val receiver = viewModel.receiver
+
+
+            if (receiver != null && receiver.user_type != null && !amount.isNullOrBlank()) {
+                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
+                val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                LoadingUtils.show(requireActivity())
+                viewModel.withDraw(
+                    senderId = receiver.user_id.toString(),
+                    senderType = receiver.user_type,
+                    amount = LoadingUtils.getPlainNumber(amount),
+                    currentTime,
+                    currentDate
+                ).collect { result ->
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            LoadingUtils.hide(requireActivity())
+                            Toast.makeText(requireActivity(), "Amount withdrawn successfully", Toast.LENGTH_LONG).show();
+
+                            val bundle = Bundle()
+                            Log.d("TESTING_T_ID", "Transaction id" + result.data)
+                            bundle.putLong("transaction_id", result.data?.toLong() ?: 0)
+                            bundle.putString(AppConstant.SCREEN_TYPE, AppConstant.QR)
+
+                            findNavController().navigate(R.id.transferStatusFragment, bundle)
+
+                        }
+                        is NetworkResult.Error -> {
+
+                            LoadingUtils.hide(requireActivity())
+                            showErrorDialog(requireContext(), result.message.toString())
+
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+            } else {
+                binding.layoutSendMoney.visibility = View.VISIBLE
+                //    binding.layoutSecretCode.visibility = View.GONE
+                showErrorDialog(requireContext(), MessageError.AMOUNT_NULL)
+            }
+        }
+
     }
 
 

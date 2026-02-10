@@ -6,6 +6,7 @@ class AppConstant {
 
     companion object {
         const val LOGIN_SESSION:String="login_session"
+        const val IMAGE_BASE_URL ="https://alertapp.tgastaging.com/storage/"
         const val LOGIN_TYPE:String="login_type"
         const val FORGOT_TYPE:String="forgotCode"
         const val PINT_TYPE:String="isPin"

@@ -61,9 +61,10 @@ class QRFragment : Fragment() {
         binding.qrCodeImage.visibility =View.INVISIBLE
         registerUiListener()
 
-//        if (selectedType.equals(AppConstant.MERCHANT,true)){
-//            binding.bottomTabs.visibility  = View.INVISIBLE
-//        }
+        if (selectedType.equals(AppConstant.MERCHANT,true)){
+            binding.bottomTabs.visibility  = View.INVISIBLE
+        }
+
         return binding.root
     }
 
@@ -109,17 +110,14 @@ class QRFragment : Fragment() {
     }
 
     private fun initVars() {
-
         scanQrBtn = binding.tvScanner
         scannedValueTv = binding.tvScanVal
         val options = initializeGoogleScanner()
         scanner = GmsBarcodeScanning.getClient(requireContext(), options)
-
     }
 
     override fun onResume() {
         super.onResume()
-
         scanQrBtn.background = null
         scanQrBtn.setTextColor("#ffffff".toColorInt())
         binding.myCard.setTextColor("#1B1B1B".toColorInt())
@@ -172,6 +170,7 @@ class QRFragment : Fragment() {
                             val json = Gson().toJson(receiver)
                             val bundle = Bundle()
                             bundle.putString("receiver_json", json)
+                            Log.d("TESTING_SCANNER",json)
 
                             if(SessionManager(requireContext()).getLoginType().
                                 equals(AppConstant.MERCHANT,true)){

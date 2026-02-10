@@ -14,12 +14,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ReceiptViewModel @Inject constructor(private var repository: P2PRepository): ViewModel() {
 
-    suspend fun receiptRequest(id: String): Flow<NetworkResult<ReceiptModel>>{
-        return repository.receiptRequest(id)
+    suspend fun receiptRequest(id: String,type:String): Flow<NetworkResult<ReceiptModel>>{
+        return repository.receiptRequest(id,type)
     }
 
-    suspend fun generateTransactionPdf(transactionId: String): Flow<NetworkResult<String>>{
-        return repository.generateTransactionPdf(transactionId)
+    suspend fun generateTransactionPdf(transactionId: String,transactionType:String): Flow<NetworkResult<String>>{
+        return repository.generateTransactionPdf(transactionId,transactionType)
     }
 
 }

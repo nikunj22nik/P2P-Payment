@@ -74,7 +74,7 @@
                 android:textSize="@dimen/_10sdp"
                 android:gravity="center"
 
-                android:text="Invite friends to Many Mobile Money and "
+                android:text="@string/invite_many"
                 android:textColor="#B13A7E"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"/>
@@ -98,7 +98,7 @@
             android:gravity="center"
             android:drawablePadding="@dimen/_10sdp"
             android:drawableStart="@drawable/navigation"
-            android:text="Invite to Many Mobile Money"
+            android:text="@string/invite_many"
             android:textColor="#FFFFFF"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"/>
