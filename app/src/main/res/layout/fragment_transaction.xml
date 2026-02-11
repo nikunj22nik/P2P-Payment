@@ -78,7 +78,7 @@
                 android:id="@+id/edSearch"
                 android:layout_width="match_parent"
                 android:background="@null"
-                android:hint="Search"
+                android:hint="@string/search"
                 android:fontFamily="@font/satoshi_medium"
                 android:drawableStart="@drawable/searchicon"
                 android:drawablePadding="@dimen/_10sdp"
@@ -120,7 +120,7 @@
                     android:drawablePadding="@dimen/_10sdp"
                     android:drawableEnd="@drawable/icondown"
                     android:layout_centerInParent="true"
-                    android:text="All Transactions"/>
+                    android:text="@string/all_transactions"/>
             </LinearLayout>
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView

@@ -51,7 +51,7 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.text = "-"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
                         holder.binding.price.setTextColor("#F90B1B".toColorInt())
-                        holder.binding.tvName.text = "Rebalancing"+" To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                        holder.binding.tvName.text = holder.itemView.context.getString(R.string.rebalancing) + /*"Rebalancing"+*//*" To "*/holder.itemView.context.getString(R.string.to)+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }else{
                         if (selectedType.equals(MessageError.AGENT,true) || selectedType.equals(MessageError.MASTER_AGENT,true)){
                             holder.binding.tvName.setTextColor("#FFFFFF".toColorInt())
@@ -60,7 +60,7 @@ class AdapterHomeTransaction(
                         }
                         holder.binding.price.setTextColor("#03B961".toColorInt())
                         holder.binding.price.text = "+"+formatAmount(data.amount ?: "0")+" "+ (data.currency?:"")
-                        holder.binding.tvName.text = "Rebalancing"+" From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                        holder.binding.tvName.text = holder.itemView.context.getString(R.string.rebalancing)/*"Rebalancing"*/+/*" From "*/holder.itemView.context.getString(R.string.from)+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                     }
 
                     Glide.with(requireActivity)
@@ -91,7 +91,7 @@ class AdapterHomeTransaction(
                                 .error(R.drawable.transfericon)
                                 .into(holder.binding.imageProfile)
                         }?:run {
-                            holder.binding.tvName.text = "To "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                            holder.binding.tvName.text = holder.itemView.context.getString(R.string.to1)/*"To "*/+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
                             if(data.transaction_mode.equals("admin",true)&& !data.transaction_category.equals("commission",true)){
                                 Glide.with(requireActivity)
                                     .load(R.drawable.icon_rebalancing)
@@ -120,7 +120,7 @@ class AdapterHomeTransaction(
                                 .load(BuildConfig.MEDIA_URL+url)
                                 .into(holder.binding.imageProfile)
                         }?:run {
-                            holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                            holder.binding.tvName.text = holder.itemView.context.getString(R.string.from1)/*"From "*/+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
 
                             if(data.transaction_mode.equals("admin",true)&& !data.transaction_category.equals("commission",true)){
                                 Glide.with(requireActivity)
@@ -185,7 +185,7 @@ class AdapterHomeTransaction(
                             .load(BuildConfig.MEDIA_URL+url)
                             .into(holder.binding.imageProfile)
                     }?:run {
-                        holder.binding.tvName.text = "From "+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
+                        holder.binding.tvName.text = holder.itemView.context.getString(R.string.from1)/*"From "*/+ (data.user?.first_name ?:"") +" "+ (data.user?.last_name ?:"")
 
 
                         if(data.transaction_mode.equals("admin",true) && !data.transaction_category.equals("commission",true)){

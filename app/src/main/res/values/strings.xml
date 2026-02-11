@@ -145,4 +145,95 @@
     <string name="recipt">Recipient</string>
     <string name="recipent_phone_number">Recipient Phone Number</string>
     <string name="invite_many">Invite friends to Many.</string>
+    <string name="current_limit">Current limit</string>
+    <string name="maximum_account_balance">Maximum account balance</string>
+    <string name="maximum_monthly_volume">Maximum monthly volume</string>
+    <string name="forgot_your_code_">Forgot Your Code?</string>
+    <string name="enter_new_secret_code">Enter new secret code</string>
+    <string name="re_enter_secret_code">Re-enter secret code</string>
+    <string name="update">Update</string>
+    <string name="upload_image_here">Upload image here</string>
+    <string name="png_or_jpg_max_5mb">PNG or JPG (max. 5MB)</string>
+    <string name="amount_deposit">Amount deposit</string>
+    <string name="confirm_the_amount">Confirm the Amount</string>
+    <string name="deposit">Deposit</string>
+    <string name="e_receipt">E-Receipt</string>
+    <string name="send_money">Send Money</string>
+    <string name="amount_sent">Amount sent</string>
+    <string name="confirm_amount">Confirm Amount</string>
+    <string name="send">Send</string>
+    <string name="to_contact">To Contact</string>
+    <string name="search">Search</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="bery_orou_92_33_45_67_89">Bery Orou 92 33 45 67 89</string>
+    <string name="confirm_your_id_upload">Confirm Your ID Upload</string>
+    <string name="upload_both_sides_of_your_valid_id_documents_to_continue_with_the_verification">Upload both sides of your valid ID documents to continue with the verification.</string>
+    <string name="ensure_your_valid_id_photos_are_clear_well_lit_and_show_all_four_corners_avoid_glare_blur_and_shadows">Ensure your valid ID photos are clear, well-lit, and show all four corners. Avoid glare, blur, and shadows.</string>
+    <string name="upload_front_side">Upload Front Side</string>
+    <string name="upload_back_side">Upload Back Side</string>
+    <string name="submit_for_verification">Submit for Verification</string>
+    <string name="fcfa">FCFA</string>
+    <string name="scan_a_code">Scan a code</string>
+    <string name="rebalancing">Rebalancing</string>
+    <string name="to"> To </string>
+    <string name="to1">To </string>
+    <string name="from"> From </string>
+    <string name="from1">From </string>
+
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+    <string name="Rebalancing_To">Rebalancing To </string>
+    <string name="Rebalancing_From">Rebalancing From </string>
+    <string name="Today">Today</string>
+
+
+
+    <!-- User Types -->
+    <string name="type_user">User</string>
+    <string name="type_merchant">Merchant</string>
+    <string name="type_agent">Agent</string>
+    <string name="type_master_agent">Master Agent</string>
+
+    <!-- Validation Errors -->
+    <string name="invalid_secret">The secret code you entered is invalid.</string>
+    <string name="amount_null">Receiver info or amount is null</string>
+    <string name="invalid_amount">Please enter a valid amount</string>
+    <string name="qr_error">Oops! We couldn’t locate a merchant account with that ID.</string>
+    <string name="select_type">Please select the type</string>
+    <string name="network_error">Please check your internet connection.</string>
+    <string name="amount_error">Insufficient amount</string>
+    <string name="phone_number_required">You must enter a phone number to proceed</string>
+    <string name="name_error">The name must be at least 3 characters long.</string>
+    <string name="number_validation">Please enter a valid phone number</string>
+    <string name="otp_empty">OTP can\'t be empty</string>
+    <string name="amount_empty">Amount can\'t be empty</string>
+    <string name="amount_confirm_empty">Confirm amount can\'t be empty</string>
+    <string name="amount_match_error">Amount not matched</string>
+    <string name="otp_not_match">Incorrect OTP. Please try again.</string>
+    <string name="secret_code_empty">Code can\'t be empty</string>
+    <string name="code_not_match">Code not matched</string>
+
+    <!-- Upload Errors -->
+    <string name="upload_business_id">Please upload Business ID.</string>
+    <string name="upload_business_register">Please upload Business Registration Document.</string>
+    <string name="upload_tax_id">Please upload your Tax Verification Document.</string>
+    <string name="upload_business_logo1">Please upload your Business logo.</string>
+    <string name="upload_front_image">Please upload front image.</string>
+    <string name="upload_back_image">Please upload back image.</string>
+
+    <!-- Help -->
+
+
+
 </resources>

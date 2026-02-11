@@ -21,8 +21,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:src="@drawable/backicon"
-                android:tint="#0F0D1C"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:tint="#0F0D1C" />
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
             android:layout_centerInParent="true"
-            android:text="Confirm Your ID Upload"/>
+            android:text="@string/confirm_your_id_upload"/>
     </RelativeLayout>
 
   <ScrollView
@@ -54,7 +54,7 @@
               android:textSize="@dimen/_13sdp"
               android:layout_marginTop="@dimen/_10sdp"
               android:fontFamily="@font/satoshi_medium"
-              android:text="Upload both sides of your valid ID documents to continue with the verification."/>
+              android:text="@string/upload_both_sides_of_your_valid_id_documents_to_continue_with_the_verification"/>
           <TextView
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
               android:layout_marginTop="@dimen/_10sdp"
               android:fontFamily="@font/satoshi_bold"
               android:layout_gravity="center"
-              android:text="Ensure your valid ID photos are clear, well-lit, and show all four corners. Avoid glare, blur, and shadows."/>
+              android:text="@string/ensure_your_valid_id_photos_are_clear_well_lit_and_show_all_four_corners_avoid_glare_blur_and_shadows"/>
           <LinearLayout
               android:id="@+id/btnFront"
               android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                   android:gravity="start|center"
                   android:fontFamily="@font/satoshi_medium"
                   android:drawablePadding="@dimen/_10sdp"
-                  android:text="Upload Front Side"
+                  android:text="@string/upload_front_side"
                   app:drawableEndCompat="@drawable/ep_upload_filled"/>
           </LinearLayout>
           <RelativeLayout
@@ -127,7 +127,7 @@
                   android:gravity="start|center"
                   android:fontFamily="@font/satoshi_medium"
                   android:drawablePadding="@dimen/_10sdp"
-                  android:text="Upload Back Side"
+                  android:text="@string/upload_back_side"
                   app:drawableEndCompat="@drawable/ep_upload_filled"/>
           </LinearLayout>
           <RelativeLayout
@@ -172,7 +172,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textSize="@dimen/_13sdp"
-                  android:text="Submit for Verification"
+                  android:text="@string/submit_for_verification"
                   android:textColor="#FFFFFF"
                   android:fontFamily="@font/satoshi_bold"
                   android:layout_gravity="center"/>

@@ -73,7 +73,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_10sdp"
                 android:gravity="center"
-
                 android:text="@string/invite_many"
                 android:textColor="#B13A7E"
                 android:fontFamily="@font/satoshi_bold"

@@ -151,7 +151,7 @@
                                 android:typeface="monospace"
                                 android:fontFamily="@font/satoshi_bold"
                                 android:layout_gravity="center"
-                                android:text="FCFA" />
+                                android:text="@string/fcfa" />
 
                             <ImageView
                                 android:id="@+id/imgHide"
@@ -249,7 +249,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="@dimen/_13sdp"
-                                android:text="Scan a code"
+                                android:text="@string/scan_a_code"
                                 android:drawablePadding="@dimen/_10sdp"
                                 android:drawableStart="@drawable/scanicon"
                                 android:textColor="#FFFFFF"
@@ -268,7 +268,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="@dimen/_13sdp"
-                                android:text="Rebalancing"
+                                android:text="@string/rebalancing"
                                 android:drawableStart="@drawable/maximize"
                                 android:drawablePadding="@dimen/_10sdp"
                                 android:textColor="#444444"

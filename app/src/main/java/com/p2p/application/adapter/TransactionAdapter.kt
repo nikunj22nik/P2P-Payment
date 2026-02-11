@@ -115,7 +115,7 @@ class TransactionAdapter(
                 val monthAbbr = parts[0]
                 val year = parts[1]
                 val fullMonth = when (monthAbbr) {
-                    "Jan" -> "January"
+               /*     "Jan" -> "January"
                     "Feb" -> "February"
                     "Mar" -> "March"
                     "Apr" -> "April"
@@ -126,7 +126,19 @@ class TransactionAdapter(
                     "Sep" -> "September"
                     "Oct" -> "October"
                     "Nov" -> "November"
-                    "Dec" -> "December"
+                    "Dec" -> "December"*/
+                    "Jan" -> itemView.context.getString(R.string.month_january)
+                    "Feb" -> itemView.context.getString(R.string.month_february)
+                    "Mar" -> itemView.context.getString(R.string.month_march)
+                    "Apr" -> itemView.context.getString(R.string.month_april)
+                    "May" -> itemView.context.getString(R.string.month_may)
+                    "Jun" -> itemView.context.getString(R.string.month_june)
+                    "Jul" -> itemView.context.getString(R.string.month_july)
+                    "Aug" -> itemView.context.getString(R.string.month_august)
+                    "Sep" -> itemView.context.getString(R.string.month_september)
+                    "Oct" -> itemView.context.getString(R.string.month_october)
+                    "Nov" -> itemView.context.getString(R.string.month_november)
+                    "Dec" -> itemView.context.getString(R.string.month_december)
                     else -> monthAbbr
                 }
                 return "$fullMonth $year"
@@ -159,9 +171,9 @@ class TransactionAdapter(
                 val formatted = formatAmount(data.amount.toString())
                 amount.text = formatted+" "+ data.currency
                 if(data.rebalance.equals("normal",true)){
-                    title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
+                    title.text = if (data.phone.isNotEmpty()) itemView.context.getString(R.string.from1) + "${data.title}" else data.title
                 }else{
-                    title.text =  "Rebalancing To ${data.title}"
+                    title.text =  itemView.context.getString(R.string.Rebalancing_To)+"${data.title}"
                 }
             }
             else {
@@ -170,15 +182,15 @@ class TransactionAdapter(
                 title.setTextColor("#03B961".toColorInt())
                 amount.text = "+"+formatted+" "+ data.currency
                 if(data.rebalance.equals("normal",true) || data.rebalance.equals("admin",true)){
-                    title.text = if (data.phone.isNotEmpty()) "From ${data.title}" else data.title
+                    title.text = if (data.phone.isNotEmpty()) itemView.context.getString(R.string.from1)+"${data.title}" else data.title
                 }
 
                 else{
-                    title.text =  "Rebalancing From ${data.title}"
+                    title.text =  itemView.context.getString(R.string.Rebalancing_From)+"${data.title}"
                 }
             }
 
-            date.text = if (!isToday(data.date)) data.date else "Today" +" "+extractTime(data.date)
+            date.text = if (!isToday(data.date)) data.date else itemView.context.getString(R.string.Today) +" "+extractTime(data.date)
             amount.setTextColor(if (data.amount > 0) "#03B961".toColorInt() else "#E74C3C".toColorInt())
 
             val url = BuildConfig.MEDIA_URL + (data.profile ?: "")

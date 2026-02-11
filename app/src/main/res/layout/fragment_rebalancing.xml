@@ -167,7 +167,7 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:layout_gravity="center"
-                    android:text="Amount deposit"
+                    android:text="@string/amount_deposit"
                     tools:ignore="RelativeOverlap" />
 
                 <RelativeLayout
@@ -201,7 +201,7 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:layout_gravity="center"
-                    android:text="Confirm the Amount"
+                    android:text="@string/confirm_the_amount"
                     tools:ignore="RelativeOverlap" />
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -242,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_13sdp"
                 android:gravity="center"
-                android:text="Deposit"
+                android:text="@string/deposit"
                 android:textColor="#FFFFFF"
                 android:fontFamily="@font/satoshi_bold"
                 android:layout_gravity="center"/>

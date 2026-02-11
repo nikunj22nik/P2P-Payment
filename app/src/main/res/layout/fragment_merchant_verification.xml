@@ -114,7 +114,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Upload image here"
+                                android:text="@string/upload_image_here"
                                 android:textSize="16sp"
                                 android:textColor="#333333"
                                 android:fontFamily="sans-serif-medium"/>
@@ -122,7 +122,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="PNG or JPG (max. 5MB)"
+                                android:text="@string/png_or_jpg_max_5mb"
                                 android:textSize="12sp"
                                 android:textColor="#999999"
                                 android:fontFamily="sans-serif"/>

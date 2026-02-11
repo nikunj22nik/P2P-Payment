@@ -52,7 +52,7 @@ tools:context=".fragment.TransferStatusFragment">
                 android:id="@+id/layPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 FCFA"
+                android:text="@string/_0_fcfa"
                 android:textSize="@dimen/_25ssp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"/>
@@ -64,7 +64,7 @@ tools:context=".fragment.TransferStatusFragment">
                 android:layout_marginTop="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
-                android:text="Bery Orou  92 33 45 67 89"
+                android:text="@string/bery_orou_92_33_45_67_89"
                 android:textColor="#444444"
                 android:textSize="@dimen/_12sdp" />
 
@@ -123,17 +123,17 @@ tools:context=".fragment.TransferStatusFragment">
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#0F0D1C"
+                        android:layout_alignParentStart="true"
                         android:layout_marginTop="@dimen/_5sdp"
-                        android:textSize="@dimen/_10sdp"
                         android:fontFamily="@font/satoshi_bold"
                         android:gravity="center"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:text="@string/date"/>
+                        android:text="@string/date"
+                        android:textColor="#0F0D1C"
+                        android:textSize="@dimen/_10sdp" />
                     <TextView
                         android:id="@+id/date"
                         android:layout_width="wrap_content"
@@ -272,14 +272,15 @@ tools:context=".fragment.TransferStatusFragment">
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginHorizontal="@dimen/_20sdp"
             android:background="@drawable/user_select_inactive">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_13sdp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
                 android:text="@string/share"
                 android:textColor="#FFFFFF"
-                android:fontFamily="@font/satoshi_bold"
-                android:layout_gravity="center"/>
+                android:textSize="@dimen/_13sdp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/btnHome"

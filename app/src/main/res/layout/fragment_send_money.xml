@@ -42,7 +42,7 @@
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
             android:layout_centerInParent="true"
-            android:text="Send Money"/>
+            android:text="@string/send_money"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -104,7 +104,7 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
-            android:text="Amount sent" />
+            android:text="@string/amount_sent" />
 
         <EditText
             android:id="@+id/amnt"
@@ -136,7 +136,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
-            android:text="Confirm Amount" />
+            android:text="@string/confirm_amount" />
 
         <EditText
             android:id="@+id/confirm_amount"
@@ -235,7 +235,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_13sdp"
-            android:text="Send"
+            android:text="@string/send"
             android:textColor="#FFFFFF"
             android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"/>

@@ -107,7 +107,7 @@
                         <TextView
                             android:id="@+id/tvUserType"
                             android:layout_width="wrap_content"
-                            android:text="Master Agent"
+                            android:text="@string/master_agent"
                             android:textSize="@dimen/_11sdp"
                             android:paddingVertical="@dimen/_6sdp"
                             android:paddingHorizontal="@dimen/_8sdp"

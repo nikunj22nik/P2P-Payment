@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bgimg"
     tools:context=".fragment.AccountTypeFragment">
 
-     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:orientation="vertical"
-    tools:ignore="UseCompoundDrawables,UselessParent">
-    <ImageView
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_60sdp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/todo"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:src="@drawable/agentlogo"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#EEEEEE"
-        android:textSize="@dimen/_15sdp"
-        android:layout_marginBottom="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:fontFamily="@font/satoshi_bold"
-        android:layout_gravity="center"
-        android:text="@string/choose_account_type"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20sdp"
-        android:orientation="vertical">
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables,UselessParent">
+
+        <ImageView
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/todo"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:src="@drawable/agentlogo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_gravity="center"
+            android:text="@string/choose_account_type" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:weightSum="2"
-            android:orientation="horizontal">
+            android:layout_margin="@dimen/_20sdp"
+            android:orientation="vertical">
+
             <LinearLayout
-                android:id="@+id/user"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:padding="@dimen/_10sdp"
-                android:orientation="vertical"
-                android:background="@drawable/user_select_inactive">
-                <ImageView
-                    android:id="@+id/imgUser"
-                    android:layout_width="wrap_content"
+                android:baselineAligned="false"
+                android:weightSum="2"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/user"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/todo"
-                    android:tint="#FFFFFF"
-                    android:src="@drawable/usericon"/>
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:orientation="vertical"
+                    android:background="@drawable/user_select_inactive">
+
+                    <ImageView
+                        android:id="@+id/imgUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/usericon"
+                        app:tint="#FFFFFF" />
                 <TextView
                     android:id="@+id/tvUser"
                     android:layout_width="wrap_content"
