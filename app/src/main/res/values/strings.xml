@@ -233,7 +233,9 @@
     <string name="upload_back_image">Please upload back image.</string>
 
     <!-- Help -->
-
+    <string name="invite_contact">
+    Your contact isn’t here yet. Invite them to join\n<b>Many Mobile Money</b> and start sending money\nin seconds!
+</string>
 
 
 </resources>

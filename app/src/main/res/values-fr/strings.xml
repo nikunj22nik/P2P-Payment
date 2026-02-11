@@ -235,5 +235,8 @@ votre pièce d identité valide.
     <string name="upload_business_logo1">Veuillez télécharger le logo de votre entreprise.</string>
     <string name="upload_front_image">Veuillez télécharger l\'image recto.</string>
     <string name="upload_back_image">Veuillez télécharger l\'image verso.</string>
+    <string name="invite_contact">
+    Ce contact n’est pas encore sur Many. Invitez-le pour envoyer de l’argent.
+</string>
 
 </resources>

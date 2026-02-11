@@ -76,11 +76,30 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/satoshi_bold"/>
 
-        <View
+      <!--  <View
             android:layout_width="wrap_content"
             android:layout_margin="@dimen/_15sdp"
             android:background="@drawable/contactview"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"/>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:background="@drawable/invitetextcolor">
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:text="@string/invite_contact"
+                android:textColor="#B13A7E"
+                android:textSize="@dimen/_10sdp" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/btnInvite"
